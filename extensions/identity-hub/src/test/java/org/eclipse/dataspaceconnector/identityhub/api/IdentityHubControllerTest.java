@@ -129,7 +129,7 @@ public class IdentityHubControllerTest {
     }
 
     private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
-        byte[] data = Base64.getUrlEncoder().encode(OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8));
+        byte[] data = OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8);
         baseRequest()
                 .body(createRequestObject(COLLECTIONS_WRITE, data))
                 .post()

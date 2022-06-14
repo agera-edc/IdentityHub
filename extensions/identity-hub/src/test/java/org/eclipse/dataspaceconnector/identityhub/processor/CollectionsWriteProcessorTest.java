@@ -45,7 +45,7 @@ public class CollectionsWriteProcessorTest {
         IdentityHubStore identityHubStore = new IdentityHubInMemoryStore();
         CollectionsWriteProcessor writeProcessor = new CollectionsWriteProcessor(identityHubStore);
         var expectedResult = MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.OK).build();
-        byte[] data = Base64.encode(OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8));
+        byte[] data = OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8);
 
         // Act
         var result = writeProcessor.process(data);
