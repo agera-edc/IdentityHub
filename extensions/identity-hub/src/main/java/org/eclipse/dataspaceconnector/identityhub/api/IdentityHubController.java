@@ -14,6 +14,7 @@
 
 package org.eclipse.dataspaceconnector.identityhub.api;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -24,10 +25,8 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestStatus;
 import org.eclipse.dataspaceconnector.identityhub.dtos.ResponseObject;
-import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessor;
 import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessorFactory;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -47,9 +46,10 @@ public class IdentityHubController {
         this.messageProcessorFactory = messageProcessorFactory;
     }
 
+    @Operation(description = "A Decentralized Web Node (https://identity.foundation/decentralized-web-node/spec) compatible endpoint supporting operations to read and write Verifiable Credentials into an Identity Hub")
     @POST
     public ResponseObject handleRequest(RequestObject requestObject) {
-        List<MessageResponseObject> replies = requestObject.getMessages()
+        var replies = requestObject.getMessages()
                 .stream()
                 .map(this::processMessage)
                 .collect(Collectors.toList());
@@ -62,10 +62,9 @@ public class IdentityHubController {
     }
 
     private MessageResponseObject processMessage(MessageRequestObject messageRequestObject) {
-        String method = messageRequestObject.getDescriptor().getMethod();
-        MessageProcessor processor = messageProcessorFactory.create(method);
-        byte[] bytes = messageRequestObject.getData();
-        return processor.process(bytes);
+        var method = messageRequestObject.getDescriptor().getMethod();
+        var processor = messageProcessorFactory.create(method);
+        return processor.process(messageRequestObject.getData());
     }
 
 }

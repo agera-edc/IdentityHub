@@ -7,6 +7,9 @@ paths:
     post:
       tags:
       - IdentityHub
+      description: A Decentralized Web Node (https://identity.foundation/decentralized-web-node/spec)
+        compatible endpoint supporting operations to read and write Verifiable Credentials
+        into an Identity Hub
       operationId: handleRequest
       requestBody:
         content:
