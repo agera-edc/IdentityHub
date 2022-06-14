@@ -23,7 +23,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * In memory store of Hub Objects.
  */
-// TODO: Add tests when the logic to store objects is defined
 public class IdentityHubInMemoryStore implements IdentityHubStore {
 
     private final LockManager lockManager = new LockManager(new ReentrantReadWriteLock());
