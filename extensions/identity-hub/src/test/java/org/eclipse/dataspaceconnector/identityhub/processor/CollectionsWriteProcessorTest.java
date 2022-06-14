@@ -21,7 +21,6 @@ import org.bouncycastle.util.encoders.Base64;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.dtos.VerifiableCredential;
-import org.eclipse.dataspaceconnector.identityhub.processor.CollectionsWriteProcessor;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubInMemoryStore;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 import org.junit.jupiter.api.Test;
