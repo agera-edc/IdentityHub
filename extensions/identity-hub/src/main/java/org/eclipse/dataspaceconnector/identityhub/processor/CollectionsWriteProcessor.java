@@ -40,6 +40,7 @@ public class CollectionsWriteProcessor implements MessageProcessor {
         this.mapper = new ObjectMapper();
     }
 
+    @Override
     public MessageResponseObject process(byte[] data) {
         try {
             var credential = mapper.readValue(data, VerifiableCredential.class);
