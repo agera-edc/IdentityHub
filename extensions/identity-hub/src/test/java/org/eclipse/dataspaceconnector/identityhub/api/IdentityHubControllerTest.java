@@ -17,7 +17,6 @@ package org.eclipse.dataspaceconnector.identityhub.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import io.restassured.specification.RequestSpecification;
-import org.bouncycastle.util.encoders.Base64;
 import org.eclipse.dataspaceconnector.identityhub.dtos.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
@@ -28,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -62,7 +62,7 @@ public class IdentityHubControllerTest {
     }
 
     private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
-        byte[] data = Base64.encode(OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8));
+        byte[] data = Base64.getUrlEncoder().encode(OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8));
         baseRequest()
                 .body(createRequestObject(COLLECTIONS_WRITE, data))
                 .post()
