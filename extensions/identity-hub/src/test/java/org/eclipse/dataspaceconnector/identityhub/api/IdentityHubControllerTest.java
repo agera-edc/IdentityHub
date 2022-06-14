@@ -64,76 +64,76 @@ public class IdentityHubControllerTest {
     private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
         byte[] data = Base64.encode(OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8));
         baseRequest()
-            .body(createRequestObject(COLLECTIONS_WRITE, data))
-            .post()
-        .then()
-            .statusCode(200)
-            .body("requestId", equalTo(REQUEST_ID))
-            .body("replies", hasSize(1))
-            .body("replies[0].status.code", equalTo(200))
-            .body("replies[0].status.detail", equalTo("The message was successfully processed"));
+                .body(createRequestObject(COLLECTIONS_WRITE, data))
+                .post()
+            .then()
+                .statusCode(200)
+                .body("requestId", equalTo(REQUEST_ID))
+                .body("replies", hasSize(1))
+                .body("replies[0].status.code", equalTo(200))
+                .body("replies[0].status.detail", equalTo("The message was successfully processed"));
     }
 
     private List<VerifiableCredential> queryVerifiableCredentials() {
         return baseRequest()
-            .body(createRequestObject(COLLECTIONS_QUERY))
-            .post()
-        .then()
-            .statusCode(200)
-            .body("requestId", equalTo(REQUEST_ID))
-            .body("replies", hasSize(1))
-            .body("replies[0].status.code", equalTo(200))
-            .body("replies[0].status.detail", equalTo("The message was successfully processed"))
-            .extract().body().jsonPath().getList("replies[0].entries", VerifiableCredential.class);
+                .body(createRequestObject(COLLECTIONS_QUERY))
+                .post()
+            .then()
+                .statusCode(200)
+                .body("requestId", equalTo(REQUEST_ID))
+                .body("replies", hasSize(1))
+                .body("replies[0].status.code", equalTo(200))
+                .body("replies[0].status.detail", equalTo("The message was successfully processed"))
+                .extract().body().jsonPath().getList("replies[0].entries", VerifiableCredential.class);
     }
 
     @Test
     void featureDetection() {
         baseRequest()
-            .body(createRequestObject(FEATURE_DETECTION_READ))
-            .post()
-        .then()
-            .statusCode(200)
-            .body("requestId", equalTo(REQUEST_ID))
-            .body("replies", hasSize(1))
-            .body("replies[0].entries", hasSize(1))
-            .body("replies[0].entries[0].interfaces.collections['CollectionsQuery']", is(true))
-            .body("replies[0].entries[0].interfaces.collections['CollectionsWrite']", is(true));
+                .body(createRequestObject(FEATURE_DETECTION_READ))
+                .post()
+            .then()
+                .statusCode(200)
+                .body("requestId", equalTo(REQUEST_ID))
+                .body("replies", hasSize(1))
+                .body("replies[0].entries", hasSize(1))
+                .body("replies[0].entries[0].interfaces.collections['CollectionsQuery']", is(true))
+                .body("replies[0].entries[0].interfaces.collections['CollectionsWrite']", is(true));
     }
 
     @Test
     void methodNotImplemented() {
         baseRequest()
-            .body(createRequestObject("Not supported method"))
-            .post()
-        .then()
-            .statusCode(200)
-            .body("requestId", equalTo(REQUEST_ID))
-            .body("replies", hasSize(1))
-            .body("replies[0].status.code", equalTo(501))
-            .body("replies[0].status.detail", equalTo("The interface method is not implemented"));
+                .body(createRequestObject("Not supported method"))
+                .post()
+            .then()
+                .statusCode(200)
+                .body("requestId", equalTo(REQUEST_ID))
+                .body("replies", hasSize(1))
+                .body("replies[0].status.code", equalTo(501))
+                .body("replies[0].status.detail", equalTo("The interface method is not implemented"));
     }
 
     @Test
     void malformedMessage() {
         byte[] data = "invalid base64".getBytes(StandardCharsets.UTF_8);
         baseRequest()
-            .body(createRequestObject(COLLECTIONS_WRITE, data))
-            .post()
-        .then()
-            .statusCode(200)
-            .body("requestId", equalTo(REQUEST_ID))
-            .body("replies", hasSize(1))
-            .body("replies[0].status.code", equalTo(400))
-            .body("replies[0].status.detail", equalTo("The message was malformed or improperly constructed"));
+                .body(createRequestObject(COLLECTIONS_WRITE, data))
+                .post()
+            .then()
+                .statusCode(200)
+                .body("requestId", equalTo(REQUEST_ID))
+                .body("replies", hasSize(1))
+                .body("replies[0].status.code", equalTo(400))
+                .body("replies[0].status.detail", equalTo("The message was malformed or improperly constructed"));
     }
 
     private RequestSpecification baseRequest() {
         return given()
-            .baseUri(API_URL)
-            .basePath("/identity-hub")
-            .contentType(JSON)
-        .when();
+                .baseUri(API_URL)
+                .basePath("/identity-hub")
+                .contentType(JSON)
+                .when();
     }
 
     private RequestObject createRequestObject(String method) {
@@ -142,15 +142,15 @@ public class IdentityHubControllerTest {
 
     private RequestObject createRequestObject(String method, byte[] data) {
         return RequestObject.Builder.newInstance()
-            .requestId(REQUEST_ID)
-            .target(TARGET)
-            .addMessageRequestObject(MessageRequestObject.Builder.newInstance()
-                .descriptor(Descriptor.Builder.newInstance()
-                    .method(method)
-                    .nonce(NONCE)
-                    .build())
-                .data(data)
-                .build())
-            .build();
+                .requestId(REQUEST_ID)
+                .target(TARGET)
+                .addMessageRequestObject(MessageRequestObject.Builder.newInstance()
+                        .descriptor(Descriptor.Builder.newInstance()
+                                .method(method)
+                                .nonce(NONCE)
+                                .build())
+                        .data(data)
+                        .build())
+                .build();
     }
 }
