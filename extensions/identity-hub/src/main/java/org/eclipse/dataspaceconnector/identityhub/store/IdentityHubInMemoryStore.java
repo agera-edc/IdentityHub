@@ -11,6 +11,7 @@
  *       Microsoft Corporation - initial API and implementation
  *
  */
+
 package org.eclipse.dataspaceconnector.identityhub.store;
 
 import org.eclipse.dataspaceconnector.common.concurrency.LockManager;

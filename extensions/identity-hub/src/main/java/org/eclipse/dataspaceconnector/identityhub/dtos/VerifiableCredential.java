@@ -11,6 +11,7 @@
  *       Microsoft Corporation - initial API and implementation
  *
  */
+
 package org.eclipse.dataspaceconnector.identityhub.dtos;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -21,8 +22,12 @@ import org.eclipse.dataspaceconnector.identityhub.store.HubObject;
 import java.util.Objects;
 
 /**
- * VerifiableCredential is a supported format that can be specified as the data associated with MessageRequestObject.
- * application/vc+ldp - the data is a JSON-LD formatted <a href="https://www.w3.org/TR/vc-data-model/">W3C Verifiable Credential</a>.
+ * <p>
+ *   Represents a VerifiableCredential that can be stored in the Identity Hub. The model follows the  <a href="https://www.w3.org/TR/vc-data-model/">W3C Verifiable Credential</a> specification.
+ * </p>
+ * <p>
+ *   The MIME type "application/vc+ldp" should be used to identify the correct format when passing Verifiable Credentials as data to the Identity Hub.
+ * </p>
  */
 // TODO: implement Verifiable Credential model
 @JsonDeserialize(builder = VerifiableCredential.Builder.class)

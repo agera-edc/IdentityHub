@@ -11,17 +11,18 @@
  *       Microsoft Corporation - initial API and implementation
  *
  */
+
 package org.eclipse.dataspaceconnector.identityhub;
 
 import org.eclipse.dataspaceconnector.identityhub.api.IdentityHubController;
 import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessorFactory;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubInMemoryStore;
+import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 import org.eclipse.dataspaceconnector.spi.WebService;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.Provider;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
-import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 
 /**
  * EDC extension to boot the services used by the Identity Hub
