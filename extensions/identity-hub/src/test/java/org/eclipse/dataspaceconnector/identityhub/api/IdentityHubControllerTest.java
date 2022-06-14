@@ -61,32 +61,6 @@ public class IdentityHubControllerTest {
         assertThat(verifiableCredentials).usingRecursiveFieldByFieldElementComparator().containsExactly(credential);
     }
 
-    private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
-        byte[] data = Base64.getUrlEncoder().encode(OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8));
-        baseRequest()
-                .body(createRequestObject(COLLECTIONS_WRITE, data))
-                .post()
-            .then()
-                .statusCode(200)
-                .body("requestId", equalTo(REQUEST_ID))
-                .body("replies", hasSize(1))
-                .body("replies[0].status.code", equalTo(200))
-                .body("replies[0].status.detail", equalTo("The message was successfully processed"));
-    }
-
-    private List<VerifiableCredential> queryVerifiableCredentials() {
-        return baseRequest()
-                .body(createRequestObject(COLLECTIONS_QUERY))
-                .post()
-            .then()
-                .statusCode(200)
-                .body("requestId", equalTo(REQUEST_ID))
-                .body("replies", hasSize(1))
-                .body("replies[0].status.code", equalTo(200))
-                .body("replies[0].status.detail", equalTo("The message was successfully processed"))
-                .extract().body().jsonPath().getList("replies[0].entries", VerifiableCredential.class);
-    }
-
     @Test
     void featureDetection() {
         baseRequest()
@@ -152,5 +126,31 @@ public class IdentityHubControllerTest {
                         .data(data)
                         .build())
                 .build();
+    }
+
+    private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
+        byte[] data = Base64.getUrlEncoder().encode(OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8));
+        baseRequest()
+                .body(createRequestObject(COLLECTIONS_WRITE, data))
+                .post()
+                .then()
+                .statusCode(200)
+                .body("requestId", equalTo(REQUEST_ID))
+                .body("replies", hasSize(1))
+                .body("replies[0].status.code", equalTo(200))
+                .body("replies[0].status.detail", equalTo("The message was successfully processed"));
+    }
+
+    private List<VerifiableCredential> queryVerifiableCredentials() {
+        return baseRequest()
+                .body(createRequestObject(COLLECTIONS_QUERY))
+                .post()
+                .then()
+                .statusCode(200)
+                .body("requestId", equalTo(REQUEST_ID))
+                .body("replies", hasSize(1))
+                .body("replies[0].status.code", equalTo(200))
+                .body("replies[0].status.detail", equalTo("The message was successfully processed"))
+                .extract().body().jsonPath().getList("replies[0].entries", VerifiableCredential.class);
     }
 }
