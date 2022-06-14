@@ -62,7 +62,7 @@ public class IdentityHubControllerTest {
     }
 
     @Test
-    void featureDetection() {
+    void detectFeatures() {
         baseRequest()
                 .body(createRequestObject(FEATURE_DETECTION_READ))
                 .post()
@@ -76,7 +76,7 @@ public class IdentityHubControllerTest {
     }
 
     @Test
-    void methodNotImplemented() {
+    void useUnsupportedMethod() {
         baseRequest()
                 .body(createRequestObject("Not supported method"))
                 .post()
@@ -89,7 +89,7 @@ public class IdentityHubControllerTest {
     }
 
     @Test
-    void malformedMessage() {
+    void writeMalformedMessage() {
         byte[] data = "invalid base64".getBytes(StandardCharsets.UTF_8);
         baseRequest()
                 .body(createRequestObject(COLLECTIONS_WRITE, data))

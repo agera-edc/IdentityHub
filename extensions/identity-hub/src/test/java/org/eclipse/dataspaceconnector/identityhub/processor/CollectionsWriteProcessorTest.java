@@ -56,7 +56,7 @@ public class CollectionsWriteProcessorTest {
     }
 
     @Test
-    void writeCredentialsWrongJsonFormat() {
+    void writeCredentialsWithWrongJsonFormat() {
         // Arrange
         IdentityHubStore identityHubStore = new IdentityHubInMemoryStore();
         CollectionsWriteProcessor writeProcessor = new CollectionsWriteProcessor(identityHubStore);
@@ -73,7 +73,7 @@ public class CollectionsWriteProcessorTest {
     }
 
     @Test
-    void writeCredentialsInvalidBase64() {
+    void writeCredentialsWithInvalidBase64() {
         // Arrange
         IdentityHubStore identityHubStore = new IdentityHubInMemoryStore();
         CollectionsWriteProcessor writeProcessor = new CollectionsWriteProcessor(identityHubStore);
