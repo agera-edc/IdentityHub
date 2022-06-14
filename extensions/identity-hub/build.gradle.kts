@@ -24,12 +24,12 @@ val restAssured: String by project
 val faker: String by project
 
 dependencies {
+    implementation(project(":extensions:identity-hub-store-spi"))
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
-    implementation(project(":extensions:identity-hub-store-spi"))
     implementation("${edcGroup}:common-util:${edcVersion}")
 
-    testImplementation(project(":rest-client"))
+    testImplementation(project(":extensions:identity-hub-client"))
     testImplementation("${edcGroup}:junit-extension:${edcVersion}:test-fixtures")
     testImplementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")

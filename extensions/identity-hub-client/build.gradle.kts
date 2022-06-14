@@ -60,6 +60,7 @@ val jacksonVersion: String by project
 
 // Dependencies copied from build/generate-resources/main/build.gradle
 dependencies {
+    implementation(project(":extensions:identity-hub"))
     implementation("io.swagger:swagger-annotations:1.5.22")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")

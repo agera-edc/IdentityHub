@@ -2,4 +2,5 @@ rootProject.name = "identity-hub"
 
 include(":extensions:identity-hub")
 include(":extensions:identity-hub-store-spi")
-include(":rest-client")
+include(":extensions:identity-hub-did")
+include(":extensions:identity-hub-client")
