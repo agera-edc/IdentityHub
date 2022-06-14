@@ -11,6 +11,7 @@
  *       Microsoft Corporation - initial API and implementation
  *
  */
+
 package org.eclipse.dataspaceconnector.identityhub.api;
 
 import io.swagger.v3.oas.annotations.tags.Tag;

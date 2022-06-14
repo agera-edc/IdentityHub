@@ -11,6 +11,7 @@
  *       Microsoft Corporation - initial API and implementation
  *
  */
+
 package org.eclipse.dataspaceconnector.identityhub.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

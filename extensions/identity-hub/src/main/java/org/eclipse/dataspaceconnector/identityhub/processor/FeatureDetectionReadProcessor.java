@@ -11,6 +11,7 @@
  *       Microsoft Corporation - initial API and implementation
  *
  */
+
 package org.eclipse.dataspaceconnector.identityhub.processor;
 
 import org.eclipse.dataspaceconnector.identityhub.dtos.FeatureDetection;
