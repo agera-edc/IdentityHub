@@ -20,8 +20,8 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.eclipse.dataspaceconnector.identityhub.store.HubObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,7 +37,7 @@ public class MessageResponseObject {
 
     private String messageId;
     private MessageStatus status;
-    private List<HubObject> entries = new ArrayList<>();
+    private Collection<HubObject> entries = new ArrayList<>();
 
     private MessageResponseObject() {
     }
@@ -50,7 +50,7 @@ public class MessageResponseObject {
         return status;
     }
 
-    public List<HubObject> getEntries() {
+    public Collection<HubObject> getEntries() {
         return entries;
     }
 
@@ -77,8 +77,8 @@ public class MessageResponseObject {
             return this;
         }
 
-        public Builder entries(List<HubObject> entries) {
-            messageResponseObject.entries = Collections.unmodifiableList(entries);
+        public Builder entries(Collection<HubObject> entries) {
+            messageResponseObject.entries = Collections.unmodifiableCollection(entries);
             return this;
         }
 

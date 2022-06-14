@@ -19,7 +19,7 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.store.HubObject;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
 
@@ -36,7 +36,7 @@ public class CollectionsQueryProcessor implements MessageProcessor {
 
     @Override
     public MessageResponseObject process(byte[] data) {
-        List<HubObject> entries = (List<HubObject>) identityHubStore.getAll();
+        Collection<HubObject> entries = identityHubStore.getAll();
         return MessageResponseObject.Builder.newInstance()
                 .messageId(MESSAGE_ID_VALUE)
                 .status(MessageStatus.OK)
