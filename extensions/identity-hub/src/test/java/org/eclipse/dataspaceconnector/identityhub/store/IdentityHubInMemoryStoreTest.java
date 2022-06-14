@@ -11,7 +11,7 @@ public class IdentityHubInMemoryStoreTest {
     private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
 
     @Test
-    void inMemoryStoreTest() {
+    void addAndReadVerifiableCredential() {
         IdentityHubStore store = new IdentityHubInMemoryStore();
         VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
         store.add(credential);
