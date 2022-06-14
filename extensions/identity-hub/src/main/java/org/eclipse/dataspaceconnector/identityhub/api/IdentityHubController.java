@@ -25,7 +25,7 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestStatus;
 import org.eclipse.dataspaceconnector.identityhub.dtos.ResponseObject;
-import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessorFactory;
+import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessorRegistry;
 
 import java.util.stream.Collectors;
 
@@ -40,10 +40,10 @@ import java.util.stream.Collectors;
 @Path("/identity-hub")
 public class IdentityHubController {
 
-    private final MessageProcessorFactory messageProcessorFactory;
+    private final MessageProcessorRegistry messageProcessorRegistry;
 
-    public IdentityHubController(MessageProcessorFactory messageProcessorFactory) {
-        this.messageProcessorFactory = messageProcessorFactory;
+    public IdentityHubController(MessageProcessorRegistry messageProcessorRegistry) {
+        this.messageProcessorRegistry = messageProcessorRegistry;
     }
 
     @Operation(description = "A Decentralized Web Node (https://identity.foundation/decentralized-web-node/spec) compatible endpoint supporting operations to read and write Verifiable Credentials into an Identity Hub")
@@ -63,7 +63,7 @@ public class IdentityHubController {
 
     private MessageResponseObject processMessage(MessageRequestObject messageRequestObject) {
         var method = messageRequestObject.getDescriptor().getMethod();
-        var processor = messageProcessorFactory.create(method);
+        var processor = messageProcessorRegistry.resolve(method);
         return processor.process(messageRequestObject.getData());
     }
 
