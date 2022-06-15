@@ -14,7 +14,6 @@
 
 package org.eclipse.dataspaceconnector.identityhub.processor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
@@ -23,7 +22,6 @@ import org.eclipse.dataspaceconnector.identityhub.store.HubObject;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 
 import java.io.IOException;
-import java.util.Base64;
 
 import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
 

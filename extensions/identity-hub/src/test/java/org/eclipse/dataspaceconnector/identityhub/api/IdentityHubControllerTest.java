@@ -22,19 +22,20 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.VerifiableCredential;
 import org.eclipse.dataspaceconnector.junit.launcher.EdcExtension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_QUERY;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_WRITE;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.FEATURE_DETECTION_READ;
+import static org.eclipse.dataspaceconnector.common.testfixtures.TestUtils.getFreePort;
+import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -42,13 +43,19 @@ import static org.hamcrest.Matchers.is;
 @ExtendWith(EdcExtension.class)
 public class IdentityHubControllerTest {
 
-    private static final String API_URL = "http://localhost:8181/api";
+    private static final int port = getFreePort();
+    private static final String API_URL = String.format("http://localhost:%s/api", port);
     private static final Faker FAKER = new Faker();
     private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
     private static final String NONCE = FAKER.lorem().characters(32);
     private static final String TARGET = FAKER.internet().url();
     private static final String REQUEST_ID = FAKER.internet().uuid();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    @BeforeEach
+    void setUp(EdcExtension extension) {
+        extension.setConfiguration(Map.of("web.http.port", String.valueOf(port)));
+    }
 
     @Test
     void pushAndQueryVerifiableCredentials() throws IOException {
