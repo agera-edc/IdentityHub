@@ -46,7 +46,7 @@ import static org.hamcrest.Matchers.is;
 public class IdentityHubControllerTest {
 
     private static final int PORT = getFreePort();
-    private static final String API_URL = String.format("http://localhost:%s/api", port);
+    private static final String API_URL = String.format("http://localhost:%s/api", PORT);
     private static final Faker FAKER = new Faker();
     private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
     private static final String NONCE = FAKER.lorem().characters(32);
