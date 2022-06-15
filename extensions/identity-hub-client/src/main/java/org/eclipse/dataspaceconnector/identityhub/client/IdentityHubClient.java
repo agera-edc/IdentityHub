@@ -6,8 +6,8 @@ import java.util.Collection;
 
 public interface IdentityHubClient {
 
-    Collection<VerifiableCredential> getVerifiableCredentials();
+    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl);
 
-    void pushVerifiableCredential(VerifiableCredential verifiableCredential);
+    void pushVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential);
 
 }

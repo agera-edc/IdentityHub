@@ -13,16 +13,16 @@
  */
 package org.eclipse.dataspaceconnector.identityhub.did;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.OkHttpClient;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
-import org.eclipse.dataspaceconnector.iam.did.spi.hub.IdentityHubClient;
-import org.eclipse.dataspaceconnector.identityhub.client.ApiClientFactory;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
-import org.eclipse.dataspaceconnector.identityhub.client.api.IdentityHubApi;
 import org.eclipse.dataspaceconnector.identityhub.did.credentials.IdentityHubCredentialsVerifier;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.EdcSetting;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.Provides;
+import org.eclipse.dataspaceconnector.spi.system.Requires;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 
@@ -30,22 +30,29 @@ import static java.lang.String.format;
 import static org.eclipse.dataspaceconnector.iam.did.spi.document.DidConstants.DID_URL_SETTING;
 
 
+@Requires({OkHttpClient.class})
 @Provides(CredentialsVerifier.class)
 public class IdentityHubDidExtension implements ServiceExtension {
 
     @EdcSetting
     private final static String HUB_URL_SETTING = "edc.identity.hub.url";
 
+    @Inject
+    private OkHttpClient httpClient;
+
     @Override
     public void initialize(ServiceExtensionContext context) {
+        var monitor = context.getMonitor();
+
         var hubUrl = context.getSetting(HUB_URL_SETTING, null);
         if (hubUrl == null) {
             throw new EdcException(format("Mandatory setting '(%s)' missing", DID_URL_SETTING));
         }
 
-        var credentialsVerifier = new IdentityHubCredentialsVerifier(context.getMonitor());
+        var client = new IdentityHubClientImpl(httpClient, new ObjectMapper());
+        var credentialsVerifier = new IdentityHubCredentialsVerifier(client);
         context.registerService(CredentialsVerifier.class, credentialsVerifier);
 
-        context.getMonitor().info("Initialized Identity Hub DID extension");
+        monitor.info("Initialized Identity Hub DID extension");
     }
 }

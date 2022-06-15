@@ -14,6 +14,8 @@
 
 package org.eclipse.dataspaceconnector.identityhub.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * See <a href="https://identity.foundation/decentralized-web-node/spec/#response-objects">response objects documentation</a>
  * and <a href="https://identity.foundation/decentralized-web-node/spec/#request-level-status-coding">status doc</a>.
@@ -24,7 +26,7 @@ public class RequestStatus extends Status {
     public static final RequestStatus DID_NOT_FOUND = new RequestStatus(404, "Target DID not found within the Decentralized Web Node");
     public static final RequestStatus ERROR = new RequestStatus(500, "The request could not be processed correctly");
 
-    private RequestStatus(int code, String detail) {
+    private RequestStatus(@JsonProperty("code") int code, @JsonProperty("detail") String detail) {
         super(code, detail);
     }
 }

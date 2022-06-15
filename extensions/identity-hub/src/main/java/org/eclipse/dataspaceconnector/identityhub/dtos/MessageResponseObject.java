@@ -37,7 +37,7 @@ public class MessageResponseObject {
 
     private String messageId;
     private MessageStatus status;
-    private Collection<HubObject> entries = new ArrayList<>();
+    private Collection<?> entries = new ArrayList<>();
 
     private MessageResponseObject() {
     }
@@ -50,7 +50,7 @@ public class MessageResponseObject {
         return status;
     }
 
-    public Collection<HubObject> getEntries() {
+    public Collection<?> getEntries() {
         return entries;
     }
 
@@ -77,7 +77,7 @@ public class MessageResponseObject {
             return this;
         }
 
-        public Builder entries(Collection<HubObject> entries) {
+        public Builder entries(Collection<?> entries) {
             messageResponseObject.entries = Collections.unmodifiableCollection(entries);
             return this;
         }
