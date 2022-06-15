@@ -22,7 +22,7 @@ import java.util.Collection;
  */
 public interface IdentityHubStore {
 
-    Collection<HubObject> getAll();
+    Collection<byte[]> getAll();
 
-    void add(HubObject hubObject);
+    void add(byte[] hubObject);
 }

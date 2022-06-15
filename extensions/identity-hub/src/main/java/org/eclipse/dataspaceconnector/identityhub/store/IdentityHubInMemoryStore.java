@@ -22,21 +22,21 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * In memory store of Hub Objects.
+ * In memory store of Hub Objects in byte array format.
  */
 public class IdentityHubInMemoryStore implements IdentityHubStore {
 
     private final LockManager lockManager = new LockManager(new ReentrantReadWriteLock());
 
-    private final Collection<HubObject> hubObjects = new ArrayList<>();
+    private final Collection<byte[]> hubObjects = new ArrayList<>();
 
     @Override
-    public Collection<HubObject> getAll() {
+    public Collection<byte[]> getAll() {
         return lockManager.readLock(() -> List.copyOf(hubObjects));
     }
 
     @Override
-    public void add(HubObject hubObject) {
+    public void add(byte[] hubObject) {
         lockManager.writeLock(() -> hubObjects.add(hubObject));
     }
 }

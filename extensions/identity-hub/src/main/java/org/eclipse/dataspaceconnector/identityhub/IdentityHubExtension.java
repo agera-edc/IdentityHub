@@ -17,7 +17,6 @@ package org.eclipse.dataspaceconnector.identityhub;
 import org.eclipse.dataspaceconnector.identityhub.api.IdentityHubController;
 import org.eclipse.dataspaceconnector.identityhub.processor.CollectionsQueryProcessor;
 import org.eclipse.dataspaceconnector.identityhub.processor.CollectionsWriteProcessor;
-import org.eclipse.dataspaceconnector.identityhub.processor.FeatureDetectionReadProcessor;
 import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessorRegistry;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubInMemoryStore;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
@@ -26,10 +25,10 @@ import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.Provider;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
+import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 
 import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_QUERY;
 import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_WRITE;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.FEATURE_DETECTION_READ;
 
 /**
  * EDC extension to boot the services used by the Identity Hub
@@ -41,6 +40,9 @@ public class IdentityHubExtension implements ServiceExtension {
     @Inject
     private IdentityHubStore identityHubStore;
 
+    @Inject
+    private TypeManager typeManager;
+
     @Override
     public void initialize(ServiceExtensionContext context) {
 
@@ -48,7 +50,6 @@ public class IdentityHubExtension implements ServiceExtension {
 
         methodProcessorFactory.register(COLLECTIONS_QUERY, new CollectionsQueryProcessor(identityHubStore));
         methodProcessorFactory.register(COLLECTIONS_WRITE, new CollectionsWriteProcessor(identityHubStore));
-        methodProcessorFactory.register(FEATURE_DETECTION_READ, new FeatureDetectionReadProcessor());
 
         var identityHubController = new IdentityHubController(methodProcessorFactory);
         webService.registerResource(identityHubController);

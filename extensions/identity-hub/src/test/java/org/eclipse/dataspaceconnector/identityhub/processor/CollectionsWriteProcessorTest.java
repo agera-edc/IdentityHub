@@ -20,7 +20,6 @@ import com.github.javafaker.Faker;
 import org.bouncycastle.util.encoders.Base64;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
-import org.eclipse.dataspaceconnector.identityhub.dtos.VerifiableCredential;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubInMemoryStore;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 import org.junit.jupiter.api.Test;
@@ -35,9 +34,7 @@ public class CollectionsWriteProcessorTest {
 
     private static final Faker FAKER = new Faker();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
-
-    VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+    private static final byte[] CREDENTIAL = FAKER.lorem().characters().getBytes();
 
     @Test
     void writeCredentials() throws JsonProcessingException {
@@ -45,14 +42,14 @@ public class CollectionsWriteProcessorTest {
         IdentityHubStore identityHubStore = new IdentityHubInMemoryStore();
         CollectionsWriteProcessor writeProcessor = new CollectionsWriteProcessor(identityHubStore);
         var expectedResult = MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.OK).build();
-        byte[] data = OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8);
+        byte[] data = OBJECT_MAPPER.writeValueAsString(CREDENTIAL).getBytes(StandardCharsets.UTF_8);
 
         // Act
         var result = writeProcessor.process(data);
 
         // Assert
         assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult);
-        assertThat(identityHubStore.getAll()).usingRecursiveFieldByFieldElementComparator().containsExactly(credential);
+        assertThat(identityHubStore.getAll()).usingRecursiveFieldByFieldElementComparator().containsExactly(CREDENTIAL);
     }
 
     @Test

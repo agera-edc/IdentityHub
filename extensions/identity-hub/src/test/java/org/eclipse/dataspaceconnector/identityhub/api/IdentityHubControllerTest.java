@@ -14,22 +14,20 @@
 
 package org.eclipse.dataspaceconnector.identityhub.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.dataspaceconnector.identityhub.dtos.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.VerifiableCredential;
 import org.eclipse.dataspaceconnector.junit.launcher.EdcExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
@@ -37,10 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.common.testfixtures.TestUtils.getFreePort;
 import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_QUERY;
 import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_WRITE;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.FEATURE_DETECTION_READ;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 
 @ExtendWith(EdcExtension.class)
 public class IdentityHubControllerTest {
@@ -48,11 +44,10 @@ public class IdentityHubControllerTest {
     private static final int PORT = getFreePort();
     private static final String API_URL = String.format("http://localhost:%s/api", PORT);
     private static final Faker FAKER = new Faker();
-    private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
     private static final String NONCE = FAKER.lorem().characters(32);
     private static final String TARGET = FAKER.internet().url();
     private static final String REQUEST_ID = FAKER.internet().uuid();
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final byte[] HUBOBJECT = FAKER.lorem().characters().getBytes(StandardCharsets.UTF_8);
 
     @BeforeEach
     void setUp(EdcExtension extension) {
@@ -60,27 +55,10 @@ public class IdentityHubControllerTest {
     }
 
     @Test
-    void pushAndQueryVerifiableCredentials() throws IOException {
-        VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
-
-        pushVerifiableCredential(credential);
-        List<VerifiableCredential> verifiableCredentials = queryVerifiableCredentials();
-
-        assertThat(verifiableCredentials).usingRecursiveFieldByFieldElementComparator().containsExactly(credential);
-    }
-
-    @Test
-    void detectFeatures() {
-        baseRequest()
-                .body(createRequestObject(FEATURE_DETECTION_READ))
-                .post()
-            .then()
-                .statusCode(200)
-                .body("requestId", equalTo(REQUEST_ID))
-                .body("replies", hasSize(1))
-                .body("replies[0].entries", hasSize(1))
-                .body("replies[0].entries[0].interfaces.collections['CollectionsQuery']", is(true))
-                .body("replies[0].entries[0].interfaces.collections['CollectionsWrite']", is(true));
+    void pushAndQueryHubObjects() {
+        pushHubObject(HUBOBJECT);
+        List<byte[]> hubObjects = queryHubObjects();
+        assertThat(hubObjects).usingRecursiveFieldByFieldElementComparator().containsExactly(HUBOBJECT);
     }
 
     @Test
@@ -136,10 +114,9 @@ public class IdentityHubControllerTest {
                 .build();
     }
 
-    private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
-        byte[] data = OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8);
+    private void pushHubObject(byte[] hubObject) {
         baseRequest()
-                .body(createRequestObject(COLLECTIONS_WRITE, data))
+                .body(createRequestObject(COLLECTIONS_WRITE, hubObject))
                 .post()
                 .then()
                 .statusCode(200)
@@ -149,7 +126,7 @@ public class IdentityHubControllerTest {
                 .body("replies[0].status.detail", equalTo("The message was successfully processed"));
     }
 
-    private List<VerifiableCredential> queryVerifiableCredentials() {
+    private List<byte[]> queryHubObjects() {
         return baseRequest()
                 .body(createRequestObject(COLLECTIONS_QUERY))
                 .post()
@@ -159,6 +136,7 @@ public class IdentityHubControllerTest {
                 .body("replies", hasSize(1))
                 .body("replies[0].status.code", equalTo(200))
                 .body("replies[0].status.detail", equalTo("The message was successfully processed"))
-                .extract().body().jsonPath().getList("replies[0].entries", VerifiableCredential.class);
+                .extract().body().jsonPath().getList("replies[0].entries", String.class)
+                .stream().map(s -> s.getBytes(StandardCharsets.UTF_8)).collect(Collectors.toList());
     }
 }
