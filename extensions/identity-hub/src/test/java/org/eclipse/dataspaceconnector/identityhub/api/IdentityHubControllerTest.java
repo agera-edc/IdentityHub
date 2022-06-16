@@ -14,6 +14,7 @@
 
 package org.eclipse.dataspaceconnector.identityhub.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import io.restassured.specification.RequestSpecification;
@@ -47,7 +48,6 @@ public class IdentityHubControllerTest {
     private static final int PORT = getFreePort();
     private static final String API_URL = String.format("http://localhost:%s/api", PORT);
     private static final Faker FAKER = new Faker();
-    private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
     private static final String NONCE = FAKER.lorem().characters(32);
     private static final String TARGET = FAKER.internet().url();
     private static final String REQUEST_ID = FAKER.internet().uuid();
@@ -59,13 +59,13 @@ public class IdentityHubControllerTest {
     }
 
     @Test
-    void pushAndQueryVerifiableCredentials() throws IOException {
-        VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+    void writeAndQueryObject() throws IOException {
+        SampleObject sampleObject = new SampleObject(FAKER.internet().uuid());
 
-        pushVerifiableCredential(credential);
-        List<VerifiableCredential> verifiableCredentials = queryVerifiableCredentials();
+        collectionsWrite(sampleObject);
+        List<SampleObject> objects = collectionsQuery();
 
-        assertThat(verifiableCredentials).usingRecursiveFieldByFieldElementComparator().containsExactly(credential);
+        assertThat(objects).usingRecursiveFieldByFieldElementComparator().containsExactly(sampleObject);
     }
 
     @Test
@@ -135,8 +135,8 @@ public class IdentityHubControllerTest {
                 .build();
     }
 
-    private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
-        byte[] data = OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8);
+    private void collectionsWrite(SampleObject object) throws IOException {
+        byte[] data = OBJECT_MAPPER.writeValueAsString(object).getBytes(StandardCharsets.UTF_8);
         baseRequest()
                 .body(createRequestObject(COLLECTIONS_WRITE, data))
                 .post()
@@ -148,7 +148,7 @@ public class IdentityHubControllerTest {
                 .body("replies[0].status.detail", equalTo("The message was successfully processed"));
     }
 
-    private List<VerifiableCredential> queryVerifiableCredentials() {
+    private List<SampleObject> collectionsQuery() {
         return baseRequest()
                 .body(createRequestObject(COLLECTIONS_QUERY))
                 .post()
@@ -158,6 +158,18 @@ public class IdentityHubControllerTest {
                 .body("replies", hasSize(1))
                 .body("replies[0].status.code", equalTo(200))
                 .body("replies[0].status.detail", equalTo("The message was successfully processed"))
-                .extract().body().jsonPath().getList("replies[0].entries", VerifiableCredential.class);
+                .extract().body().jsonPath().getList("replies[0].entries", SampleObject.class);
+    }
+
+    private static class SampleObject {
+        private String id;
+
+        public SampleObject(@JsonProperty("id") String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
     }
 }

@@ -20,6 +20,7 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 
 import java.io.IOException;
+import java.util.Base64;
 
 import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
 
@@ -39,7 +40,8 @@ public class CollectionsWriteProcessor implements MessageProcessor {
     @Override
     public MessageResponseObject process(byte[] data) {
         try {
-            var hubObject = objectMapper.readValue(data, Object.class);
+            byte[] decoded = Base64.getUrlDecoder().decode(data);
+            var hubObject = objectMapper.readValue(decoded, Object.class);
             identityHubStore.add(hubObject);
             return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.OK).build();
         } catch (IllegalArgumentException | IOException e) {

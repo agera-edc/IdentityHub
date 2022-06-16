@@ -17,7 +17,7 @@ package org.eclipse.dataspaceconnector.identityhub.did.credentials;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
-import org.eclipse.dataspaceconnector.identityhub.dtos.VerifiableCredential;
+import org.eclipse.dataspaceconnector.identityhub.client.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.util.Collection;
