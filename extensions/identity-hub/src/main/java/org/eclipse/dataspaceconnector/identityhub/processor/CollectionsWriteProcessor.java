@@ -14,38 +14,35 @@
 
 package org.eclipse.dataspaceconnector.identityhub.processor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
-import org.eclipse.dataspaceconnector.identityhub.dtos.VerifiableCredential;
-import org.eclipse.dataspaceconnector.identityhub.store.HubObject;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 
-import java.util.Base64;
+import java.io.IOException;
 
 import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
 
 /**
- * Processor of "CollectionsWrite" messages, in order to write {@link HubObject}s into the {@link IdentityHubStore}.
+ * Processor of "CollectionsWrite" messages, in order to write objects into the {@link IdentityHubStore}.
  */
 public class CollectionsWriteProcessor implements MessageProcessor {
 
-    private final IdentityHubStore identityHubStore;
-    private final ObjectMapper mapper;
+    private final IdentityHubStore<Object> identityHubStore;
+    private final ObjectMapper objectMapper;
 
-    public CollectionsWriteProcessor(IdentityHubStore identityHubStore) {
+    public CollectionsWriteProcessor(IdentityHubStore<Object> identityHubStore, ObjectMapper objectMapper) {
         this.identityHubStore = identityHubStore;
-        this.mapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
     }
 
+    @Override
     public MessageResponseObject process(byte[] data) {
         try {
-            var decodedData = new String(Base64.getUrlDecoder().decode(data));
-            var credential = mapper.readValue(decodedData, VerifiableCredential.class);
-            identityHubStore.add(credential);
+            var hubObject = objectMapper.readValue(data, Object.class);
+            identityHubStore.add(hubObject);
             return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.OK).build();
-        } catch (JsonProcessingException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IOException e) {
             return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.MALFORMED_MESSAGE).build();
         }
     }

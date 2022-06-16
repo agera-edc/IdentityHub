@@ -20,19 +20,20 @@ import io.restassured.specification.RequestSpecification;
 import org.eclipse.dataspaceconnector.identityhub.dtos.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.VerifiableCredential;
 import org.eclipse.dataspaceconnector.junit.launcher.EdcExtension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.dataspaceconnector.common.testfixtures.TestUtils.getFreePort;
 import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_QUERY;
 import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_WRITE;
 import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.FEATURE_DETECTION_READ;
@@ -43,13 +44,19 @@ import static org.hamcrest.Matchers.is;
 @ExtendWith(EdcExtension.class)
 public class IdentityHubControllerTest {
 
-    private static final String API_URL = "http://localhost:8181/api";
+    private static final int PORT = getFreePort();
+    private static final String API_URL = String.format("http://localhost:%s/api", PORT);
     private static final Faker FAKER = new Faker();
     private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
     private static final String NONCE = FAKER.lorem().characters(32);
     private static final String TARGET = FAKER.internet().url();
     private static final String REQUEST_ID = FAKER.internet().uuid();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    @BeforeEach
+    void setUp(EdcExtension extension) {
+        extension.setConfiguration(Map.of("web.http.port", String.valueOf(PORT)));
+    }
 
     @Test
     void pushAndQueryVerifiableCredentials() throws IOException {
@@ -129,7 +136,7 @@ public class IdentityHubControllerTest {
     }
 
     private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
-        byte[] data = Base64.getUrlEncoder().encode(OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8));
+        byte[] data = OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8);
         baseRequest()
                 .body(createRequestObject(COLLECTIONS_WRITE, data))
                 .post()

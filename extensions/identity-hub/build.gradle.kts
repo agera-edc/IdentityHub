@@ -29,6 +29,9 @@ dependencies {
     implementation("${edcGroup}:http:${edcVersion}")
     implementation("${edcGroup}:common-util:${edcVersion}")
 
+    testImplementation("${edcGroup}:common-util:${edcVersion}")
+    implementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
+    testImplementation(project(":rest-client"))
     testImplementation("${edcGroup}:junit-extension:${edcVersion}:test-fixtures")
     testImplementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")

@@ -20,9 +20,9 @@ import java.util.Collection;
  * IdentityHubStore store used to store HubObjects.
  * A custom IdentityHubStore store can be injected via service loader as an EDC Service extension.
  */
-public interface IdentityHubStore {
+public interface IdentityHubStore<T> {
 
-    Collection<HubObject> getAll();
+    Collection<T> getAll();
 
-    void add(HubObject hubObject);
+    void add(T hubObject);
 }

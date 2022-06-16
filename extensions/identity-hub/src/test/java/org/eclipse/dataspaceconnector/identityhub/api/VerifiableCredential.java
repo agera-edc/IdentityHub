@@ -12,12 +12,11 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.identityhub.dtos;
+package org.eclipse.dataspaceconnector.identityhub.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import org.eclipse.dataspaceconnector.identityhub.store.HubObject;
 
 import java.util.Objects;
 
@@ -31,7 +30,7 @@ import java.util.Objects;
  */
 // TODO: implement Verifiable Credential model
 @JsonDeserialize(builder = VerifiableCredential.Builder.class)
-public class VerifiableCredential implements HubObject {
+public class VerifiableCredential {
 
     private String id;
 
