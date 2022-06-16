@@ -24,12 +24,9 @@ import java.util.Map;
  */
 public class MessageProcessorRegistry {
 
-    private final IdentityHubStore identityHubStore;
+    private final Map<String, MessageProcessor> messageProcessorsByMethod;
 
-    Map<String, MessageProcessor> messageProcessorsByMethod;
-
-    public MessageProcessorRegistry(IdentityHubStore identityHubStore) {
-        this.identityHubStore = identityHubStore;
+    public MessageProcessorRegistry() {
         this.messageProcessorsByMethod = new HashMap<>();
     }
 
