@@ -24,19 +24,19 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * In memory store of Hub Objects.
  */
-public class IdentityHubInMemoryStore implements IdentityHubStore {
+public class IdentityHubInMemoryStore<T> implements IdentityHubStore<T> {
 
     private final LockManager lockManager = new LockManager(new ReentrantReadWriteLock());
 
-    private final Collection<HubObject> hubObjects = new ArrayList<>();
+    private final Collection<T> hubObjects = new ArrayList<>();
 
     @Override
-    public Collection<HubObject> getAll() {
+    public Collection<T> getAll() {
         return lockManager.readLock(() -> List.copyOf(hubObjects));
     }
 
     @Override
-    public void add(HubObject hubObject) {
+    public void add(T hubObject) {
         lockManager.writeLock(() -> hubObjects.add(hubObject));
     }
 }

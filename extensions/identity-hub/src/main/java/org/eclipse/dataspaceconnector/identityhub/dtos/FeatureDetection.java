@@ -17,14 +17,13 @@ package org.eclipse.dataspaceconnector.identityhub.dtos;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import org.eclipse.dataspaceconnector.identityhub.store.HubObject;
 
 /**
  * Feature Detection object produced by a compliant decentralized Web Node.
  * See: <a href="https://identity.foundation/decentralized-web-node/spec/#feature-detection">Feature detection identity foundation documentation.</a>
  */
 @JsonDeserialize(builder = FeatureDetection.Builder.class)
-public class FeatureDetection implements HubObject {
+public class FeatureDetection {
 
     private static final String TYPE = "FeatureDetection";
     private WebNodeInterfaces interfaces;
