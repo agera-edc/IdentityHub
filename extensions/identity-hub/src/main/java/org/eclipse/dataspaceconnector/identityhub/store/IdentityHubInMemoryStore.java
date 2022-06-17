@@ -14,25 +14,25 @@
 
 package org.eclipse.dataspaceconnector.identityhub.store;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * In memory store of Hub Objects.
  */
 public class IdentityHubInMemoryStore<T> implements IdentityHubStore<T> {
 
-    private final Collection<T> hubObjects = Collections.synchronizedList(new ArrayList<>());
+    // Using a Map because concurrent hashset does not exist
+    private final Map<T, Boolean> hubObjects = new ConcurrentHashMap<T, Boolean>();
 
     @Override
     public Collection<T> getAll() {
-        return List.copyOf(hubObjects);
+        return hubObjects.keySet();
     }
 
     @Override
     public void add(T hubObject) {
-        hubObjects.add(hubObject);
+        hubObjects.put(hubObject, true);
     }
 }
