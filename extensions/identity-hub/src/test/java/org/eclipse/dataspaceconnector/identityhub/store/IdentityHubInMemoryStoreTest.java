@@ -18,7 +18,6 @@ import com.github.javafaker.Faker;
 import org.eclipse.dataspaceconnector.identityhub.api.VerifiableCredential;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
