@@ -12,7 +12,7 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.identityhub.dtos;
+package org.eclipse.dataspaceconnector.identityhub.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class RequestStatus extends Status {
     public static final RequestStatus OK = new RequestStatus(200, "The request was successfully processed");
-    // TODO: Implement logic + tests for DID_NOT_FOUND and ERROR.
     public static final RequestStatus DID_NOT_FOUND = new RequestStatus(404, "Target DID not found within the Decentralized Web Node");
     public static final RequestStatus ERROR = new RequestStatus(500, "The request could not be processed correctly");
 

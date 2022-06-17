@@ -12,7 +12,9 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.identityhub.dtos;
+package org.eclipse.dataspaceconnector.identityhub.models;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Describes status of the request done by calling the identity-hub endpoint.
@@ -26,10 +28,12 @@ abstract class Status {
         this.detail = detail;
     }
 
+    @Schema(description = "An integer set to the HTTP Status Code appropriate for the status of the response")
     public int getCode() {
         return code;
     }
 
+    @Schema(description = "A string that describes a terse summary of the status")
     public String getDetail() {
         return detail;
     }

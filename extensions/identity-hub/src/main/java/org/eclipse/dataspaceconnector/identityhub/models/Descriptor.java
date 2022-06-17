@@ -12,11 +12,12 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.identityhub.dtos;
+package org.eclipse.dataspaceconnector.identityhub.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
@@ -27,26 +28,28 @@ import java.util.Objects;
 public class Descriptor {
     private String method;
     private String nonce;
-    // TODO: if data is available, this field should contain stringified Version 1 CID of the DAG PB encoded data.
     private String dataCid;
-    // TODO: if data is available, check that format is application/vc+ldp as it is the only one supported at the moment
     private String dataFormat;
 
     private Descriptor() {
     }
 
+    @Schema(description = "A string that matches a Decentralized Web Node Interface method")
     public String getMethod() {
         return method;
     }
 
+    @Schema(description = "[UNSUPPORTED] Cryptographically random string that ensures each object is unique")
     public String getNonce() {
         return nonce;
     }
 
+    @Schema(description = "[UNSUPPORTED] If data is available, this field should contain stringified Version 1 CID of the DAG PB encoded data")
     public String getDataCid() {
         return dataCid;
     }
 
+    @Schema(description = "[UNSUPPORTED] if data is available, this field should contain a registered IANA Media Type data format. Use 'application/vc+ldp' for Verifiable Credentials.")
     public String getDataFormat() {
         return dataFormat;
     }

@@ -20,23 +20,26 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import org.eclipse.dataspaceconnector.identityhub.dtos.MessageRequestObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.RequestStatus;
-import org.eclipse.dataspaceconnector.identityhub.dtos.ResponseObject;
+import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
+import org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject;
+import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;
+import org.eclipse.dataspaceconnector.identityhub.models.RequestStatus;
+import org.eclipse.dataspaceconnector.identityhub.models.ResponseObject;
+import org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterfaces;
 import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessorRegistry;
 
 import java.util.stream.Collectors;
 
+import static org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterfaceMethod.fromName;
+
 /**
  * Identity Hub controller, exposing a <a href="https://identity.foundation/decentralized-web-node/spec">Decentralized Web Node</a> compatible endpoint.
- *
- * See {@link org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces} for a list of currently supported DWN interfaces.
+ * <p>
+ * See {@link WebNodeInterfaces} for a list of currently supported DWN interfaces.
  */
 @Tag(name = "IdentityHub")
-@Produces({"application/json"})
-@Consumes({"application/json"})
+@Produces({ "application/json" })
+@Consumes({ "application/json" })
 @Path("/identity-hub")
 public class IdentityHubController {
 
@@ -62,7 +65,7 @@ public class IdentityHubController {
     }
 
     private MessageResponseObject processMessage(MessageRequestObject messageRequestObject) {
-        var method = messageRequestObject.getDescriptor().getMethod();
+        var method = fromName(messageRequestObject.getDescriptor().getMethod());
         var processor = messageProcessorRegistry.resolve(method);
         return processor.process(messageRequestObject.getData());
     }

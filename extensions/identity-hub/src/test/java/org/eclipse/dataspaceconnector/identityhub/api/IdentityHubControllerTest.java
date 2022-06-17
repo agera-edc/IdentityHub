@@ -18,9 +18,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import io.restassured.specification.RequestSpecification;
-import org.eclipse.dataspaceconnector.identityhub.dtos.Descriptor;
-import org.eclipse.dataspaceconnector.identityhub.dtos.MessageRequestObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
+import org.eclipse.dataspaceconnector.identityhub.models.Descriptor;
+import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
+import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;
 import org.eclipse.dataspaceconnector.junit.launcher.EdcExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,9 +35,9 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.common.testfixtures.TestUtils.getFreePort;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_QUERY;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_WRITE;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.FEATURE_DETECTION_READ;
+import static org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterfaceMethod.COLLECTIONS_QUERY;
+import static org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterfaceMethod.COLLECTIONS_WRITE;
+import static org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterfaceMethod.FEATURE_DETECTION_READ;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -71,7 +71,7 @@ public class IdentityHubControllerTest {
     @Test
     void detectFeatures() {
         baseRequest()
-                .body(createRequestObject(FEATURE_DETECTION_READ))
+                .body(createRequestObject(FEATURE_DETECTION_READ.getName()))
                 .post()
             .then()
                 .statusCode(200)
@@ -99,7 +99,7 @@ public class IdentityHubControllerTest {
     void writeMalformedMessage() {
         byte[] data = "invalid base64".getBytes(StandardCharsets.UTF_8);
         baseRequest()
-                .body(createRequestObject(COLLECTIONS_WRITE, data))
+                .body(createRequestObject(COLLECTIONS_WRITE.getName(), data))
                 .post()
             .then()
                 .statusCode(200)
@@ -125,22 +125,23 @@ public class IdentityHubControllerTest {
         return RequestObject.Builder.newInstance()
                 .requestId(REQUEST_ID)
                 .target(TARGET)
-                .addMessageRequestObject(MessageRequestObject.Builder.newInstance()
+                .messages(List.of(
+                        MessageRequestObject.Builder.newInstance()
                         .descriptor(Descriptor.Builder.newInstance()
                                 .method(method)
                                 .nonce(NONCE)
                                 .build())
                         .data(data)
-                        .build())
+                        .build()))
                 .build();
     }
 
     private void collectionsWrite(SampleObject object) throws IOException {
         byte[] data = OBJECT_MAPPER.writeValueAsString(object).getBytes(StandardCharsets.UTF_8);
         baseRequest()
-                .body(createRequestObject(COLLECTIONS_WRITE, data))
+                .body(createRequestObject(COLLECTIONS_WRITE.getName(), data))
                 .post()
-                .then()
+            .then()
                 .statusCode(200)
                 .body("requestId", equalTo(REQUEST_ID))
                 .body("replies", hasSize(1))
@@ -150,9 +151,9 @@ public class IdentityHubControllerTest {
 
     private List<SampleObject> collectionsQuery() {
         return baseRequest()
-                .body(createRequestObject(COLLECTIONS_QUERY))
+                .body(createRequestObject(COLLECTIONS_QUERY.getName()))
                 .post()
-                .then()
+            .then()
                 .statusCode(200)
                 .body("requestId", equalTo(REQUEST_ID))
                 .body("replies", hasSize(1))

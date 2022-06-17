@@ -14,6 +14,8 @@
 
 package org.eclipse.dataspaceconnector.identityhub.processor;
 
+import org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterfaceMethod;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,17 +24,19 @@ import java.util.Map;
  */
 public class MessageProcessorRegistry {
 
-    private final Map<String, MessageProcessor> messageProcessorsByMethod;
+    private static final InterfaceNotImplementedProcessor DEFAULT_PROCESSOR = new InterfaceNotImplementedProcessor();
+
+    private final Map<WebNodeInterfaceMethod, MessageProcessor> messageProcessorsByMethod;
 
     public MessageProcessorRegistry() {
         this.messageProcessorsByMethod = new HashMap<>();
     }
 
-    public void register(String method, MessageProcessor messageProcessor) {
+    public void register(WebNodeInterfaceMethod method, MessageProcessor messageProcessor) {
         messageProcessorsByMethod.put(method, messageProcessor);
     }
 
-    public MessageProcessor resolve(String method) {
-        return messageProcessorsByMethod.getOrDefault(method, new InterfaceNotImplementedProcessor());
+    public MessageProcessor resolve(WebNodeInterfaceMethod method) {
+        return messageProcessorsByMethod.getOrDefault(method, DEFAULT_PROCESSOR);
     }
 }

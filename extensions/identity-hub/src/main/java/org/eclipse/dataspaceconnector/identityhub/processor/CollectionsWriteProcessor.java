@@ -15,14 +15,14 @@
 package org.eclipse.dataspaceconnector.identityhub.processor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
+import org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject;
+import org.eclipse.dataspaceconnector.identityhub.models.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 
 import java.io.IOException;
 import java.util.Base64;
 
-import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
+import static org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject.MESSAGE_ID_VALUE;
 
 /**
  * Processor of "CollectionsWrite" messages, in order to write objects into the {@link IdentityHubStore}.
@@ -39,13 +39,13 @@ public class CollectionsWriteProcessor implements MessageProcessor {
 
     @Override
     public MessageResponseObject process(byte[] data) {
+        Object hubObject;
         try {
-            byte[] decoded = Base64.getUrlDecoder().decode(data);
-            var hubObject = objectMapper.readValue(decoded, Object.class);
-            identityHubStore.add(hubObject);
-            return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.OK).build();
+            hubObject = objectMapper.readValue(data, Object.class);
         } catch (IllegalArgumentException | IOException e) {
             return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.MALFORMED_MESSAGE).build();
         }
+        identityHubStore.add(hubObject);
+        return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.OK).build();
     }
 }

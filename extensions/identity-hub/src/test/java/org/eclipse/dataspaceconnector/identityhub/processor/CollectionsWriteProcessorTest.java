@@ -18,8 +18,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import org.bouncycastle.util.encoders.Base64;
-import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
+import org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject;
+import org.eclipse.dataspaceconnector.identityhub.models.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubInMemoryStore;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
+import static org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject.MESSAGE_ID_VALUE;
 
 
 public class CollectionsWriteProcessorTest {

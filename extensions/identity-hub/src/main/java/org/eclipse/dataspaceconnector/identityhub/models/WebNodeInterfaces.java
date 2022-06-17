@@ -12,7 +12,7 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.identityhub.dtos;
+package org.eclipse.dataspaceconnector.identityhub.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -22,15 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Web Node interfaces
+ * Interfaces supported by a Web Node
  * See: <a href="https://identity.foundation/decentralized-web-node/spec/#interfaces">Web node interface identity foundation documentation.</a>
  */
 @JsonDeserialize(builder = WebNodeInterfaces.Builder.class)
 public class WebNodeInterfaces {
-
-    public static final String COLLECTIONS_QUERY = "CollectionsQuery";
-    public static final String COLLECTIONS_WRITE = "CollectionsWrite";
-    public static final String FEATURE_DETECTION_READ = "FeatureDetectionRead";
 
     private final Map<String, Boolean> collections = new HashMap<>();
     // not supported interfaces ATM:

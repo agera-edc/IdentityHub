@@ -8,21 +8,22 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.eclipse.dataspaceconnector.identityhub.dtos.Descriptor;
-import org.eclipse.dataspaceconnector.identityhub.dtos.MessageRequestObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.ResponseObject;
+import org.eclipse.dataspaceconnector.identityhub.models.Descriptor;
+import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
+import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;
+import org.eclipse.dataspaceconnector.identityhub.models.ResponseObject;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_QUERY;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_WRITE;
+import static org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterfaceMethod.COLLECTIONS_QUERY;
+import static org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterfaceMethod.COLLECTIONS_WRITE;
 
 public class IdentityHubClientImpl implements IdentityHubClient {
 
@@ -41,7 +42,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
             Response response = httpClient.newCall(
                         new Request.Builder()
                                 .url(hubBaseUrl)
-                                .post(buildRequestBody(COLLECTIONS_QUERY))
+                                .post(buildRequestBody(COLLECTIONS_QUERY.getName()))
                                 .build())
                 .execute();
 
@@ -64,11 +65,10 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     public void pushVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) {
         try {
             var payload = objectMapper.writeValueAsString(verifiableCredential);
-            byte[] data = Base64.getUrlEncoder().encode(payload.getBytes(UTF_8));
             httpClient.newCall(
                             new Request.Builder()
                                     .url(hubBaseUrl)
-                                    .post(buildRequestBody(COLLECTIONS_WRITE, data))
+                                    .post(buildRequestBody(COLLECTIONS_WRITE.getName(), payload.getBytes(UTF_8)))
                                     .build())
                     .execute();
         } catch (IOException e) {
@@ -85,13 +85,13 @@ public class IdentityHubClientImpl implements IdentityHubClient {
         RequestObject requestObject = RequestObject.Builder.newInstance()
                 .requestId(requestId)
                 .target("target")
-                .addMessageRequestObject(MessageRequestObject.Builder.newInstance()
+                .messages(List.of(MessageRequestObject.Builder.newInstance()
                         .descriptor(Descriptor.Builder.newInstance()
                                 .nonce("nonce")
                                 .method(method)
                                 .build())
                         .data(data)
-                        .build()
+                        .build())
                 )
                 .build();
         try {
