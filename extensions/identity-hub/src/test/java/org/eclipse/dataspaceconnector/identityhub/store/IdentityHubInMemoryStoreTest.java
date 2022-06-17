@@ -26,8 +26,8 @@ public class IdentityHubInMemoryStoreTest {
 
     @Test
     void addAndReadVerifiableCredential() {
-        IdentityHubStore store = new IdentityHubInMemoryStore();
-        VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+        var store = new IdentityHubInMemoryStore<VerifiableCredential>();
+        var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
         store.add(credential);
         assertThat(store.getAll()).usingRecursiveFieldByFieldElementComparator().containsExactly(credential);
     }
