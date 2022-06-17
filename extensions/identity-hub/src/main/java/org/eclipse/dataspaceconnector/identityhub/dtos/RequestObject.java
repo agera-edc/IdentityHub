@@ -16,6 +16,7 @@ package org.eclipse.dataspaceconnector.identityhub.dtos;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,8 @@ import java.util.Objects;
 public class RequestObject {
 
     private String requestId;
-    // TODO: must be the Decentralized Identifier base URI of the DID-relative URL
     private String target;
-    private List<MessageRequestObject> messages = new ArrayList<>();
+    private final List<MessageRequestObject> messages = new ArrayList<>();
 
     private RequestObject() {
     }
@@ -38,6 +38,7 @@ public class RequestObject {
         return requestId;
     }
 
+    @Schema(description = "[UNSUPPORTED] Decentralized Identifier base URI of the DID-relative URL")
     public String getTarget() {
         return target;
     }

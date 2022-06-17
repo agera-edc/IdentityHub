@@ -30,28 +30,40 @@ components:
       properties:
         messageId:
           type: string
+          description: "[UNSUPPORTED] Stringified Version 1 CID of the associated\
+            \ message"
         status:
           $ref: '#/components/schemas/MessageStatus'
         entries:
           type: array
+          description: Resulting message entries returned from the invocation of the
+            corresponding message as free form objects
           items:
             type: object
+            description: Resulting message entries returned from the invocation of
+              the corresponding message as free form objects
     MessageStatus:
       type: object
       properties:
         code:
           type: integer
+          description: An integer set to the HTTP Status Code appropriate for the
+            status of the response
           format: int32
         detail:
           type: string
+          description: A string that describes a terse summary of the status
     RequestStatus:
       type: object
       properties:
         code:
           type: integer
+          description: An integer set to the HTTP Status Code appropriate for the
+            status of the response
           format: int32
         detail:
           type: string
+          description: A string that describes a terse summary of the status
     ResponseObject:
       type: object
       properties:
@@ -68,12 +80,20 @@ components:
       properties:
         method:
           type: string
+          description: A string that matches a Decentralized Web Node Interface method
         nonce:
           type: string
+          description: "[UNSUPPORTED] Cryptographically random string that ensures\
+            \ each object is unique"
         dataCid:
           type: string
+          description: "[UNSUPPORTED] If data is available, this field should contain\
+            \ stringified Version 1 CID of the DAG PB encoded data"
         dataFormat:
           type: string
+          description: "[UNSUPPORTED] if data is available, this field should contain\
+            \ a registered IANA Media Type data format. Use 'application/vc+ldp' for\
+            \ Verifiable Credentials."
     MessageRequestObject:
       type: object
       properties:
@@ -81,8 +101,10 @@ components:
           $ref: '#/components/schemas/Descriptor'
         data:
           type: array
+          description: Optional base64Url encoded string of the message���s data
           items:
             type: string
+            description: Optional base64Url encoded string of the message���s data
             format: byte
     RequestObject:
       type: object
@@ -91,6 +113,8 @@ components:
           type: string
         target:
           type: string
+          description: "[UNSUPPORTED] Decentralized Identifier base URI of the DID-relative\
+            \ URL"
         messages:
           type: array
           items:

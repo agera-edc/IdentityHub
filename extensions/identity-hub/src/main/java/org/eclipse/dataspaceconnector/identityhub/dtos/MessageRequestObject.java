@@ -17,6 +17,7 @@ package org.eclipse.dataspaceconnector.identityhub.dtos;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
@@ -35,6 +36,7 @@ public class MessageRequestObject {
         return descriptor;
     }
 
+    @Schema(description = "Optional base64Url encoded string of the message data")
     public byte[] getData() {
         return data;
     }

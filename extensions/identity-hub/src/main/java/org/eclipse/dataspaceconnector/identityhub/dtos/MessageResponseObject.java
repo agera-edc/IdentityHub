@@ -18,11 +18,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * MessageResponseObject are objects in the replies of a <a href="https://identity.foundation/decentralized-web-node/spec/#response-objects">Response Object </a>.
@@ -31,9 +33,7 @@ import java.util.Objects;
 @JsonDeserialize(builder = MessageResponseObject.Builder.class)
 public class MessageResponseObject {
 
-    // TODO: implement messageId as a stringified Version 1 CID of the associated message (as per spec)
-    // Temporary message id value.
-    public static final String MESSAGE_ID_VALUE = "messageId";
+    public static final String MESSAGE_ID_VALUE = UUID.randomUUID().toString();
 
     private String messageId;
     private MessageStatus status;
@@ -42,6 +42,7 @@ public class MessageResponseObject {
     private MessageResponseObject() {
     }
 
+    @Schema(description = "[UNSUPPORTED] Stringified Version 1 CID of the associated message")
     public String getMessageId() {
         return messageId;
     }
@@ -50,9 +51,7 @@ public class MessageResponseObject {
         return status;
     }
 
-    /**
-     * @return Resulting message entries returned from the invocation of the corresponding message as free form objects
-     */
+    @Schema(description = "Resulting message entries returned from the invocation of the corresponding message as free form objects")
     public Collection<?> getEntries() {
         return entries;
     }
