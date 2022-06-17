@@ -18,7 +18,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,7 +30,7 @@ import java.util.Objects;
 public class ResponseObject {
     private String requestId;
     private RequestStatus status;
-    private List<MessageResponseObject> replies;
+    private Collection<MessageResponseObject> replies;
 
     private ResponseObject() {
     }
@@ -42,7 +43,7 @@ public class ResponseObject {
         return status;
     }
 
-    public List<MessageResponseObject> getReplies() {
+    public Collection<MessageResponseObject> getReplies() {
         return replies;
     }
 
@@ -70,7 +71,7 @@ public class ResponseObject {
         }
 
         public Builder replies(List<MessageResponseObject> replies) {
-            responseObject.replies = new ArrayList<>(replies);
+            responseObject.replies = Collections.unmodifiableCollection(replies);
             return this;
         }
 
