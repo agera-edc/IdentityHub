@@ -18,7 +18,10 @@ import com.github.javafaker.Faker;
 import org.eclipse.dataspaceconnector.identityhub.api.VerifiableCredential;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,11 +30,16 @@ public class IdentityHubInMemoryStoreTest {
 
     @Test
     void addAndReadVerifiableCredential() {
+        // Arrange
         var store = new IdentityHubInMemoryStore();
-        var credential1 = VerifiableCredential.Builder.newInstance().id(FAKER.internet().uuid()).build();
-        var credential2 = VerifiableCredential.Builder.newInstance().id(FAKER.internet().uuid()).build();
-        store.add(credential1);
-        store.add(credential2);
-        assertThat(store.getAll()).usingRecursiveFieldByFieldElementComparator().containsAll(List.of(credential1, credential2));
+        var credentialsCount = FAKER.number().numberBetween(1, 10);
+        List<VerifiableCredential> credentials = Stream.generate(() -> VerifiableCredential.Builder.newInstance().id(FAKER.internet().uuid()).build())
+                .limit(credentialsCount).collect(Collectors.toList());
+
+        // Act
+        credentials.forEach(store::add);
+
+        // Assert
+        assertThat(store.getAll()).usingRecursiveFieldByFieldElementComparator().containsAll(credentials);
     }
 }
