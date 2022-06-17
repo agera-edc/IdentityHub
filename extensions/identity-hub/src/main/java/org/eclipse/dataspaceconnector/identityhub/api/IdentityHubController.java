@@ -25,7 +25,6 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestStatus;
 import org.eclipse.dataspaceconnector.identityhub.dtos.ResponseObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaceMethod;
 import org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces;
 import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessorRegistry;
 
