@@ -22,8 +22,8 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces;
 import java.util.List;
 
 import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_QUERY;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_WRITE;
+import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaceMethod.COLLECTIONS_QUERY;
+import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaceMethod.COLLECTIONS_WRITE;
 
 /**
  * Processor of "FeatureDetectionRead" messages
@@ -38,8 +38,8 @@ public class FeatureDetectionReadProcessor implements MessageProcessor {
                 .entries(List.of(
                         FeatureDetection.Builder.newInstance().interfaces(
                                 WebNodeInterfaces.Builder.newInstance()
-                                    .supportedCollection(COLLECTIONS_QUERY)
-                                    .supportedCollection(COLLECTIONS_WRITE)
+                                    .supportedCollection(COLLECTIONS_QUERY.getName())
+                                    .supportedCollection(COLLECTIONS_WRITE.getName())
                                     .build()
                         ).build()
                 ))

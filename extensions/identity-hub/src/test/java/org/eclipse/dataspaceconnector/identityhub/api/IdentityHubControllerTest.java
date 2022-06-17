@@ -34,9 +34,9 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.common.testfixtures.TestUtils.getFreePort;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_QUERY;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.COLLECTIONS_WRITE;
-import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces.FEATURE_DETECTION_READ;
+import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaceMethod.COLLECTIONS_QUERY;
+import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaceMethod.COLLECTIONS_WRITE;
+import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaceMethod.FEATURE_DETECTION_READ;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -71,7 +71,7 @@ public class IdentityHubControllerTest {
     @Test
     void detectFeatures() {
         baseRequest()
-                .body(createRequestObject(FEATURE_DETECTION_READ))
+                .body(createRequestObject(FEATURE_DETECTION_READ.getName()))
                 .post()
             .then()
                 .statusCode(200)
@@ -99,7 +99,7 @@ public class IdentityHubControllerTest {
     void writeMalformedMessage() {
         byte[] data = "invalid base64".getBytes(StandardCharsets.UTF_8);
         baseRequest()
-                .body(createRequestObject(COLLECTIONS_WRITE, data))
+                .body(createRequestObject(COLLECTIONS_WRITE.getName(), data))
                 .post()
             .then()
                 .statusCode(200)
@@ -138,7 +138,7 @@ public class IdentityHubControllerTest {
     private void pushVerifiableCredential(VerifiableCredential credential) throws IOException {
         byte[] data = OBJECT_MAPPER.writeValueAsString(credential).getBytes(StandardCharsets.UTF_8);
         baseRequest()
-                .body(createRequestObject(COLLECTIONS_WRITE, data))
+                .body(createRequestObject(COLLECTIONS_WRITE.getName(), data))
                 .post()
                 .then()
                 .statusCode(200)
@@ -150,7 +150,7 @@ public class IdentityHubControllerTest {
 
     private List<VerifiableCredential> queryVerifiableCredentials() {
         return baseRequest()
-                .body(createRequestObject(COLLECTIONS_QUERY))
+                .body(createRequestObject(COLLECTIONS_QUERY.getName()))
                 .post()
                 .then()
                 .statusCode(200)

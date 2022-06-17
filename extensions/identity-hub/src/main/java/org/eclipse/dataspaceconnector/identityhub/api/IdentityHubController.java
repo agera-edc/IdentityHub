@@ -25,14 +25,18 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestStatus;
 import org.eclipse.dataspaceconnector.identityhub.dtos.ResponseObject;
+import org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaceMethod;
+import org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces;
 import org.eclipse.dataspaceconnector.identityhub.processor.MessageProcessorRegistry;
 
 import java.util.stream.Collectors;
 
+import static org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaceMethod.fromName;
+
 /**
  * Identity Hub controller, exposing a <a href="https://identity.foundation/decentralized-web-node/spec">Decentralized Web Node</a> compatible endpoint.
  *
- * See {@link org.eclipse.dataspaceconnector.identityhub.dtos.WebNodeInterfaces} for a list of currently supported DWN interfaces.
+ * See {@link WebNodeInterfaces} for a list of currently supported DWN interfaces.
  */
 @Tag(name = "IdentityHub")
 @Produces({"application/json"})
@@ -62,7 +66,7 @@ public class IdentityHubController {
     }
 
     private MessageResponseObject processMessage(MessageRequestObject messageRequestObject) {
-        var method = messageRequestObject.getDescriptor().getMethod();
+        var method = fromName(messageRequestObject.getDescriptor().getMethod());
         var processor = messageProcessorRegistry.resolve(method);
         return processor.process(messageRequestObject.getData());
     }
