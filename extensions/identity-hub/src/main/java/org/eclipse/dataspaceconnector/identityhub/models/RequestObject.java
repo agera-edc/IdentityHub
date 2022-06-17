@@ -18,8 +18,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -29,7 +29,7 @@ public class RequestObject {
 
     private String requestId;
     private String target;
-    private final List<MessageRequestObject> messages = new ArrayList<>();
+    private Collection<MessageRequestObject> messages;
 
     private RequestObject() {
     }
@@ -43,8 +43,8 @@ public class RequestObject {
         return target;
     }
 
-    public List<MessageRequestObject> getMessages() {
-        return messages;
+    public Collection<MessageRequestObject> getMessages() {
+        return Collections.unmodifiableCollection(messages);
     }
 
     @JsonPOJOBuilder(withPrefix = "")
@@ -74,8 +74,8 @@ public class RequestObject {
             return this;
         }
 
-        public RequestObject.Builder addMessageRequestObject(MessageRequestObject messageRequestObject) {
-            requestObject.messages.add(messageRequestObject);
+        public RequestObject.Builder messages(Collection<MessageRequestObject> messages) {
+            requestObject.messages = Collections.unmodifiableCollection(messages);
             return this;
         }
 

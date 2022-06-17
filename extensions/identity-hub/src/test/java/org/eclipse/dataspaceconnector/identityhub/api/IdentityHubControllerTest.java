@@ -125,13 +125,14 @@ public class IdentityHubControllerTest {
         return RequestObject.Builder.newInstance()
                 .requestId(REQUEST_ID)
                 .target(TARGET)
-                .addMessageRequestObject(MessageRequestObject.Builder.newInstance()
+                .messages(List.of(
+                        MessageRequestObject.Builder.newInstance()
                         .descriptor(Descriptor.Builder.newInstance()
                                 .method(method)
                                 .nonce(NONCE)
                                 .build())
                         .data(data)
-                        .build())
+                        .build()))
                 .build();
     }
 
