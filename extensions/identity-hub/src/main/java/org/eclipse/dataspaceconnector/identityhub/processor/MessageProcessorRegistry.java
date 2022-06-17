@@ -14,8 +14,6 @@
 
 package org.eclipse.dataspaceconnector.identityhub.processor;
 
-import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
-
 import java.util.HashMap;
 import java.util.Map;
 
