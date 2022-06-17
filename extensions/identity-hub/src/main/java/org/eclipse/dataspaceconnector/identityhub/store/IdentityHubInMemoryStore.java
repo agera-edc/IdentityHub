@@ -18,6 +18,7 @@ import org.eclipse.dataspaceconnector.common.concurrency.LockManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -26,17 +27,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class IdentityHubInMemoryStore<T> implements IdentityHubStore<T> {
 
-    private final LockManager lockManager = new LockManager(new ReentrantReadWriteLock());
-
-    private final Collection<T> hubObjects = new ArrayList<>();
+    private final Collection<T> hubObjects = Collections.synchronizedList(new ArrayList<>());
 
     @Override
     public Collection<T> getAll() {
-        return lockManager.readLock(() -> List.copyOf(hubObjects));
+        return List.copyOf(hubObjects);
     }
 
     @Override
     public void add(T hubObject) {
-        lockManager.writeLock(() -> hubObjects.add(hubObject));
+        hubObjects.add(hubObject);
     }
 }
