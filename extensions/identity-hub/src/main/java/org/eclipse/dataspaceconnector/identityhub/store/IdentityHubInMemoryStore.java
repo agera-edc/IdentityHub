@@ -21,18 +21,18 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * In memory store of Hub Objects.
  */
-public class IdentityHubInMemoryStore<T> implements IdentityHubStore<T> {
+public class IdentityHubInMemoryStore implements IdentityHubStore {
 
     // Using a Map because concurrent hashset does not exist
-    private final Map<T, Boolean> hubObjects = new ConcurrentHashMap<T, Boolean>();
+    private final Map<Object, Boolean> hubObjects = new ConcurrentHashMap<Object, Boolean>();
 
     @Override
-    public Collection<T> getAll() {
+    public Collection<Object> getAll() {
         return hubObjects.keySet();
     }
 
     @Override
-    public void add(T hubObject) {
+    public void add(Object hubObject) {
         hubObjects.put(hubObject, true);
     }
 }

@@ -27,7 +27,7 @@ public class IdentityHubInMemoryStoreTest {
 
     @Test
     void addAndReadVerifiableCredential() {
-        var store = new IdentityHubInMemoryStore<VerifiableCredential>();
+        var store = new IdentityHubInMemoryStore();
         var credential1 = VerifiableCredential.Builder.newInstance().id(FAKER.internet().uuid()).build();
         var credential2 = VerifiableCredential.Builder.newInstance().id(FAKER.internet().uuid()).build();
         store.add(credential1);

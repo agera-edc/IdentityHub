@@ -37,12 +37,12 @@ public class CollectionsWriteProcessorTest {
     private static final Faker FAKER = new Faker();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private IdentityHubStore<Object> identityHubStore;
+    private IdentityHubStore identityHubStore;
     private CollectionsWriteProcessor writeProcessor;
 
     @BeforeEach
     void setUp() {
-        identityHubStore = new IdentityHubInMemoryStore<>();
+        identityHubStore = new IdentityHubInMemoryStore();
         writeProcessor = new CollectionsWriteProcessor(identityHubStore, OBJECT_MAPPER);
     }
 

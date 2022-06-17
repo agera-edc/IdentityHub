@@ -28,10 +28,10 @@ import static org.eclipse.dataspaceconnector.identityhub.models.MessageResponseO
  */
 public class CollectionsWriteProcessor implements MessageProcessor {
 
-    private final IdentityHubStore<Object> identityHubStore;
+    private final IdentityHubStore identityHubStore;
     private final ObjectMapper objectMapper;
 
-    public CollectionsWriteProcessor(IdentityHubStore<Object> identityHubStore, ObjectMapper objectMapper) {
+    public CollectionsWriteProcessor(IdentityHubStore identityHubStore, ObjectMapper objectMapper) {
         this.identityHubStore = identityHubStore;
         this.objectMapper = objectMapper;
     }

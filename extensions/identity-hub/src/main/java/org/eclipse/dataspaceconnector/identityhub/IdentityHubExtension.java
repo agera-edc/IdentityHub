@@ -40,7 +40,7 @@ public class IdentityHubExtension implements ServiceExtension {
     private WebService webService;
 
     @Inject
-    private IdentityHubStore<Object> identityHubStore;
+    private IdentityHubStore identityHubStore;
 
     @Inject
     private TypeManager typeManager;
@@ -58,7 +58,7 @@ public class IdentityHubExtension implements ServiceExtension {
     }
 
     @Provider(isDefault = true)
-    public IdentityHubStore<Object> identityHubStore() {
-        return new IdentityHubInMemoryStore<>();
+    public IdentityHubStore identityHubStore() {
+        return new IdentityHubInMemoryStore();
     }
 }
