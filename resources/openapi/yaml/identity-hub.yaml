@@ -101,10 +101,10 @@ components:
           $ref: '#/components/schemas/Descriptor'
         data:
           type: array
-          description: Optional base64Url encoded string of the message���s data
+          description: Optional base64Url encoded string of the message data
           items:
             type: string
-            description: Optional base64Url encoded string of the message���s data
+            description: Optional base64Url encoded string of the message data
             format: byte
     RequestObject:
       type: object
