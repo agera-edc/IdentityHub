@@ -34,12 +34,12 @@ import static org.eclipse.dataspaceconnector.identityhub.models.WebNodeInterface
 
 /**
  * Identity Hub controller, exposing a <a href="https://identity.foundation/decentralized-web-node/spec">Decentralized Web Node</a> compatible endpoint.
- *
+ * <p>
  * See {@link WebNodeInterfaces} for a list of currently supported DWN interfaces.
  */
 @Tag(name = "IdentityHub")
-@Produces({"application/json"})
-@Consumes({"application/json"})
+@Produces({ "application/json" })
+@Consumes({ "application/json" })
 @Path("/identity-hub")
 public class IdentityHubController {
 
