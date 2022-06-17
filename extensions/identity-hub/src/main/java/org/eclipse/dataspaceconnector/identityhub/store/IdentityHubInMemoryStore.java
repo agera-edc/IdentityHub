@@ -14,13 +14,10 @@
 
 package org.eclipse.dataspaceconnector.identityhub.store;
 
-import org.eclipse.dataspaceconnector.common.concurrency.LockManager;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * In memory store of Hub Objects.
