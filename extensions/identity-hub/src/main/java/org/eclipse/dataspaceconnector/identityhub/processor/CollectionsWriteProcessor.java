@@ -38,12 +38,13 @@ public class CollectionsWriteProcessor implements MessageProcessor {
 
     @Override
     public MessageResponseObject process(byte[] data) {
+        Object hubObject;
         try {
-            var hubObject = objectMapper.readValue(data, Object.class);
-            identityHubStore.add(hubObject);
-            return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.OK).build();
+            hubObject = objectMapper.readValue(data, Object.class);
         } catch (IllegalArgumentException | IOException e) {
             return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.MALFORMED_MESSAGE).build();
         }
+        identityHubStore.add(hubObject);
+        return MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.OK).build();
     }
 }
