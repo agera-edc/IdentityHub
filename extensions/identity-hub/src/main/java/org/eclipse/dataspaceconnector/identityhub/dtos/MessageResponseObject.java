@@ -17,6 +17,7 @@ package org.eclipse.dataspaceconnector.identityhub.dtos;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +50,9 @@ public class MessageResponseObject {
         return status;
     }
 
+    /**
+     * @return Resulting message entries returned from the invocation of the corresponding message as free form objects
+     */
     public Collection<?> getEntries() {
         return entries;
     }
@@ -82,7 +86,6 @@ public class MessageResponseObject {
         }
 
         public MessageResponseObject build() {
-            // TODO: Validate that messageId is a stringified Version 1 CID of the associated message.
             Objects.requireNonNull(messageResponseObject.messageId, "MessageResponseObject must contain messageId property.");
             Objects.requireNonNull(messageResponseObject.status, "MessageResponseObject must contain status property.");
             return messageResponseObject;
