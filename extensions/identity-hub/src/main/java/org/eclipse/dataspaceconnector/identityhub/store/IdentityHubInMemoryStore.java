@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class IdentityHubInMemoryStore implements IdentityHubStore {
 
     // Using a Map because concurrent hashset does not exist
-    private final Map<Object, Boolean> hubObjects = new ConcurrentHashMap<Object, Boolean>();
+    private final Map<Object, Boolean> hubObjects = new ConcurrentHashMap<>();
 
     @Override
     public Collection<Object> getAll() {
