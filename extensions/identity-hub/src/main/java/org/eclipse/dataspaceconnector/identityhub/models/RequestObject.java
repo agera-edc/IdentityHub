@@ -44,7 +44,7 @@ public class RequestObject {
     }
 
     public Collection<MessageRequestObject> getMessages() {
-        return Collections.unmodifiableCollection(messages);
+        return messages;
     }
 
     @JsonPOJOBuilder(withPrefix = "")

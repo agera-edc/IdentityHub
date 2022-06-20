@@ -15,6 +15,7 @@
 package org.eclipse.dataspaceconnector.identityhub.store;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +29,7 @@ public class IdentityHubInMemoryStore implements IdentityHubStore {
 
     @Override
     public Collection<Object> getAll() {
-        return hubObjects.keySet();
+        return new HashSet<>(hubObjects.keySet());
     }
 
     @Override

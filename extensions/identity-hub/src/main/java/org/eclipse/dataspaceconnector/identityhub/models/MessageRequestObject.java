@@ -64,7 +64,7 @@ public class MessageRequestObject {
         }
 
         public MessageRequestObject.Builder data(byte[] data) {
-            messageRequestObject.data = data;
+            messageRequestObject.data = data.clone();
             return this;
         }
 
