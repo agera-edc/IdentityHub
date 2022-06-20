@@ -25,9 +25,9 @@ val faker: String by project
 
 dependencies {
     implementation("${edcGroup}:core:${edcVersion}")
-    implementation("${edcGroup}:http:${edcVersion}")
     implementation(project(":extensions:identity-hub-store-spi"))
 
+    testImplementation("${edcGroup}:http:${edcVersion}")
     testImplementation("${edcGroup}:common-util:${edcVersion}")
     implementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
     testImplementation(project(":rest-client"))
