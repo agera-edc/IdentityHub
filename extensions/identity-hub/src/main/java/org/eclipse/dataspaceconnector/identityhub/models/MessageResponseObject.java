@@ -36,7 +36,7 @@ public class MessageResponseObject {
 
     private String messageId;
     private MessageStatus status;
-    private Collection<?> entries = new ArrayList<>();
+    private Collection<Object> entries = new ArrayList<>();
 
     private MessageResponseObject() {
     }
@@ -51,7 +51,7 @@ public class MessageResponseObject {
     }
 
     @Schema(description = "Resulting message entries returned from the invocation of the corresponding message as free form objects")
-    public Collection<?> getEntries() {
+    public Collection<Object> getEntries() {
         return entries;
     }
 
@@ -78,7 +78,7 @@ public class MessageResponseObject {
             return this;
         }
 
-        public Builder entries(Collection<?> entries) {
+        public Builder entries(Collection<Object> entries) {
             messageResponseObject.entries = Collections.unmodifiableCollection(entries);
             return this;
         }
