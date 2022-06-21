@@ -35,7 +35,7 @@ public class CollectionsQueryProcessor implements MessageProcessor {
 
     @Override
     public MessageResponseObject process(byte[] data) {
-        Collection<Object> entries = identityHubStore.getAll();
+        Collection<?> entries = identityHubStore.getAll();
         return MessageResponseObject.Builder.newInstance()
                 .messageId(MESSAGE_ID_VALUE)
                 .status(MessageStatus.OK)
