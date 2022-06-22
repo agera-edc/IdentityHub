@@ -11,12 +11,3 @@ To re-generate the YAML file, invoke
 ```shell
 ./gradlew clean resolve
 ```
-
-## Generate REST client
-
-A REST client module is generated from the `yaml` file in the `extensions/identity-hub-client` directory.
-
-To re-generate the client module, invoke
-```shell
-./gradlew extensions:identity-hub-client:clean extensions:identity-hub-client:build
-```

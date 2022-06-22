@@ -12,35 +12,13 @@
  *
  */
 
-// REST client using OpenAPI Generator. See:
-// https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
-// https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md
-
 plugins {
     java
     id("org.openapi.generator") version "5.4.0"
 }
 
-// Configure OpenAPI Generator
-tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class.java) {
-    generatorName.value("java")
-    inputSpec.value(file("$rootDir/resources/openapi/yaml/identity-hub.yaml").absolutePath)
-    validateSpec.value(false)
-    configOptions.set(
-        mapOf(
-            "library" to "native",
-            "dateLibrary" to "legacy",
-            "useRuntimeException" to "true",
-            "invokerPackage" to "org.eclipse.dataspaceconnector.identityhub.client",
-            "apiPackage" to "org.eclipse.dataspaceconnector.identityhub.client.api",
-            "modelPackage" to "org.eclipse.dataspaceconnector.identityhub.client.models",
-        )
-    )
-}
-
 // Ensure compileJava depends on openApiGenerate
 val compileJava: JavaCompile by tasks
-val openApiGenerate: org.openapitools.generator.gradle.plugin.tasks.GenerateTask by tasks
 
 compileJava.apply {
     dependsOn(openApiGenerate)
