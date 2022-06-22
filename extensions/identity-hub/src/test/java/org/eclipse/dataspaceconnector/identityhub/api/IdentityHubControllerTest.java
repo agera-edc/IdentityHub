@@ -127,12 +127,12 @@ public class IdentityHubControllerTest {
                 .target(TARGET)
                 .messages(List.of(
                         MessageRequestObject.Builder.newInstance()
-                        .descriptor(Descriptor.Builder.newInstance()
-                                .method(method)
-                                .nonce(NONCE)
-                                .build())
-                        .data(data)
-                        .build()))
+                                .descriptor(Descriptor.Builder.newInstance()
+                                        .method(method)
+                                        .nonce(NONCE)
+                                        .build())
+                                .data(data)
+                                .build()))
                 .build();
     }
 
@@ -141,7 +141,7 @@ public class IdentityHubControllerTest {
         baseRequest()
                 .body(createRequestObject(COLLECTIONS_WRITE.getName(), data))
                 .post()
-            .then()
+                .then()
                 .statusCode(200)
                 .body("requestId", equalTo(REQUEST_ID))
                 .body("replies", hasSize(1))
@@ -153,7 +153,7 @@ public class IdentityHubControllerTest {
         return baseRequest()
                 .body(createRequestObject(COLLECTIONS_QUERY.getName()))
                 .post()
-            .then()
+                .then()
                 .statusCode(200)
                 .body("requestId", equalTo(REQUEST_ID))
                 .body("replies", hasSize(1))
