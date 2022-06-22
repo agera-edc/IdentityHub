@@ -17,13 +17,6 @@ plugins {
     id("org.openapi.generator") version "5.4.0"
 }
 
-// Ensure compileJava depends on openApiGenerate
-val compileJava: JavaCompile by tasks
-
-compileJava.apply {
-    dependsOn(openApiGenerate)
-}
-
 // Add generated sources
 sourceSets {
     main {
