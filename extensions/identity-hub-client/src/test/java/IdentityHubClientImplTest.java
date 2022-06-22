@@ -53,5 +53,4 @@ public class IdentityHubClientImplTest {
 
         assertThat(verifiableCredentials).usingRecursiveFieldByFieldElementComparator().containsExactly(credential);
     }
-
 }
