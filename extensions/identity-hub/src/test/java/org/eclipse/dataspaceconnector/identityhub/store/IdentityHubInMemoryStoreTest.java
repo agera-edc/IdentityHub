@@ -27,11 +27,16 @@ public class IdentityHubInMemoryStoreTest {
 
     @Test
     void addAndReadVerifiableCredential() {
-        var store = new IdentityHubInMemoryStore<SampleObject>();
+        // Arrange
+        var store = new IdentityHubInMemoryStore();
         var sampleObject1 = new SampleObject(FAKER.internet().uuid());
         var sampleObject2 = new SampleObject(FAKER.internet().uuid());
+
+        // Act
         store.add(sampleObject1);
         store.add(sampleObject2);
+
+        // Assert
         assertThat(store.getAll()).usingRecursiveFieldByFieldElementComparator().containsAll(List.of(sampleObject1, sampleObject2));
     }
 

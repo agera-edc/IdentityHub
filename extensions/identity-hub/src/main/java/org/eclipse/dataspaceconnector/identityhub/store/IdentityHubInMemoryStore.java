@@ -14,28 +14,26 @@
 
 package org.eclipse.dataspaceconnector.identityhub.store;
 
-import org.eclipse.dataspaceconnector.common.concurrency.LockManager;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * In memory store of Hub Objects.
  */
-public class IdentityHubInMemoryStore<T> implements IdentityHubStore<T> {
+public class IdentityHubInMemoryStore implements IdentityHubStore {
 
-    private final Collection<T> hubObjects = Collections.synchronizedList(new ArrayList<>());
+    // Using a Map because concurrent hashset does not exist
+    private final Map<Object, Boolean> hubObjects = new ConcurrentHashMap<>();
 
     @Override
-    public Collection<T> getAll() {
-        return List.copyOf(hubObjects);
+    public Collection<Object> getAll() {
+        return new HashSet<>(hubObjects.keySet());
     }
 
     @Override
-    public void add(T hubObject) {
-        hubObjects.add(hubObject);
+    public void add(Object hubObject) {
+        hubObjects.put(hubObject, true);
     }
 }

@@ -14,6 +14,8 @@
 
 package org.eclipse.dataspaceconnector.identityhub.models;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.stream.Stream;
 
 /**
@@ -32,6 +34,7 @@ public enum WebNodeInterfaceMethod {
         this.name = name;
     }
 
+    @NotNull
     public static WebNodeInterfaceMethod fromName(String name) {
         return Stream.of(values())
                 .filter(v -> v.name.equals(name))

@@ -19,7 +19,6 @@ import org.eclipse.dataspaceconnector.identityhub.models.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import static org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject.MESSAGE_ID_VALUE;
 
@@ -28,9 +27,9 @@ import static org.eclipse.dataspaceconnector.identityhub.models.MessageResponseO
  */
 public class CollectionsQueryProcessor implements MessageProcessor {
 
-    private final IdentityHubStore<?> identityHubStore;
+    private final IdentityHubStore identityHubStore;
 
-    public CollectionsQueryProcessor(IdentityHubStore<?> identityHubStore) {
+    public CollectionsQueryProcessor(IdentityHubStore identityHubStore) {
         this.identityHubStore = identityHubStore;
     }
 
