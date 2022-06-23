@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.eclipse.dataspaceconnector.identityhub.client.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.identityhub.models.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;
@@ -15,7 +16,6 @@ import org.eclipse.dataspaceconnector.identityhub.models.ResponseObject;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;

@@ -12,12 +12,16 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.identityhub.client;
+package org.eclipse.dataspaceconnector.identityhub.client.credentials;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -33,6 +37,16 @@ import java.util.Objects;
 public class VerifiableCredential {
 
     private String id;
+
+    private URL issuer;
+
+    private Map<String, Object> credentialSubject;
+
+    private Proof proof;
+
+    private LocalDateTime issuanceDate;
+
+    // TODO: Add @context, type when needed
 
     private VerifiableCredential() {
     }
@@ -59,8 +73,31 @@ public class VerifiableCredential {
             return this;
         }
 
+        public Builder issuer(URL issuer) {
+            verifiableCredential.issuer = issuer;
+            return this;
+        }
+
+        public Builder credentialSubject(Map<String, Object> credentialSubject) {
+            verifiableCredential.credentialSubject = credentialSubject;
+            return this;
+        }
+
+        public Builder proof(Proof proof) {
+            verifiableCredential.proof = proof;
+            return this;
+        }
+
+        public Builder issuanceDate(LocalDateTime issuanceDate) {
+            verifiableCredential.issuanceDate = issuanceDate;
+            return this;
+        }
+
         public VerifiableCredential build() {
             Objects.requireNonNull(verifiableCredential.id, "VerifiableCredential must contain id property.");
+            Objects.requireNonNull(verifiableCredential.issuer, "VerifiableCredential must contain issuer property.");
+            Objects.requireNonNull(verifiableCredential.credentialSubject, "VerifiableCredential must contain issuer credentialSubject property.");
+            Objects.requireNonNull(verifiableCredential.proof, "VerifiableCredential must contain proof property.");
             return verifiableCredential;
         }
     }

@@ -18,13 +18,17 @@ import okhttp3.OkHttpClient;
 import org.eclipse.dataspaceconnector.common.testfixtures.TestUtils;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
-import org.eclipse.dataspaceconnector.identityhub.client.VerifiableCredential;
+import org.eclipse.dataspaceconnector.identityhub.client.credentials.Proof;
+import org.eclipse.dataspaceconnector.identityhub.client.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.junit.launcher.EdcExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,6 +38,8 @@ public class IdentityHubClientImplTest {
     private static final String API_URL = "http://localhost:8181/api/identity-hub";
     private static final Faker FAKER = new Faker();
     private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
+    private static final String ISSUER = String.format("https://%s", FAKER.internet().url());
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static IdentityHubClient client;
@@ -45,8 +51,14 @@ public class IdentityHubClientImplTest {
     }
 
     @Test
-    void pushAndQueryVerifiableCredentials() {
-        VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+    void pushAndQueryVerifiableCredentials() throws MalformedURLException {
+
+        VerifiableCredential credential = VerifiableCredential.Builder.newInstance()
+                .id(VERIFIABLE_CREDENTIAL_ID)
+                .issuer(new URL(ISSUER))
+                .credentialSubject(Map.of())
+                .proof(new Proof())
+                .build();
 
         client.pushVerifiableCredential(API_URL, credential);
         Collection<VerifiableCredential> verifiableCredentials = client.getVerifiableCredentials(API_URL);
