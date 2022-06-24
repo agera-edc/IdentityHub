@@ -26,18 +26,13 @@ val faker: String by project
 dependencies {
     api(project(":identity-hub-spi"))
     implementation(project(":extensions:identity-hub-store-spi"))
-    implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
-    implementation("${edcGroup}:common-util:${edcVersion}")
 
-    testImplementation("${edcGroup}:http:${edcVersion}")
-    testImplementation("${edcGroup}:common-util:${edcVersion}")
-    implementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
-    testImplementation("${edcGroup}:junit-extension:${edcVersion}:test-fixtures")
     testImplementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
+    testImplementation("${edcGroup}:junit-extension:${edcVersion}:test-fixtures")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("io.rest-assured:rest-assured:${restAssured}")
     testImplementation("com.github.javafaker:javafaker:${faker}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
 }

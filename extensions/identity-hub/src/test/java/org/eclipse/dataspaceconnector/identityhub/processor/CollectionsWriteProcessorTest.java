@@ -17,7 +17,6 @@ package org.eclipse.dataspaceconnector.identityhub.processor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import org.bouncycastle.util.encoders.Base64;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
@@ -27,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,7 +68,7 @@ public class CollectionsWriteProcessorTest {
     void writeCredentialsWithWrongJsonFormat() {
         // Arrange
         var malformedJson = "{";
-        byte[] data = Base64.encode(malformedJson.getBytes(StandardCharsets.UTF_8));
+        byte[] data = Base64.getEncoder().encode(malformedJson.getBytes(StandardCharsets.UTF_8));
         var expectedResult = MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.MALFORMED_MESSAGE).build();
 
         // Act
