@@ -76,7 +76,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public void pushVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) {
+    public void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) {
         try {
             var payload = objectMapper.writeValueAsString(verifiableCredential);
             httpClient.newCall(

@@ -48,7 +48,7 @@ public class IdentityHubClientImplTest {
     void pushAndQueryVerifiableCredentials() {
         VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
 
-        client.pushVerifiableCredential(API_URL, credential);
+        client.addVerifiableCredential(API_URL, credential);
         Collection<VerifiableCredential> verifiableCredentials = client.getVerifiableCredentials(API_URL);
 
         assertThat(verifiableCredentials).usingRecursiveFieldByFieldElementComparator().containsExactly(credential);

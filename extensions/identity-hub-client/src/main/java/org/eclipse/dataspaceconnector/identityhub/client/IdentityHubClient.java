@@ -20,6 +20,6 @@ public interface IdentityHubClient {
 
     Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl);
 
-    void pushVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential);
+    void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential);
 
 }
