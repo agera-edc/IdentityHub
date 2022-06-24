@@ -89,4 +89,18 @@ public class CollectionsWriteProcessorTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult);
         assertThat(identityHubStore.getAll()).isEmpty();
     }
+
+    @Test
+    void writeNonSupportedCredential() {
+        // Arrange
+        byte[] data = "{ \"invalid\": \"cred\"}".getBytes(StandardCharsets.UTF_8);
+        var expectedResult = MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE).status(MessageStatus.MALFORMED_MESSAGE).build();
+
+        // Act
+        var result = writeProcessor.process(data);
+
+        // Assert
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult);
+        assertThat(identityHubStore.getAll()).isEmpty();
+    }
 }
