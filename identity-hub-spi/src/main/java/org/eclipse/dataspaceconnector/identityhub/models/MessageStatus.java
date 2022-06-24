@@ -58,8 +58,8 @@ public class MessageStatus extends Status {
         }
 
         public MessageStatus build() {
-            Objects.requireNonNull(code, "must contain code property.");
-            Objects.requireNonNull(detail, "must contain detail property.");
+            Objects.requireNonNull(code, "MessageStatus must contain code property.");
+            Objects.requireNonNull(detail, "MessageStatus must contain detail property.");
             return new MessageStatus(code, detail);
         }
     }
