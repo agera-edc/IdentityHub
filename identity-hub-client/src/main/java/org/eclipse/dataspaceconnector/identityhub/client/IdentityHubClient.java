@@ -16,12 +16,13 @@ package org.eclipse.dataspaceconnector.identityhub.client;
 
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public interface IdentityHubClient {
 
-    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl);
+    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException;
 
-    void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential);
+    void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws IOException;
 
 }

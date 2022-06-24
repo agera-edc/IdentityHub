@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +46,7 @@ public class IdentityHubClientImplTest {
     }
 
     @Test
-    void pushAndQueryVerifiableCredentials() {
+    void pushAndQueryVerifiableCredentials() throws IOException {
         VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
 
         client.addVerifiableCredential(API_URL, credential);

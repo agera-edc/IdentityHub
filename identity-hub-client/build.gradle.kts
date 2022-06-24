@@ -39,7 +39,6 @@ val faker: String by project
 val assertj: String by project
 
 dependencies {
-    implementation("${edcGroup}:core:${edcVersion}")
     implementation(project(":extensions:identity-hub"))
     implementation(project(":extensions:identity-hub-store-spi"))
     implementation("io.swagger:swagger-annotations:1.5.22")

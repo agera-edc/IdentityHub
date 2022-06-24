@@ -27,7 +27,6 @@ import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;
 import org.eclipse.dataspaceconnector.identityhub.models.ResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
-import org.eclipse.dataspaceconnector.spi.EdcException;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -50,52 +49,43 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) {
+    public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException {
         ResponseObject responseObject;
-        try {
-            Response response = httpClient.newCall(
+        Response response = httpClient.newCall(
                         new Request.Builder()
                                 .url(hubBaseUrl)
                                 .post(buildRequestBody(COLLECTIONS_QUERY.getName()))
                                 .build())
                 .execute();
 
-            responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
-
-        } catch (IOException e) {
-            throw new EdcException(e);
-        }
+        responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
 
         Collection<VerifiableCredential> entries = responseObject.getReplies().stream()
                 .findFirst()
-                .orElseThrow(() -> new EdcException("Invalid response"))
+                .orElseThrow(() -> new RuntimeException("Invalid response"))
                 .getEntries().stream()
-                    .map(e -> objectMapper.convertValue(e, VerifiableCredential.class)).collect(Collectors.toList());
+                .map(e -> objectMapper.convertValue(e, VerifiableCredential.class)).collect(Collectors.toList());
 
         return entries;
     }
 
     @Override
-    public void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) {
-        try {
-            var payload = objectMapper.writeValueAsString(verifiableCredential);
-            httpClient.newCall(
-                            new Request.Builder()
-                                    .url(hubBaseUrl)
-                                    .post(buildRequestBody(COLLECTIONS_WRITE.getName(), payload.getBytes(UTF_8)))
-                                    .build())
-                    .execute();
-        } catch (IOException e) {
-            throw new EdcException(e);
-        }
+    public void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws IOException {
+        var payload = objectMapper.writeValueAsString(verifiableCredential);
+        httpClient.newCall(
+                        new Request.Builder()
+                                .url(hubBaseUrl)
+                                .post(buildRequestBody(COLLECTIONS_WRITE.getName(), payload.getBytes(UTF_8)))
+                                .build())
+                .execute();
     }
 
-    private RequestBody buildRequestBody(String method) {
+    private RequestBody buildRequestBody(String method) throws JsonProcessingException {
         return buildRequestBody(method, null);
     }
 
-    private RequestBody buildRequestBody(String method, byte[] data) {
-        String requestId = UUID.randomUUID().toString();
+    private RequestBody buildRequestBody(String method, byte[] data) throws JsonProcessingException {
+        var requestId = UUID.randomUUID().toString();
         RequestObject requestObject = RequestObject.Builder.newInstance()
                 .requestId(requestId)
                 .target("target")
@@ -108,11 +98,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
                         .build())
                 )
                 .build();
-        try {
-            var payload = objectMapper.writeValueAsString(requestObject);
-            return RequestBody.create(payload, okhttp3.MediaType.get(MediaType.APPLICATION_JSON));
-        } catch (JsonProcessingException e) {
-            throw new EdcException(e);
-        }
+        var payload = objectMapper.writeValueAsString(requestObject);
+        return RequestBody.create(payload, okhttp3.MediaType.get(MediaType.APPLICATION_JSON));
     }
 }
