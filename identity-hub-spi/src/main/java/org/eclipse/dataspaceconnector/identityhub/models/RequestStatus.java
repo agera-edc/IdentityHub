@@ -24,7 +24,7 @@ import java.util.Objects;
  * See <a href="https://identity.foundation/decentralized-web-node/spec/#response-objects">response objects documentation</a>
  * and <a href="https://identity.foundation/decentralized-web-node/spec/#request-level-status-coding">status doc</a>.
  */
-@JsonDeserialize(builder = MessageStatus.Builder.class)
+@JsonDeserialize(builder = RequestStatus.Builder.class)
 public class RequestStatus extends Status {
     public static final RequestStatus OK = new RequestStatus(200, "The request was successfully processed");
     public static final RequestStatus DID_NOT_FOUND = new RequestStatus(404, "Target DID not found within the Decentralized Web Node");
