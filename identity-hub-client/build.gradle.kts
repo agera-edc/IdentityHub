@@ -38,7 +38,7 @@ val assertj: String by project
 
 dependencies {
     implementation(project(":extensions:identity-hub"))
-    implementation(project(":extensions:identity-hub-store-spi"))
+    implementation(project(":spi:identity-hub-store-spi"))
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
 
