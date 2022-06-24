@@ -24,6 +24,7 @@ val restAssured: String by project
 val faker: String by project
 
 dependencies {
+    api(project(":identity-hub-spi"))
     implementation(project(":extensions:identity-hub-store-spi"))
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
