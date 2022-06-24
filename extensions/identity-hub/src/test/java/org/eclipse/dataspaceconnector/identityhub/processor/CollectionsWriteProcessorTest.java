@@ -48,7 +48,7 @@ public class CollectionsWriteProcessorTest {
     }
 
     @Test
-    void writeCredentials() throws JsonProcessingException {
+    void writeCredentials() throws Exception {
         // Arrange
         var CREDENTIAL_ID = FAKER.internet().uuid();
         var verifiableCredentialMap = Map.of("id", CREDENTIAL_ID);
