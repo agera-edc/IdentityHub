@@ -26,10 +26,10 @@ import org.eclipse.dataspaceconnector.identityhub.models.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;
 import org.eclipse.dataspaceconnector.identityhub.models.ResponseObject;
+import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
