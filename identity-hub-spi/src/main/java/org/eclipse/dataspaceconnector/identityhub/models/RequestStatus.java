@@ -29,7 +29,7 @@ public class RequestStatus extends Status {
     public static final RequestStatus DID_NOT_FOUND = new RequestStatus(404, "Target DID not found within the Decentralized Web Node");
     public static final RequestStatus ERROR = new RequestStatus(500, "The request could not be processed correctly");
 
-    private RequestStatus(Integer code, String detail) {
+    private RequestStatus(int code, String detail) {
         super(code, detail);
     }
 
@@ -38,7 +38,7 @@ public class RequestStatus extends Status {
         private RequestStatus requestStatus;
 
         private Builder() {
-            requestStatus = new RequestStatus(null, null);
+            requestStatus = new RequestStatus(-1, null);
         }
 
         public static Builder newInstance() {
@@ -56,8 +56,8 @@ public class RequestStatus extends Status {
         }
 
         public RequestStatus build() {
-            Objects.requireNonNull(requestStatus.detail, "RequestStatus must contain detail property");
-            Objects.requireNonNull(requestStatus.code, "RequestStatus must contain code property");
+            Objects.requireNonNull(requestStatus.detail);
+            if (requestStatus.code == -1) throw new IllegalStateException("code should be set");
             return requestStatus;
         }
     }
