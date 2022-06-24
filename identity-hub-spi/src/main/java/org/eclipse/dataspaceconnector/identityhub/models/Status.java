@@ -20,8 +20,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Describes status of the request done by calling the identity-hub endpoint.
  */
 abstract class Status {
-    protected int code;
-    protected String detail;
+    private final int code;
+    private final String detail;
 
     Status(int code, String detail) {
         this.code = code;

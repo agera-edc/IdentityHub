@@ -14,51 +14,18 @@
 
 package org.eclipse.dataspaceconnector.identityhub.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * See <a href="https://identity.foundation/decentralized-web-node/spec/#response-objects">response objects documentation</a>
  * and <a href="https://identity.foundation/decentralized-web-node/spec/#request-level-status-coding">status doc</a>.
  */
-@JsonDeserialize(builder = RequestStatus.Builder.class)
 public class RequestStatus extends Status {
     public static final RequestStatus OK = new RequestStatus(200, "The request was successfully processed");
     public static final RequestStatus DID_NOT_FOUND = new RequestStatus(404, "Target DID not found within the Decentralized Web Node");
     public static final RequestStatus ERROR = new RequestStatus(500, "The request could not be processed correctly");
 
-    private RequestStatus(int code, String detail) {
+    private RequestStatus(@JsonProperty("code") int code, @JsonProperty("detail") String detail) {
         super(code, detail);
-    }
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public static final class Builder {
-        private RequestStatus requestStatus;
-
-        private Builder() {
-            requestStatus = new RequestStatus(-1, null);
-        }
-
-        public static Builder newInstance() {
-            return new Builder();
-        }
-
-        public Builder code(int code) {
-            this.requestStatus.code = code;
-            return this;
-        }
-
-        public Builder detail(String detail) {
-            this.requestStatus.detail = detail;
-            return this;
-        }
-
-        public RequestStatus build() {
-            Objects.requireNonNull(requestStatus.detail);
-            if (requestStatus.code == -1) throw new IllegalStateException("code should be set");
-            return requestStatus;
-        }
     }
 }
