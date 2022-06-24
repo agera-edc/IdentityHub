@@ -17,7 +17,6 @@ package org.eclipse.dataspaceconnector.identityhub.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.ws.rs.core.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -99,6 +98,6 @@ public class IdentityHubClientImpl implements IdentityHubClient {
                 )
                 .build();
         var payload = objectMapper.writeValueAsString(requestObject);
-        return RequestBody.create(payload, okhttp3.MediaType.get(MediaType.APPLICATION_JSON));
+        return RequestBody.create(payload, okhttp3.MediaType.get("application/json"));
     }
 }
