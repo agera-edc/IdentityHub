@@ -79,8 +79,12 @@ public class IdentityHubClientImpl implements IdentityHubClient {
                 .execute();
     }
 
-    private RequestBody buildRequestBody(String method) throws JsonProcessingException {
-        return buildRequestBody(method, null);
+    private RequestBody buildRequestBody(String method) {
+        try {
+            return buildRequestBody(method, null);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private RequestBody buildRequestBody(String method, byte[] data) throws JsonProcessingException {
