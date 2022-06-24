@@ -46,7 +46,7 @@ public class IdentityHubClientImplTest {
     }
 
     @Test
-    void pushAndQueryVerifiableCredentials() throws IOException {
+    void addAndQueryVerifiableCredentials() throws Exception {
         VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
 
         client.addVerifiableCredential(API_URL, credential);
