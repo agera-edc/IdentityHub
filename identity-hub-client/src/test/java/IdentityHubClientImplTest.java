@@ -61,7 +61,7 @@ public class IdentityHubClientImplTest {
     }
 
     @Test
-    void getVerifiableCredentialsServerError() throws IOException {
+    void getVerifiableCredentialsServerError() {
 
         Interceptor interceptor = chain -> {
             Request request = chain.request();
@@ -82,7 +82,7 @@ public class IdentityHubClientImplTest {
     }
 
     @Test
-    void getVerifiableCredentialsDeserializationError() throws IOException {
+    void getVerifiableCredentialsDeserializationError() {
         Interceptor interceptor = chain -> {
             Request request = chain.request();
             var body = ResponseBody.create("{}", MediaType.get("application/json"));
