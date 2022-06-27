@@ -27,9 +27,7 @@ import static org.eclipse.dataspaceconnector.identityhub.models.MessageResponseO
 public class IdentityHubClientImplTest {
     private static final String HUB_URL = "https://dummy/";
     private static final Faker FAKER = new Faker();
-
     private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Test
