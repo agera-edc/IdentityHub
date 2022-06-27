@@ -28,6 +28,7 @@ import org.eclipse.dataspaceconnector.identityhub.models.ResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 
 import java.io.IOException;
+import java.rmi.ServerException;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -56,6 +57,8 @@ public class IdentityHubClientImpl implements IdentityHubClient {
                                 .post(buildRequestBody(COLLECTIONS_QUERY.getName()))
                                 .build())
                 .execute();
+
+        if (response.code() != 200) throw new ServerException("Server error");
 
         responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
 
