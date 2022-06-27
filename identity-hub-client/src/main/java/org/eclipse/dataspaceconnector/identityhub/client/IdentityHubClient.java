@@ -19,10 +19,26 @@ import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableC
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ * IdentityHub Client
+ * This client is used to call the IdentityHub endpoints in order query and write VerifiableCredentials.
+ */
 public interface IdentityHubClient {
 
+    /**
+     * Get VerifiableCredentials provided by an Identity Hub instance.
+     * @param hubBaseUrl Base URL of the IdentityHub instance
+     * @return VerifiableCredentials
+     * @throws IOException
+     */
     Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException;
 
+    /**
+     * Write a VerifiableCredential.
+     * @param hubBaseUrl Base URL of the IdentityHub instance
+     * @param verifiableCredential
+     * @throws IOException
+     */
     void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws IOException;
 
 }
