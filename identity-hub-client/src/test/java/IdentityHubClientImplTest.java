@@ -39,7 +39,7 @@ public class IdentityHubClientImplTest {
             var replies = MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE)
                     .status(MessageStatus.OK).entries(List.of(credential)).build();
             var responseObject = ResponseObject.Builder.newInstance()
-                    .requestId("id")
+                    .requestId(FAKER.internet().uuid())
                     .status(RequestStatus.OK)
                     .replies(List.of(replies))
                     .build();
