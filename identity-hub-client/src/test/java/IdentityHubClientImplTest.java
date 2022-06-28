@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.github.javafaker.Faker;
@@ -98,7 +99,7 @@ public class IdentityHubClientImplTest {
         };
 
         var client = createClient(interceptor);
-        assertThatThrownBy(() -> client.getVerifiableCredentials(HUB_URL)).isInstanceOf(ValueInstantiationException.class);
+        assertThatThrownBy(() -> client.getVerifiableCredentials(HUB_URL)).isInstanceOf(DatabindException.class);
     }
 
     private IdentityHubClientImpl createClient(Interceptor interceptor) {
