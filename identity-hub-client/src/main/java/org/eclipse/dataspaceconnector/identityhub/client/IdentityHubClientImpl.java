@@ -48,7 +48,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException {
+    public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException, ApiException {
         ResponseObject responseObject;
         Response response = httpClient.newCall(
                         new Request.Builder()

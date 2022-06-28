@@ -30,8 +30,9 @@ public interface IdentityHubClient {
      * @param hubBaseUrl Base URL of the IdentityHub instance
      * @return VerifiableCredentials
      * @throws IOException
+     * @throws ApiException
      */
-    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException;
+    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException, ApiException;
 
     /**
      * Write a VerifiableCredential.
