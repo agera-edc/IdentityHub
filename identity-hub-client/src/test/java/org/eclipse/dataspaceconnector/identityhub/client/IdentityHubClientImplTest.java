@@ -39,8 +39,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject.MESSAGE_ID_VALUE;
 
 public class IdentityHubClientImplTest {
-    private static final String HUB_URL = "https://dummy/";
     private static final Faker FAKER = new Faker();
+    private static final String HUB_URL = String.format("https://%s", FAKER.internet().url());
     private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
