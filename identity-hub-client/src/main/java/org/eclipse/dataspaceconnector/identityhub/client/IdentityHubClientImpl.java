@@ -50,18 +50,19 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     @Override
     public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException, ApiException {
         ResponseObject responseObject;
-        Response response = httpClient.newCall(
+        try (Response response = httpClient.newCall(
                         new Request.Builder()
                                 .url(hubBaseUrl)
                                 .post(buildRequestBody(COLLECTIONS_QUERY.getName()))
                                 .build())
-                .execute();
+                .execute()) {
 
-        if (response.code() != 200) {
-            throw new ApiException("IdentityHub server error", response.code(), response.headers(), response.body());
+            if (response.code() != 200) {
+                throw new ApiException("IdentityHub server error", response.code(), response.headers(), response.body());
+            }
+
+            responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
         }
-
-        responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
 
         Collection<VerifiableCredential> entries = responseObject.getReplies().stream()
                 .findFirst()
