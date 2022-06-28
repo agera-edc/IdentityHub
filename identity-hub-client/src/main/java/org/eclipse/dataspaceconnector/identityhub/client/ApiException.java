@@ -32,6 +32,10 @@ public class ApiException extends RuntimeException {
         this.responseBody = responseBody;
     }
 
+    public ApiException(String message) {
+        super(message);
+    }
+
     public int getCode() {
         return code;
     }

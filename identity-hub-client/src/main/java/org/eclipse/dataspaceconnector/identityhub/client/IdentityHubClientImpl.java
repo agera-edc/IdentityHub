@@ -65,7 +65,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
 
         Collection<VerifiableCredential> entries = responseObject.getReplies().stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Invalid response, no replies provided"))
+                .orElseThrow(() -> new ApiException("Invalid response, no replies provided by IdentityHub."))
                 .getEntries().stream()
                 .map(e -> objectMapper.convertValue(e, VerifiableCredential.class))
                 .collect(Collectors.toList());
