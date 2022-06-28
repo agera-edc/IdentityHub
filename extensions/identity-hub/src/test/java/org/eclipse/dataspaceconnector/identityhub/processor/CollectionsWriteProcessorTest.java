@@ -52,7 +52,7 @@ public class CollectionsWriteProcessorTest {
         // Arrange
         var CREDENTIAL_ID = FAKER.internet().uuid();
         var verifiableCredentialMap = Map.of("id", CREDENTIAL_ID);
-        byte[] data = OBJECT_MAPPER.writeValueAsString(verifiableCredentialMap).getBytes(StandardCharsets.UTF_8);
+        var data = OBJECT_MAPPER.writeValueAsString(verifiableCredentialMap).getBytes(StandardCharsets.UTF_8);
 
         // Act
         var result = writeProcessor.process(data);
