@@ -20,6 +20,7 @@ import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableC
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,8 +33,9 @@ public class IdentityHubInMemoryStoreTest {
         // Arrange
         var store = new IdentityHubInMemoryStore();
         var credentialsCount = FAKER.number().numberBetween(1, 10);
-        var credentials = Stream.generate(() -> VerifiableCredential.Builder.newInstance().id(FAKER.internet().uuid()).build())
-                .limit(credentialsCount).collect(Collectors.toList());
+        var credentials = IntStream.range(0, credentialsCount)
+                .mapToObj(i -> VerifiableCredential.Builder.newInstance().id(FAKER.internet().uuid()).build())
+                .collect(Collectors.toList());
 
         // Act
         credentials.forEach(store::add);
