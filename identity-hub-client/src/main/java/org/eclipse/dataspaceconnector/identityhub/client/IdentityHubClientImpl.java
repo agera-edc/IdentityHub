@@ -64,14 +64,12 @@ public class IdentityHubClientImpl implements IdentityHubClient {
             responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
         }
 
-        Collection<VerifiableCredential> entries = responseObject.getReplies().stream()
+        return responseObject.getReplies().stream()
                 .findFirst()
                 .orElseThrow(() -> new ApiException("Invalid response, no replies provided by IdentityHub."))
                 .getEntries().stream()
                 .map(e -> objectMapper.convertValue(e, VerifiableCredential.class))
                 .collect(Collectors.toList());
-
-        return entries;
     }
 
     @Override
