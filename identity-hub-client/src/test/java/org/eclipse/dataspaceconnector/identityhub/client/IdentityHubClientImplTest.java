@@ -86,14 +86,13 @@ public class IdentityHubClientImplTest {
                     .build();
             var body = ResponseBody.create(OBJECT_MAPPER.writeValueAsString(responseObject), MediaType.get("application/json"));
 
-            var response = new Response.Builder()
+            return new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
                     .code(200)
                     .message("")
                     .build();
-            return response;
         };
 
         var client = createClient(interceptor);
