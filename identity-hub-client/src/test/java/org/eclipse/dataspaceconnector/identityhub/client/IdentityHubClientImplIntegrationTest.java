@@ -39,16 +39,16 @@ public class IdentityHubClientImplIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        OkHttpClient okHttpClient = TestUtils.testOkHttpClient();
+        var okHttpClient = TestUtils.testOkHttpClient();
         client = new IdentityHubClientImpl(okHttpClient, OBJECT_MAPPER);
     }
 
     @Test
     void addAndQueryVerifiableCredentials() throws Exception {
-        VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+        var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
 
         client.addVerifiableCredential(API_URL, credential);
-        Collection<VerifiableCredential> verifiableCredentials = client.getVerifiableCredentials(API_URL);
+        var verifiableCredentials = client.getVerifiableCredentials(API_URL);
 
         assertThat(verifiableCredentials).usingRecursiveFieldByFieldElementComparator().containsExactly(credential);
     }
