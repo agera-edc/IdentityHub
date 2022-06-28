@@ -1,4 +1,4 @@
-/*
+package org.eclipse.dataspaceconnector.identityhub.client;/*
  *  Copyright (c) 2022 Microsoft Corporation
  *
  *  This program and the accompanying materials are made available under the
