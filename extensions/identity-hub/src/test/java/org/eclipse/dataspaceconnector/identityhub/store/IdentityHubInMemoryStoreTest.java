@@ -14,14 +14,12 @@
 
 package org.eclipse.dataspaceconnector.identityhub.store;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.javafaker.Faker;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

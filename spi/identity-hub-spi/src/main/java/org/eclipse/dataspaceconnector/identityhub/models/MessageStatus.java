@@ -14,10 +14,8 @@
 
 package org.eclipse.dataspaceconnector.identityhub.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 
 import java.util.Objects;
 
@@ -31,7 +29,7 @@ public class MessageStatus extends Status {
     public static final MessageStatus MALFORMED_MESSAGE = new MessageStatus(400, "The message was malformed or improperly constructed");
     public static final MessageStatus INTERFACE_NOT_IMPLEMENTED = new MessageStatus(501, "The interface method is not implemented");
 
-    private MessageStatus(@JsonProperty("code") int code, @JsonProperty("detail") String detail) {
+    private MessageStatus(int code, String detail) {
         super(code, detail);
     }
 

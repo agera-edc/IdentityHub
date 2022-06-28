@@ -14,7 +14,6 @@
 
 package org.eclipse.dataspaceconnector.identityhub.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import io.restassured.specification.RequestSpecification;
