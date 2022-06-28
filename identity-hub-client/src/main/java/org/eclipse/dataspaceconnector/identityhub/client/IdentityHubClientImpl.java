@@ -17,7 +17,10 @@ package org.eclipse.dataspaceconnector.identityhub.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.eclipse.dataspaceconnector.identityhub.models.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;

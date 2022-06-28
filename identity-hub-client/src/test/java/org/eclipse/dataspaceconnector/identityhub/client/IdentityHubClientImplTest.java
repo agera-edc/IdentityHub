@@ -59,14 +59,13 @@ public class IdentityHubClientImplTest {
                     .build();
             var body = ResponseBody.create(OBJECT_MAPPER.writeValueAsString(responseObject), MediaType.get("application/json"));
 
-            var response = new Response.Builder()
+            return new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
                     .code(200)
                     .message("")
                     .build();
-            return response;
         };
 
         var client = createClient(interceptor);
@@ -109,14 +108,13 @@ public class IdentityHubClientImplTest {
 
         Interceptor interceptor = chain -> {
             var request = chain.request();
-            var response = new Response.Builder()
+            return new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
                     .code(code)
                     .message(errorMessage)
                     .build();
-            return response;
         };
 
         var client = createClient(interceptor);
@@ -134,14 +132,13 @@ public class IdentityHubClientImplTest {
             var request = chain.request();
             var body = ResponseBody.create("{}", MediaType.get("application/json"));
 
-            var response = new Response.Builder()
+            return new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
                     .code(200)
                     .message("{}")
                     .build();
-            return response;
         };
 
         var client = createClient(interceptor);
@@ -157,14 +154,13 @@ public class IdentityHubClientImplTest {
 
         Interceptor interceptor = chain -> {
             var request = chain.request();
-            var response = new Response.Builder()
+            return new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
                     .code(code)
                     .message(errorMessage)
                     .build();
-            return response;
         };
 
         var client = createClient(interceptor);
