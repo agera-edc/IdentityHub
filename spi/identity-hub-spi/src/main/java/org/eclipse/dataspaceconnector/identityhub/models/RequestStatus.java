@@ -30,7 +30,7 @@ public class RequestStatus extends Status {
     public static final RequestStatus DID_NOT_FOUND = new RequestStatus(404, "Target DID not found within the Decentralized Web Node");
     public static final RequestStatus ERROR = new RequestStatus(500, "The request could not be processed correctly");
 
-    private RequestStatus(@JsonProperty("code") int code, @JsonProperty("detail") String detail) {
+    private RequestStatus(int code, String detail) {
         super(code, detail);
     }
 
