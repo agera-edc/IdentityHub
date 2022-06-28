@@ -17,17 +17,6 @@ plugins {
     id("org.openapi.generator") version "5.4.0"
 }
 
-// Add generated sources
-sourceSets {
-    main {
-        java {
-            srcDirs(
-                "$buildDir/generate-resources/main/src/main/java"
-            )
-        }
-    }
-}
-
 val jacksonVersion: String by project
 val okHttpVersion: String by project
 val edcVersion: String by project
