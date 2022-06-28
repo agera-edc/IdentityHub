@@ -68,7 +68,8 @@ public class IdentityHubClientImpl implements IdentityHubClient {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Invalid response"))
                 .getEntries().stream()
-                .map(e -> objectMapper.convertValue(e, VerifiableCredential.class)).collect(Collectors.toList());
+                .map(e -> objectMapper.convertValue(e, VerifiableCredential.class))
+                .collect(Collectors.toList());
 
         return entries;
     }
