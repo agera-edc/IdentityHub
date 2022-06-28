@@ -125,8 +125,7 @@ public class IdentityHubClientImplTest {
                 .isInstanceOf(ApiException.class)
                 .hasMessage("IdentityHub error")
                 .usingRecursiveComparison()
-                .isEqualTo(new ApiException(errorMessage, code, Headers.of(), body))
-        ;
+                .isEqualTo(new ApiException(errorMessage, code, Headers.of(), body));
     }
 
     @Test
@@ -147,6 +146,34 @@ public class IdentityHubClientImplTest {
 
         var client = createClient(interceptor);
         assertThatThrownBy(() -> client.getVerifiableCredentials(HUB_URL)).isInstanceOf(DatabindException.class);
+    }
+
+    @Test
+    void addVerifiableCredentialsServerError() {
+        VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+        var errorMessage = FAKER.lorem().sentence();
+        var body = ResponseBody.create("{}", MediaType.get("application/json"));
+        int code = 500;
+
+        Interceptor interceptor = chain -> {
+            var request = chain.request();
+            var response = new Response.Builder()
+                    .body(body)
+                    .request(request)
+                    .protocol(Protocol.HTTP_2)
+                    .code(code)
+                    .message(errorMessage)
+                    .build();
+            return response;
+        };
+
+        var client = createClient(interceptor);
+
+        assertThatThrownBy(() -> client.addVerifiableCredential(HUB_URL, credential))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("IdentityHub error")
+                .usingRecursiveComparison()
+                .isEqualTo(new ApiException(errorMessage, code, Headers.of(), body));
     }
 
     private IdentityHubClientImpl createClient(Interceptor interceptor) {
