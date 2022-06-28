@@ -1,7 +1,21 @@
+/*
+ *  Copyright (c) 2022 Microsoft Corporation
+ *
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Apache License, Version 2.0 which is available at
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  SPDX-License-Identifier: Apache-2.0
+ *
+ *  Contributors:
+ *       Microsoft Corporation - initial API and implementation
+ *
+ */
+
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.github.javafaker.Faker;
+import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -9,6 +23,7 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.eclipse.dataspaceconnector.identityhub.client.ApiException;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageStatus;
@@ -18,7 +33,6 @@ import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableC
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.rmi.ServerException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,22 +78,30 @@ public class IdentityHubClientImplTest {
     @Test
     void getVerifiableCredentialsServerError() {
 
+        var errorMessage = FAKER.lorem().sentence();
+        var body = ResponseBody.create("{}", MediaType.get("application/json"));
+        int code = 500;
+
         Interceptor interceptor = chain -> {
             Request request = chain.request();
-            var body = ResponseBody.create("{}", MediaType.get("application/json"));
             Response response = new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
-                    .code(500)
-                    .message("")
+                    .code(code)
+                    .message(errorMessage)
                     .build();
             return response;
         };
 
         var client = createClient(interceptor);
 
-        assertThatThrownBy(() -> client.getVerifiableCredentials(HUB_URL)).isInstanceOf(ServerException.class);
+        assertThatThrownBy(() -> client.getVerifiableCredentials(HUB_URL))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("IdentityHub server error")
+                .usingRecursiveComparison()
+                .isEqualTo(new ApiException(errorMessage, code, Headers.of(), body))
+        ;
     }
 
     @Test
