@@ -76,6 +76,33 @@ public class IdentityHubClientImplTest {
     }
 
     @Test
+    void getVerifiableCredentialsNoEntries() {
+        Interceptor interceptor = chain -> {
+            Request request = chain.request();
+            var responseObject = ResponseObject.Builder.newInstance()
+                    .requestId(FAKER.internet().uuid())
+                    .status(RequestStatus.OK)
+                    .replies(List.of())
+                    .build();
+            var body = ResponseBody.create(OBJECT_MAPPER.writeValueAsString(responseObject), MediaType.get("application/json"));
+
+            Response response = new Response.Builder()
+                    .body(body)
+                    .request(request)
+                    .protocol(Protocol.HTTP_2)
+                    .code(200)
+                    .message("")
+                    .build();
+            return response;
+        };
+
+        var client = createClient(interceptor);
+        assertThatThrownBy(() -> client.getVerifiableCredentials(HUB_URL))
+                .isInstanceOf(ApiException.class)
+                .hasMessage("Invalid response, no replies provided by IdentityHub.");
+    }
+
+    @Test
     void getVerifiableCredentialsServerError() {
 
         var errorMessage = FAKER.lorem().sentence();
