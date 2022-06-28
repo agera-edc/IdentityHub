@@ -58,7 +58,9 @@ public class IdentityHubClientImpl implements IdentityHubClient {
                                 .build())
                 .execute();
 
-        if (response.code() != 200) throw new ServerException("Server error");
+        if (response.code() != 200) {
+            throw new ServerException("Server error");
+        }
 
         responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
 
