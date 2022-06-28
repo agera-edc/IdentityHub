@@ -60,7 +60,7 @@ public class IdentityHubControllerTest {
 
     @Test
     void writeAndQueryObject() throws IOException {
-        SampleObject sampleObject = new SampleObject(FAKER.internet().uuid());
+        var sampleObject = new SampleObject(FAKER.internet().uuid());
 
         collectionsWrite(sampleObject);
         List<SampleObject> objects = collectionsQuery();
