@@ -21,6 +21,7 @@ import io.restassured.specification.RequestSpecification;
 import org.eclipse.dataspaceconnector.identityhub.models.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;
+import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.junit.launcher.EdcExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,12 +61,14 @@ public class IdentityHubControllerTest {
 
     @Test
     void writeAndQueryObject() throws IOException {
-        var sampleObject = new SampleObject(FAKER.internet().uuid());
+        var verifiableCredential = VerifiableCredential.Builder.newInstance()
+                .id(FAKER.internet().uuid())
+                .build();
 
-        collectionsWrite(sampleObject);
-        List<SampleObject> objects = collectionsQuery();
+        collectionsWrite(verifiableCredential);
+        List<VerifiableCredential> credentials = collectionsQuery();
 
-        assertThat(objects).usingRecursiveFieldByFieldElementComparator().containsExactly(sampleObject);
+        assertThat(credentials).usingRecursiveFieldByFieldElementComparator().containsExactly(verifiableCredential);
     }
 
     @Test
@@ -136,8 +139,8 @@ public class IdentityHubControllerTest {
                 .build();
     }
 
-    private void collectionsWrite(SampleObject object) throws IOException {
-        byte[] data = OBJECT_MAPPER.writeValueAsString(object).getBytes(StandardCharsets.UTF_8);
+    private void collectionsWrite(VerifiableCredential verifiableCredential) throws IOException {
+        byte[] data = OBJECT_MAPPER.writeValueAsString(verifiableCredential).getBytes(StandardCharsets.UTF_8);
         baseRequest()
                 .body(createRequestObject(COLLECTIONS_WRITE.getName(), data))
                 .post()
@@ -149,7 +152,7 @@ public class IdentityHubControllerTest {
                 .body("replies[0].status.detail", equalTo("The message was successfully processed"));
     }
 
-    private List<SampleObject> collectionsQuery() {
+    private List<VerifiableCredential> collectionsQuery() {
         return baseRequest()
                 .body(createRequestObject(COLLECTIONS_QUERY.getName()))
                 .post()
@@ -159,18 +162,6 @@ public class IdentityHubControllerTest {
                 .body("replies", hasSize(1))
                 .body("replies[0].status.code", equalTo(200))
                 .body("replies[0].status.detail", equalTo("The message was successfully processed"))
-                .extract().body().jsonPath().getList("replies[0].entries", SampleObject.class);
-    }
-
-    private static class SampleObject {
-        private String id;
-
-        public SampleObject(@JsonProperty("id") String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
+                .extract().body().jsonPath().getList("replies[0].entries", VerifiableCredential.class);
     }
 }

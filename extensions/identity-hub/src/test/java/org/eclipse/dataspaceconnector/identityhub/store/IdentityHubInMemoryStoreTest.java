@@ -41,16 +41,4 @@ public class IdentityHubInMemoryStoreTest {
         // Assert
         assertThat(store.getAll()).usingRecursiveFieldByFieldElementComparator().containsAll(credentials);
     }
-
-    private static class SampleObject {
-        private final String id;
-
-        public SampleObject(@JsonProperty("id") String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-    }
 }
