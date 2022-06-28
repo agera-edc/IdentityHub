@@ -32,7 +32,6 @@ import org.eclipse.dataspaceconnector.identityhub.models.ResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +45,7 @@ public class IdentityHubClientImplTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Test
-    void getVerifiableCredentials() throws IOException {
+    void getVerifiableCredentials() throws Exception {
         VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
 
         Interceptor interceptor = chain -> {

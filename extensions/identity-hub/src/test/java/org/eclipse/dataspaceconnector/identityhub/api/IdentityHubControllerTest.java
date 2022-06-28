@@ -60,7 +60,7 @@ public class IdentityHubControllerTest {
     }
 
     @Test
-    void writeAndQueryObject() throws IOException {
+    void writeAndQueryObject() throws Exception {
         var verifiableCredential = VerifiableCredential.Builder.newInstance()
                 .id(FAKER.internet().uuid())
                 .build();

@@ -16,6 +16,7 @@ package org.eclipse.dataspaceconnector.identityhub.client;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -48,7 +49,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException, ApiException {
+    public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws ApiException, DatabindException {
         ResponseObject responseObject;
         try (Response response = httpClient.newCall(
                         new Request.Builder()
@@ -62,6 +63,10 @@ public class IdentityHubClientImpl implements IdentityHubClient {
             }
 
             responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
+        } catch (DatabindException exception) {
+            throw exception;
+        } catch (IOException exception) {
+            throw new ApiException(exception);
         }
 
         Collection<VerifiableCredential> entries = responseObject.getReplies().stream()
@@ -75,14 +80,18 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws IOException {
+    public void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws ApiException, JsonProcessingException {
         var payload = objectMapper.writeValueAsString(verifiableCredential);
-        httpClient.newCall(
-                        new Request.Builder()
-                                .url(hubBaseUrl)
-                                .post(buildRequestBody(COLLECTIONS_WRITE.getName(), payload.getBytes(UTF_8)))
-                                .build())
-                .execute();
+        try {
+            httpClient.newCall(
+                    new Request.Builder()
+                            .url(hubBaseUrl)
+                            .post(buildRequestBody(COLLECTIONS_WRITE.getName(), payload.getBytes(UTF_8)))
+                            .build())
+                    .execute();
+        } catch (IOException exception) {
+            throw new ApiException(exception);
+        }
     }
 
     private RequestBody buildRequestBody(String method) {

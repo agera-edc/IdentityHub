@@ -36,6 +36,10 @@ public class ApiException extends RuntimeException {
         super(message);
     }
 
+    public ApiException(Throwable throwable) {
+        super(throwable);
+    }
+
     public int getCode() {
         return code;
     }

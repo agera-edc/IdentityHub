@@ -14,9 +14,10 @@
 
 package org.eclipse.dataspaceconnector.identityhub.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DatabindException;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 
-import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -29,17 +30,18 @@ public interface IdentityHubClient {
      * Get VerifiableCredentials provided by an Identity Hub instance.
      * @param hubBaseUrl Base URL of the IdentityHub instance
      * @return VerifiableCredentials
-     * @throws IOException
      * @throws ApiException
+     * @throws DatabindException
      */
-    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws IOException, ApiException;
+    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws ApiException, DatabindException;
 
     /**
      * Write a VerifiableCredential.
      * @param hubBaseUrl Base URL of the IdentityHub instance
      * @param verifiableCredential
-     * @throws IOException
+     * @throws ApiException
+     * @throws JsonProcessingException
      */
-    void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws IOException;
+    void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws ApiException, JsonProcessingException;
 
 }
