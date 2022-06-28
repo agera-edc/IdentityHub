@@ -16,12 +16,8 @@ package org.eclipse.dataspaceconnector.identityhub.client;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.eclipse.dataspaceconnector.identityhub.models.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.models.RequestObject;
@@ -49,7 +45,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws ApiException, DatabindException {
+    public Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws ApiException, IOException {
         ResponseObject responseObject;
         try (Response response = httpClient.newCall(
                         new Request.Builder()
@@ -59,14 +55,10 @@ public class IdentityHubClientImpl implements IdentityHubClient {
                 .execute()) {
 
             if (response.code() != 200) {
-                throw new ApiException("IdentityHub server error", response.code(), response.headers(), response.body());
+                throw new ApiException("IdentityHub error", response.code(), response.headers(), response.body());
             }
 
             responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
-        } catch (DatabindException exception) {
-            throw exception;
-        } catch (IOException exception) {
-            throw new ApiException(exception);
         }
 
         Collection<VerifiableCredential> entries = responseObject.getReplies().stream()
@@ -80,17 +72,16 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws ApiException, JsonProcessingException {
+    public void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws ApiException, IOException {
         var payload = objectMapper.writeValueAsString(verifiableCredential);
-        try {
-            httpClient.newCall(
-                    new Request.Builder()
-                            .url(hubBaseUrl)
-                            .post(buildRequestBody(COLLECTIONS_WRITE.getName(), payload.getBytes(UTF_8)))
-                            .build())
-                    .execute();
-        } catch (IOException exception) {
-            throw new ApiException(exception);
+        try (var response = httpClient.newCall(new Request.Builder()
+                        .url(hubBaseUrl)
+                        .post(buildRequestBody(COLLECTIONS_WRITE.getName(), payload.getBytes(UTF_8)))
+                        .build())
+                .execute()) {
+            if (response.code() != 200) {
+                throw new ApiException("IdentityHub error", response.code(), response.headers(), response.body());
+            }
         }
     }
 

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DatabindException;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -30,18 +31,20 @@ public interface IdentityHubClient {
      * Get VerifiableCredentials provided by an Identity Hub instance.
      * @param hubBaseUrl Base URL of the IdentityHub instance
      * @return VerifiableCredentials
-     * @throws ApiException
-     * @throws DatabindException
+     * @throws ApiException in case of error when calling IdentityHub.
+     * @throws IOException Signaling that an I/O exception has occurred. For example during json serialization or when
+     * reaching out to the Identity Hub server.
      */
-    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws ApiException, DatabindException;
+    Collection<VerifiableCredential> getVerifiableCredentials(String hubBaseUrl) throws ApiException, IOException;
 
     /**
      * Write a VerifiableCredential.
      * @param hubBaseUrl Base URL of the IdentityHub instance
      * @param verifiableCredential
-     * @throws ApiException
-     * @throws JsonProcessingException
+     * @throws ApiException in case of error when calling IdentityHub.
+     * @throws IOException Signaling that an I/O exception has occurred. For example during json serialization or when
+     * reaching out to the Identity Hub server.
      */
-    void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws ApiException, JsonProcessingException;
+    void addVerifiableCredential(String hubBaseUrl, VerifiableCredential verifiableCredential) throws ApiException, IOException;
 
 }

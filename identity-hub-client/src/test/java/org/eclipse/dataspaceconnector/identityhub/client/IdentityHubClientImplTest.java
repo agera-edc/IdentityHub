@@ -123,7 +123,7 @@ public class IdentityHubClientImplTest {
 
         assertThatThrownBy(() -> client.getVerifiableCredentials(HUB_URL))
                 .isInstanceOf(ApiException.class)
-                .hasMessage("IdentityHub server error")
+                .hasMessage("IdentityHub error")
                 .usingRecursiveComparison()
                 .isEqualTo(new ApiException(errorMessage, code, Headers.of(), body))
         ;
