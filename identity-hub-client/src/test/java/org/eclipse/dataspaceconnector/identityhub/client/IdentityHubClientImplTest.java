@@ -46,10 +46,10 @@ public class IdentityHubClientImplTest {
 
     @Test
     void getVerifiableCredentials() throws Exception {
-        VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+        var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
 
         Interceptor interceptor = chain -> {
-            Request request = chain.request();
+            var request = chain.request();
             var replies = MessageResponseObject.Builder.newInstance().messageId(MESSAGE_ID_VALUE)
                     .status(MessageStatus.OK).entries(List.of(credential)).build();
             var responseObject = ResponseObject.Builder.newInstance()
@@ -104,7 +104,7 @@ public class IdentityHubClientImplTest {
 
         var errorMessage = FAKER.lorem().sentence();
         var body = ResponseBody.create("{}", MediaType.get("application/json"));
-        int code = 500;
+        var code = 500;
 
         Interceptor interceptor = chain -> {
             var request = chain.request();
@@ -147,7 +147,7 @@ public class IdentityHubClientImplTest {
 
     @Test
     void addVerifiableCredentialsServerError() {
-        VerifiableCredential credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+        var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
         var errorMessage = FAKER.lorem().sentence();
         var body = ResponseBody.create("{}", MediaType.get("application/json"));
         int code = 500;
