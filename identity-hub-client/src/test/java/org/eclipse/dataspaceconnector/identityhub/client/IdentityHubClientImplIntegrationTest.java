@@ -35,7 +35,7 @@ public class IdentityHubClientImplIntegrationTest {
     private static final Faker FAKER = new Faker();
     private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static IdentityHubClient client;
+    private IdentityHubClient client;
 
     @BeforeEach
     void setUp() {

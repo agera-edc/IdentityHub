@@ -60,7 +60,7 @@ public class IdentityHubClientImplTest {
                     .build();
             var body = ResponseBody.create(OBJECT_MAPPER.writeValueAsString(responseObject), MediaType.get("application/json"));
 
-            Response response = new Response.Builder()
+            var response = new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
@@ -78,7 +78,7 @@ public class IdentityHubClientImplTest {
     @Test
     void getVerifiableCredentialsNoEntries() {
         Interceptor interceptor = chain -> {
-            Request request = chain.request();
+            var request = chain.request();
             var responseObject = ResponseObject.Builder.newInstance()
                     .requestId(FAKER.internet().uuid())
                     .status(RequestStatus.OK)
@@ -86,7 +86,7 @@ public class IdentityHubClientImplTest {
                     .build();
             var body = ResponseBody.create(OBJECT_MAPPER.writeValueAsString(responseObject), MediaType.get("application/json"));
 
-            Response response = new Response.Builder()
+            var response = new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
@@ -110,8 +110,8 @@ public class IdentityHubClientImplTest {
         int code = 500;
 
         Interceptor interceptor = chain -> {
-            Request request = chain.request();
-            Response response = new Response.Builder()
+            var request = chain.request();
+            var response = new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
@@ -134,10 +134,10 @@ public class IdentityHubClientImplTest {
     @Test
     void getVerifiableCredentialsDeserializationError() {
         Interceptor interceptor = chain -> {
-            Request request = chain.request();
+            var request = chain.request();
             var body = ResponseBody.create("{}", MediaType.get("application/json"));
 
-            Response response = new Response.Builder()
+            var response = new Response.Builder()
                     .body(body)
                     .request(request)
                     .protocol(Protocol.HTTP_2)
@@ -152,7 +152,7 @@ public class IdentityHubClientImplTest {
     }
 
     private IdentityHubClientImpl createClient(Interceptor interceptor) {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        var okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .build();
 
