@@ -18,7 +18,7 @@ import okhttp3.Headers;
 import okhttp3.ResponseBody;
 
 /**
- * ApiException. Exception thrown by the IdentityHub client when IdentityHub does not return a 200.
+ * Base exception for IdentityHub rest client, used to represent api errors. 
  */
 public class ApiException extends RuntimeException {
     private int code = 0;
