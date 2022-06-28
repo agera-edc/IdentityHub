@@ -1,4 +1,4 @@
-package org.eclipse.dataspaceconnector.identityhub.client;/*
+/*
  *  Copyright (c) 2022 Microsoft Corporation
  *
  *  This program and the accompanying materials are made available under the
@@ -12,6 +12,8 @@ package org.eclipse.dataspaceconnector.identityhub.client;/*
  *
  */
 
+package org.eclipse.dataspaceconnector.identityhub.client;
+
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
@@ -23,8 +25,6 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.eclipse.dataspaceconnector.identityhub.client.ApiException;
-import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.models.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.models.RequestStatus;
