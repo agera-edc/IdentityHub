@@ -92,7 +92,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
         try {
             return buildRequestBody(method, null);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // Should never happen.
         }
     }
 
