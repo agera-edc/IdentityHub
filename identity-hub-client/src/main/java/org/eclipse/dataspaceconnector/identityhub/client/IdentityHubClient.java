@@ -14,8 +14,6 @@
 
 package org.eclipse.dataspaceconnector.identityhub.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DatabindException;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 
 import java.io.IOException;
