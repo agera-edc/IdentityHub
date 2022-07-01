@@ -33,4 +33,4 @@ For each JWS:
    9. Participant B Gets the issuer DID.  
    10. From the issuer DID, participant B get the public key of the issuer and uses it to verify the JWS signature  
    11. If the signature is successfully verified, it extracts the claims of the participant, each claims needs to be associated with its issuer  
-8. The list of the claims will be used as input to apply the access policies
+12. The list of the claims will be used as input to apply the access policies
