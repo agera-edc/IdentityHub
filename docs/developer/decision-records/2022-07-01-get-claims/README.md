@@ -2,7 +2,8 @@
 
 This document explains how we will get the claims of a participant, in order to apply access policies.
 
-## Context 
+## Context
+
 When an EDC participant receives an IDS request, it must verify the caller's identity and apply access policies for the caller.
 To apply policies, it needs to get the claims of a participant (for example, the claim that a participant is in the region EU).
 This document explains the mechanism to get the claims from IdentityHub.
@@ -16,7 +17,7 @@ The participant will use the claims to apply the access policy.
 
 Let's focus on the `Get claims` box.
 `Participant B` wants to get the claims of `Participant A`, to apply access policy.
-For example, Participant A could have the policy that Participant B should be claimed as a `participantOf` 
+For example, Participant A could have the policy that Participant B should be claimed as a `participantOf`
 `dataspaceA` by the issuer "gaia-x.com".
 
 5. Participant B extracts the identity-hub URL of participant A from a JWS obtained in previous steps.
