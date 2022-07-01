@@ -5,8 +5,13 @@ This document explains how we will get the claims of a participant, in order to 
 ## Context
 
 When an EDC participant receives an IDS request, it must verify the caller's identity and apply access policies for the caller.
-To apply policies, it needs to get the claims of a participant (for example, the claim that a participant is in the region EU).
+To apply policies, it needs to get the claims of the participant.
 This document explains the mechanism to get the claims from IdentityHub.
+
+## What is a claim
+
+A claim is a statement about a subject. For example, a claim could be `ParticipantA` is in `region` `eu`. 
+See [this documentation](https://www.w3.org/TR/vc-data-model/#claims) for more details.
 
 ## Get claims
 
