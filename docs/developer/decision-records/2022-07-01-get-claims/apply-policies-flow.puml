@@ -19,7 +19,7 @@ group authorize request
   B -> B: Verify JWS
   group Get Claims
   B -> B: Extract IdentityHub URL
-  B -> IDHUB ++: Get credentials
+  B -> IDHUB ++: Get Verifiable Credentials
   return List of JWS
   loop for each JWS
   B -> B: Get issuer DID
