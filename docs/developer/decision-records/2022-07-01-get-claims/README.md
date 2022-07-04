@@ -32,5 +32,5 @@ For each JWS:
    8. Participant B parses the JWS, extracts the DID of the issuer from the JWS payload.  
    9. Participant B retrieves the issuer DID Document.  
    10. From the issuer DID Document, participant B extracts the public key of the issuer and uses it to verify the JWS signature.  
-   11. If the signature is successfully verified, it extracts the claims of the participant, each claims needs to be associated with its issuer.  
+   11. If the signature is successfully verified, it extracts the claims of the participant, each claim needs to be associated with its issuer.  
 12. The list of the claims will be used as input to apply the access policies.
