@@ -27,7 +27,7 @@ group authorize request
   B -> B: Verify signature
   B -> B: Extract claims
   end
-  B -> B: apply access policy
+  B -> B: Apply access policies
 end
 return response
 deactivate ParticipantA
