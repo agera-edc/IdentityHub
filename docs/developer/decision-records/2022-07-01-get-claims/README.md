@@ -25,7 +25,7 @@ Let's focus on the `Get claims` box.
 For example, Participant A could have the policy that Participant B should be claimed as a `participantOf`
 `dataspaceA` by the issuer "gaia-x.com".
 
-5. Participant B extracts the identity-hub URL of participant A from a JWS obtained in previous steps.
+5. Participant B extracts the IdentityHub URL of participant A from a JWS obtained in previous steps.
 6. Participant B gets VerifiableCredentials from IdentityHub A.
 7. Participant B gets a list of JWS.
 For each JWS:

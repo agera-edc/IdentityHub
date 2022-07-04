@@ -3,7 +3,7 @@ autonumber "<b>0'.'"
 box "Participant A" #LightPink
 Participant "Participant A\nClient" as ParticipantA
 Participant "Participant A\nDID Document" as DID
-Participant "Participant A\nIdentity Hub" as IDHUB
+Participant "Participant A\nIdentityHub" as IDHUB
 end box
 box "Participant B" #LightGreen
 Participant "Participant B\nAPI" as B
@@ -14,11 +14,11 @@ end box
 ParticipantA -> B ++: Request:\n - DID JWS
 activate ParticipantA
 group authorize request
-  B -> DID ++: Get DID Document (contains Identity Hub URL)
+  B -> DID ++: Get DID Document (contains IdentityHub URL)
   return DID Document
   B -> B: Verify JWS
   group Get Claims
-  B -> B: Extract identity-hub URL
+  B -> B: Extract IdentityHub URL
   B -> IDHUB ++: Get credentials
   return List of JWS
   loop for each JWS
