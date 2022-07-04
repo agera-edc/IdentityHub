@@ -22,8 +22,8 @@ group authorize request
   B -> IDHUB ++: Get credentials
   return List of JWS
   loop for each JWS
-  B -> B: Get issuer DID URL
-  B -> ISSUER: Get issuer DID
+  B -> B: Get issuer DID
+  B -> ISSUER: Get issuer DID Document
   B -> B: Verify signature
   B -> B: Extract claims
   end
