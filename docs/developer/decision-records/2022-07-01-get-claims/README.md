@@ -16,7 +16,11 @@ See [this documentation](https://www.w3.org/TR/vc-data-model/#claims) for more d
 ## Get claims
 
 This document focuses on getting the claims of a Participant, assuming the participant's identity is already verified.
-The participant will use the claims to apply the access policy.
+The participant will use the claims to apply the access policy.  
+Each participant has an IdentityHub instance, exposing an endpoint to get its [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/).
+The IdentityHub endpoint returns a list of JWS containing a Verifiable Credential in their payload.
+(see [example Verifiable Credential (as JWT)](https://www.w3.org/TR/vc-data-model/#example-usage-of-the-credentialsubject-property)).
+The VerifiableCredentials contain [claims](https://www.w3.org/TR/vc-data-model/#claims) that can be extracted.
 
 ![Apply policy flow](apply-policies-flow.png)
 
@@ -27,7 +31,7 @@ For example, Participant A could have the policy that Participant B should be cl
 
 5. Participant B extracts the IdentityHub URL of participant A from a JWS obtained in previous steps.
 6. Participant B gets VerifiableCredentials from IdentityHub A.
-7. Participant B gets a list of JWS.
+7. Participant B gets a list of JWS. This JWS contains a [Verifiable credential](https://www.w3.org/TR/vc-data-model/) in its payload, (see [example Verifiable Credential (as JWT)](https://www.w3.org/TR/vc-data-model/#example-usage-of-the-credentialsubject-property)).  
 For each JWS:
    8. Participant B parses the JWS, extracts the DID of the issuer from the JWS payload.  
    9. Participant B retrieves the issuer DID Document.  
