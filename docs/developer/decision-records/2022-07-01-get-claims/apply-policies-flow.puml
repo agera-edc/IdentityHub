@@ -22,7 +22,7 @@ group authorize request
   B -> IDHUB ++: Get Verifiable Credentials
   return List of JWS
   loop for each JWS
-  B -> B: Extract issuer DID
+  B -> B: Extract issuer DID URL
   B -> ISSUER: Get issuer DID Document
   B -> B: Verify signature
   B -> B: Extract claims

@@ -10,7 +10,7 @@ This document explains the mechanism to get the claims from IdentityHub.
 
 ## What is a claim
 
-A claim is a statement about a subject. For example, a claim could be `ParticipantA` is in `region` `eu`. 
+A claim is a statement about a subject. For example, a claim could be `ParticipantA` is in `region` `eu`.
 See [this documentation](https://www.w3.org/TR/vc-data-model/#claims) for more details.
 
 ## Get claims
@@ -29,11 +29,11 @@ Let's focus on the `Get claims` box.
 For example, Participant A could have the policy that Participant B should be claimed as a `participantOf`
 `dataspaceA` by the issuer "gaia-x.com".
 
-5. Participant B extracts the IdentityHub URL of participant A from a JWS obtained in previous steps.
+5. Participant B extracts the IdentityHub URL of participant A from a DID Document obtained in previous steps.
 6. Participant B gets VerifiableCredentials from IdentityHub A.
-7. Participant B gets a list of JWS. This JWS contains a [Verifiable credential](https://www.w3.org/TR/vc-data-model/) in its payload, (see [example Verifiable Credential (as JWT)](https://www.w3.org/TR/vc-data-model/#example-usage-of-the-credentialsubject-property)).  
+7. Participant B gets a list of JWS. Each JWS contains a [Verifiable credential](https://www.w3.org/TR/vc-data-model/) in its payload, (see [example Verifiable Credential (as JWT)](https://www.w3.org/TR/vc-data-model/#example-usage-of-the-credentialsubject-property)).  
 For each JWS:
-   8. Participant B parses the JWS, extracts the DID of the issuer from the JWS payload.  
+   8. Participant B parses the JWS, extracts the issuer DID URL from the JWS payload.  
    9. Participant B retrieves the issuer DID Document.  
    10. From the issuer DID Document, participant B extracts the public key of the issuer and uses it to verify the JWS signature.  
    11. If the signature is successfully verified, it extracts the claims of the participant, each claim needs to be associated with its issuer.  
