@@ -24,11 +24,12 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.Descriptor;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageRequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.ResponseObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.credentials.VerifiableCredential;
+import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.response.StatusResult;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +50,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public StatusResult<Collection<VerifiableCredential>> getVerifiableCredentials(String hubBaseUrl) throws IOException {
+    public StatusResult<Collection<String>> getVerifiableCredentials(String hubBaseUrl) throws IOException {
         ResponseObject responseObject;
         try (var response = httpClient.newCall(
                         new Request.Builder()
@@ -69,7 +70,8 @@ public class IdentityHubClientImpl implements IdentityHubClient {
                 .getReplies()
                 .stream()
                 .flatMap(r -> r.getEntries().stream())
-                .map(e -> objectMapper.convertValue(e, VerifiableCredential.class))
+                .map(e -> (byte[]) e)
+                .map(b -> new String(b, StandardCharsets.UTF_8))
                 .collect(Collectors.toList());
 
         return StatusResult.success(verifiableCredentials);
