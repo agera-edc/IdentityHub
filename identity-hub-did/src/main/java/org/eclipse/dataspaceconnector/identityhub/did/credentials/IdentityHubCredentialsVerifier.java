@@ -14,21 +14,25 @@
 
 package org.eclipse.dataspaceconnector.identityhub.did.credentials;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.crypto.credentials.VerifiableCredentialFactory;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
+import org.eclipse.dataspaceconnector.identityhub.models.credentials.Claim;
+import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.spi.response.StatusResult;
 import org.eclipse.dataspaceconnector.spi.result.AbstractResult;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
-import java.io.IOException;
 import java.text.ParseException;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -39,39 +43,45 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     private final IdentityHubClient identityHubClient;
     private final Monitor monitor;
     private final DidPublicKeyResolver didPublicKeyResolver;
+    private final ObjectMapper objectMapper;
 
     /**
      * Create a new credential verifier that uses an Identity Hub
      *
      * @param identityHubClient IdentityHubClient.
      */
-    public IdentityHubCredentialsVerifier(IdentityHubClient identityHubClient, Monitor monitor, DidPublicKeyResolver didPublicKeyResolver) {
+    public IdentityHubCredentialsVerifier(IdentityHubClient identityHubClient, Monitor monitor, DidPublicKeyResolver didPublicKeyResolver, ObjectMapper objectMapper) {
         this.identityHubClient = identityHubClient;
         this.monitor = monitor;
         this.didPublicKeyResolver = didPublicKeyResolver;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public Result<Map<String, String>> verifyCredentials(String hubBaseUrl, PublicKeyWrapper othersPublicKey) {
-        StatusResult<Collection<String>> statusResult;
-        try {
-            statusResult = identityHubClient.getVerifiableCredentials(hubBaseUrl);
-        } catch (IOException e) {
-            return Result.failure(e.getMessage());
-        }
+        var claims = getClaims(hubBaseUrl);
+        if (claims.failed()) return Result.failure(claims.getFailureMessages());
+        // This logic will be removed after changing the CredentialVerifier contract.
+        var mappedClaims = claims.getContent().stream().collect(Collectors.toMap(c -> String.join(":", c.getIssuer(), c.getProperty()), Claim::getValue));
+        return Result.success(mappedClaims);
+    }
 
-        if (statusResult.failed()) return Result.failure(statusResult.getFailureMessages());
+    // TODO: Change input to DID URL.
+    public Result<Set<Claim>> getClaims(String hubBaseUrl) {
+        Set<Claim> claims = new HashSet<>();
+        var serializedJwts = identityHubClient.getVerifiableCredentials(hubBaseUrl);
 
-        var serializedJwts = statusResult.getContent();
+        if (serializedJwts.failed()) return Result.failure(serializedJwts.getFailureMessages());
 
         // Parse JWTs
-        var jwts = serializedJwts.stream()
+        var jwts = serializedJwts.getContent()
+                .stream()
                 .map(this::getSignedJwt)
                 .filter(AbstractResult::succeeded)
                 .map(AbstractResult::getContent).collect(Collectors.toList());
 
         for (SignedJWT jwt : jwts) {
-            // Extract issuer DID URL.
+
             var issuerResult = getIssuer(jwt);
             if (issuerResult.failed()) continue;
             var issuer = issuerResult.getContent();
@@ -79,9 +89,34 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             var issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer);
             // Verify Signature
             var verificationResult = VerifiableCredentialFactory.verify(jwt, issuerPublicKey.getContent());
+            if (!verificationResult) continue;
+
+            var verifiableCredential = getVerifiableCredential(jwt);
+            if (verifiableCredential.succeeded()) continue;
+
+            claims.addAll(getClaims(verifiableCredential.getContent(), issuer));
         }
 
-        return Result.success(Map.of());
+        return Result.success(claims);
+    }
+
+    private Result<VerifiableCredential> getVerifiableCredential(SignedJWT jwt) {
+        var serializedVerifiableCredential = jwt.getPayload().toString();
+        try {
+            return Result.success(objectMapper.readValue(serializedVerifiableCredential, VerifiableCredential.class));
+        } catch (JsonProcessingException e) {
+            return Result.failure(e.getMessage());
+        }
+    }
+
+    private List<Claim> getClaims(VerifiableCredential verifiableCredential, String issuer) {
+        var subject = verifiableCredential.getCredentialSubject().get("id");
+        var vcIssuer = verifiableCredential.getIssuer();
+        if (!issuer.equals(vcIssuer)) return List.of();
+
+        return verifiableCredential.getCredentialSubject().entrySet().stream()
+                .map(entry -> new Claim(subject, entry.getKey(), entry.getValue(), issuer))
+                .collect(Collectors.toList());
     }
 
     private Result<SignedJWT> getSignedJwt(String serializedJwt) {
@@ -89,7 +124,6 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             return Result.success(SignedJWT.parse(serializedJwt));
         } catch (ParseException e) {
             monitor.info("Error parsing JWT from IdentityHub", e);
-            return Result.failure(e.getMessage());
         }
     }
 

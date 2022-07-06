@@ -50,7 +50,7 @@ public class IdentityHubClientImpl implements IdentityHubClient {
     }
 
     @Override
-    public StatusResult<Collection<String>> getVerifiableCredentials(String hubBaseUrl) throws IOException {
+    public StatusResult<Collection<String>> getVerifiableCredentials(String hubBaseUrl) {
         ResponseObject responseObject;
         try (var response = httpClient.newCall(
                         new Request.Builder()
@@ -64,6 +64,8 @@ public class IdentityHubClientImpl implements IdentityHubClient {
             }
 
             responseObject = objectMapper.readValue(response.body().byteStream(), ResponseObject.class);
+        } catch (IOException e) {
+            return StatusResult.failure(ResponseStatus.FATAL_ERROR, e.getMessage());
         }
 
         var verifiableCredentials = responseObject

@@ -26,6 +26,7 @@ import org.eclipse.dataspaceconnector.spi.system.Provides;
 import org.eclipse.dataspaceconnector.spi.system.Requires;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
+import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 
 import static java.lang.String.format;
 import static org.eclipse.dataspaceconnector.iam.did.spi.document.DidConstants.DID_URL_SETTING;
@@ -44,6 +45,9 @@ public class IdentityHubDidExtension implements ServiceExtension {
     @Inject
     private DidPublicKeyResolver didPublicKeyResolver;
 
+    @Inject
+    private TypeManager typeManager;
+
     @Override
     public void initialize(ServiceExtensionContext context) {
         var monitor = context.getMonitor();
@@ -54,7 +58,7 @@ public class IdentityHubDidExtension implements ServiceExtension {
         }
 
         var client = new IdentityHubClientImpl(httpClient, new ObjectMapper());
-        var credentialsVerifier = new IdentityHubCredentialsVerifier(client, monitor, didPublicKeyResolver);
+        var credentialsVerifier = new IdentityHubCredentialsVerifier(client, monitor, didPublicKeyResolver, typeManager.getMapper());
         context.registerService(CredentialsVerifier.class, credentialsVerifier);
 
         monitor.info("Initialized Identity Hub DID extension");
