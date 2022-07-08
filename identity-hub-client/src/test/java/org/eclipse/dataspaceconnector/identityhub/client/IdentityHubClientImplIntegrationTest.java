@@ -16,7 +16,6 @@ package org.eclipse.dataspaceconnector.identityhub.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.common.testfixtures.TestUtils;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.junit.launcher.EdcExtension;

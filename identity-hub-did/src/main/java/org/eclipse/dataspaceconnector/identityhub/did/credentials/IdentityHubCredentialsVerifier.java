@@ -29,10 +29,10 @@ import org.eclipse.dataspaceconnector.spi.result.AbstractResult;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.text.ParseException;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -67,8 +67,8 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     }
 
     // TODO: Change input to DID URL.
-    public Result<Set<Claim>> getClaims(String hubBaseUrl) {
-        Set<Claim> claims = new HashSet<>();
+    public Result<Collection<Claim>> getClaims(String hubBaseUrl) {
+        Collection<Claim> claims = new ArrayList<>();
         var serializedJwts = identityHubClient.getVerifiableCredentials(hubBaseUrl);
 
         if (serializedJwts.failed()) return Result.failure(serializedJwts.getFailureMessages());
@@ -124,6 +124,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             return Result.success(SignedJWT.parse(serializedJwt));
         } catch (ParseException e) {
             monitor.info("Error parsing JWT from IdentityHub", e);
+            return Result.failure(String.join("Error parsing JWT from IdentityHub: ", e.getMessage()));
         }
     }
 
