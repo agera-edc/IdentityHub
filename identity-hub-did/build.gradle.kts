@@ -15,4 +15,5 @@ dependencies {
     implementation("${edcGroup}:identity-did-crypto:${edcVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
+    implementation("com.danubetech:verifiable-credentials-java:1.0.0")
 }

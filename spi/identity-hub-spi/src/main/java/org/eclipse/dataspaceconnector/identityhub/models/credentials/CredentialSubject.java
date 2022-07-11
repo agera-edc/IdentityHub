@@ -1,14 +1,11 @@
 package org.eclipse.dataspaceconnector.identityhub.models.credentials;
-
+/*
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
 public class CredentialSubject {
 
-    /**
-     * Identifier of the subject of the credential
-     */
     String id;
 
     Map<String, String> claims;
@@ -18,3 +15,4 @@ public class CredentialSubject {
         this.claims = claims;
     }
 }
+*/

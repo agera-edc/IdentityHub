@@ -14,8 +14,12 @@
 
 package org.eclipse.dataspaceconnector.identityhub.did.credentials;
 
+import com.danubetech.verifiablecredentials.VerifiableCredential;
+import com.danubetech.verifiablecredentials.jwt.FromJwtConverter;
+import com.danubetech.verifiablecredentials.jwt.JwtVerifiableCredential;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.crypto.credentials.VerifiableCredentialFactory;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
@@ -23,7 +27,6 @@ import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
 import org.eclipse.dataspaceconnector.identityhub.models.credentials.Claim;
-import org.eclipse.dataspaceconnector.identityhub.models.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.AbstractResult;
 import org.eclipse.dataspaceconnector.spi.result.Result;
@@ -34,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Implements a sample credentials validator that checks for signed registration credentials.
@@ -62,78 +66,68 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
         var claims = getClaims(hubBaseUrl);
         if (claims.failed()) return Result.failure(claims.getFailureMessages());
         // This logic will be removed after changing the CredentialVerifier contract.
-        var mappedClaims = claims.getContent().stream().collect(Collectors.toMap(c -> String.join(":", c.getIssuer(), c.getProperty()), Claim::getValue));
+        var mappedClaims = claims
+                .getContent()
+                .stream()
+                .collect(Collectors.toMap(c -> String.join(":", c.getIssuer(), c.getProperty()), Claim::getValue));
         return Result.success(mappedClaims);
     }
 
     // TODO: Change input to DID URL.
     public Result<Collection<Claim>> getClaims(String hubBaseUrl) {
-        Collection<Claim> claims = new ArrayList<>();
         var serializedJwts = identityHubClient.getVerifiableCredentials(hubBaseUrl);
 
         if (serializedJwts.failed()) return Result.failure(serializedJwts.getFailureMessages());
 
-        // Parse JWTs
-        var jwts = serializedJwts.getContent()
+        var verifiableCredentials = serializedJwts.getContent()
                 .stream()
-                .map(this::getSignedJwt)
+                .map(this::getVerifiedCredential)
+                .filter(AbstractResult::failed)
+                .map(AbstractResult::getContent)
+                .map(this::extractClaims)
                 .filter(AbstractResult::succeeded)
-                .map(AbstractResult::getContent).collect(Collectors.toList());
+                .flatMap(AbstractResult::getContent)
+                .collect(Collectors.toList());
 
-        for (SignedJWT jwt : jwts) {
+        return Result.success(verifiableCredentials);
+    }
 
-            var issuerResult = getIssuer(jwt);
-            if (issuerResult.failed()) continue;
-            var issuer = issuerResult.getContent();
-            // Get issuer public key
-            var issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer);
-            // Verify Signature
-            var verificationResult = VerifiableCredentialFactory.verify(jwt, issuerPublicKey.getContent());
-            if (!verificationResult) continue;
-
-            var verifiableCredential = getVerifiableCredential(jwt);
-            if (verifiableCredential.succeeded()) continue;
-
-            claims.addAll(getClaims(verifiableCredential.getContent(), issuer));
-        }
+    private Result<Stream<Claim>> extractClaims(VerifiableCredential verifiableCredential) {
+        var issuer = verifiableCredential.getIssuer().toString();
+        var subject = verifiableCredential.getCredentialSubject().getClaims().get("subj").toString();
+        var claims = verifiableCredential.getCredentialSubject()
+                .getClaims()
+                .entrySet()
+                .stream()
+                .map(entry -> toClaim(entry, issuer, subject))
+                .filter(AbstractResult::succeeded)
+                .map(AbstractResult::getContent);
 
         return Result.success(claims);
     }
 
-    private Result<VerifiableCredential> getVerifiableCredential(SignedJWT jwt) {
-        var serializedVerifiableCredential = jwt.getPayload().toString();
+    private Result<Claim> toClaim(Map.Entry<String, Object> entry, String issuer, String subject) {
         try {
-            return Result.success(objectMapper.readValue(serializedVerifiableCredential, VerifiableCredential.class));
+            var value = objectMapper.writeValueAsString(entry.getValue());
+            return Result.success(new Claim(subject, entry.getKey(), value, issuer));
         } catch (JsonProcessingException e) {
-            return Result.failure(e.getMessage());
+            return Result.failure("Error parsing claims");
         }
     }
 
-    private List<Claim> getClaims(VerifiableCredential verifiableCredential, String issuer) {
-        var subject = verifiableCredential.getCredentialSubject().get("id");
-        var vcIssuer = verifiableCredential.getIssuer();
-        if (!issuer.equals(vcIssuer)) return List.of();
-
-        return verifiableCredential.getCredentialSubject().entrySet().stream()
-                .map(entry -> new Claim(subject, entry.getKey(), entry.getValue(), issuer))
-                .collect(Collectors.toList());
-    }
-
-    private Result<SignedJWT> getSignedJwt(String serializedJwt) {
+    private Result<VerifiableCredential> getVerifiedCredential(String jwt) {
         try {
-            return Result.success(SignedJWT.parse(serializedJwt));
+            var jwtVerifiableCredential = JwtVerifiableCredential.fromCompactSerialization(jwt);
+            VerifiableCredential verifiableCredential = FromJwtConverter.fromJwtVerifiableCredential(jwtVerifiableCredential);
+            var issuer = verifiableCredential.getIssuer();
+            var issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer.toString());
+            // TODO: Use: jwtVerifiableCredential.verify_RSA_PS256, for that need to change the keyResolver contract.
+            var isSignatureValid = jwtVerifiableCredential.getJwsObject().verify(issuerPublicKey.getContent().verifier());
+            return isSignatureValid ? Result.success(verifiableCredential) : Result.failure("Signature is not valid");
         } catch (ParseException e) {
-            monitor.info("Error parsing JWT from IdentityHub", e);
-            return Result.failure(String.join("Error parsing JWT from IdentityHub: ", e.getMessage()));
-        }
-    }
-
-    private Result<String> getIssuer(SignedJWT jwt) {
-        try {
-            return Result.success(jwt.getJWTClaimsSet().getIssuer());
-        } catch (ParseException e) {
-            monitor.info("Error parsing issuer from JWT", e);
-            return Result.failure(e.getMessage());
+            return Result.failure("Failed parsing the jwt " + e.getMessage());
+        } catch (JOSEException e) {
+            return Result.failure("Could not verify signature " + e.getMessage());
         }
     }
 }
