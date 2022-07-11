@@ -20,9 +20,8 @@ import com.danubetech.verifiablecredentials.jwt.JwtVerifiableCredential;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.SignedJWT;
-import org.eclipse.dataspaceconnector.iam.did.crypto.credentials.VerifiableCredentialFactory;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
+import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
@@ -32,9 +31,7 @@ import org.eclipse.dataspaceconnector.spi.result.AbstractResult;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,7 +39,7 @@ import java.util.stream.Stream;
 /**
  * Implements a sample credentials validator that checks for signed registration credentials.
  */
-public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
+public class IdentityHubCredentialsVerifier {
 
     private final IdentityHubClient identityHubClient;
     private final Monitor monitor;
@@ -61,9 +58,9 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
         this.objectMapper = objectMapper;
     }
 
-    @Override
+    /*@Override
     public Result<Map<String, String>> verifyCredentials(String hubBaseUrl, PublicKeyWrapper othersPublicKey) {
-        var claims = getClaims(hubBaseUrl);
+        var claims = getVerifiedClaims(hubBaseUrl);
         if (claims.failed()) return Result.failure(claims.getFailureMessages());
         // This logic will be removed after changing the CredentialVerifier contract.
         var mappedClaims = claims
@@ -71,11 +68,12 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .stream()
                 .collect(Collectors.toMap(c -> String.join(":", c.getIssuer(), c.getProperty()), Claim::getValue));
         return Result.success(mappedClaims);
-    }
+    }*/
 
-    // TODO: Change input to DID URL.
-    public Result<Collection<Claim>> getClaims(String hubBaseUrl) {
-        var serializedJwts = identityHubClient.getVerifiableCredentials(hubBaseUrl);
+    public Result<Collection<Claim>> getVerifiedClaims(DidDocument didDocument) {
+        var hubBaseUrl = getIdentityHubBaseUrl(didDocument);
+        if (hubBaseUrl.failed()) return Result.failure(hubBaseUrl.getFailureMessages());
+        var serializedJwts = identityHubClient.getVerifiableCredentials(hubBaseUrl.getContent());
 
         if (serializedJwts.failed()) return Result.failure(serializedJwts.getFailureMessages());
 
@@ -90,6 +88,17 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .collect(Collectors.toList());
 
         return Result.success(verifiableCredentials);
+    }
+
+    private Result<String> getIdentityHubBaseUrl(DidDocument didDocument) {
+        var hubBaseUrl = didDocument
+                .getService()
+                .stream()
+                .filter(s -> s.getType().equals("IdentityHub"))
+                .findFirst();
+
+        if (hubBaseUrl.isEmpty()) return Result.failure("Failed getting identityHub URL");
+        else return Result.success(hubBaseUrl.get().getServiceEndpoint());
     }
 
     private Result<Stream<Claim>> extractClaims(VerifiableCredential verifiableCredential) {
