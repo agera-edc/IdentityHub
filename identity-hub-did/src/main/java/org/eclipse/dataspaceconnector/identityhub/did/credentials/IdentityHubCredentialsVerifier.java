@@ -121,7 +121,6 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             VerifiableCredential verifiableCredential = FromJwtConverter.fromJwtVerifiableCredential(jwtVerifiableCredential);
             var issuer = verifiableCredential.getIssuer();
             var issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer.toString());
-            // TODO: Use: jwtVerifiableCredential.verify_RSA_PS256, for that need to change the keyResolver contract.
             var isSignatureValid = jwtVerifiableCredential.getJwsObject().verify(issuerPublicKey.getContent().verifier());
             return isSignatureValid ? Result.success(verifiableCredential) : Result.failure("Signature is not valid");
         } catch (ParseException e) {
