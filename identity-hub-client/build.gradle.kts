@@ -29,10 +29,10 @@ val assertj: String by project
 dependencies {
     api(project(":spi:identity-hub-spi"))
     api(project(":identity-hub-dtos"))
+    api("${edcGroup}:core-spi:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    implementation("${edcGroup}:core-spi:${edcVersion}")
 
     testImplementation(project(":extensions:identity-hub"))
     testImplementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
