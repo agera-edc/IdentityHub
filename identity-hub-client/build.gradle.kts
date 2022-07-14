@@ -13,8 +13,9 @@
  */
 
 plugins {
-    java
+    `java-library`
     id("org.openapi.generator") version "5.4.0"
+    `maven-publish`
 }
 
 val jacksonVersion: String by project
@@ -27,8 +28,10 @@ val assertj: String by project
 val nimbusVersion: String by project
 
 dependencies {
-    implementation(project(":extensions:identity-hub"))
-    implementation(project(":spi:identity-hub-store-spi"))
+    api(project(":spi:identity-hub-spi"))
+    api(project(":identity-hub-dtos"))
+    api("${edcGroup}:core-spi:${edcVersion}")
+    implementation("${edcGroup}:http:${edcVersion}")
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("${edcGroup}:core-spi:${edcVersion}")
