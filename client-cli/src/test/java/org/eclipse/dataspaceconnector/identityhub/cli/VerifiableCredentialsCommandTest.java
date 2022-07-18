@@ -29,7 +29,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.dataspaceconnector.identityhub.cli.TestUtils.createVerifiableCredential;
+import static org.eclipse.dataspaceconnector.identityhub.TestData.createVerifiableCredential;
 import static org.eclipse.dataspaceconnector.spi.response.StatusResult.success;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;

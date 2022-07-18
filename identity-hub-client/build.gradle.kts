@@ -35,6 +35,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
 
     testImplementation(project(":extensions:identity-hub"))
+    testImplementation(testFixtures(project(":spi:identity-hub-spi")))
     testImplementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
     testImplementation("${edcGroup}:junit:${edcVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")

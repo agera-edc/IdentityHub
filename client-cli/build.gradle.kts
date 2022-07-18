@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":identity-hub-client"))
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
+    testImplementation(testFixtures(project(":spi:identity-hub-spi")))
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("com.github.javafaker:javafaker:${faker}")

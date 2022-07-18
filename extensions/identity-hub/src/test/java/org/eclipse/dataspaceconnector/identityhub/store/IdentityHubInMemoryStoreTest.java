@@ -15,6 +15,7 @@
 package org.eclipse.dataspaceconnector.identityhub.store;
 
 import com.github.javafaker.Faker;
+import org.eclipse.dataspaceconnector.identityhub.TestData;
 import org.eclipse.dataspaceconnector.identityhub.dtos.credentials.VerifiableCredential;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +33,7 @@ public class IdentityHubInMemoryStoreTest {
         var store = new IdentityHubInMemoryStore();
         var credentialsCount = FAKER.number().numberBetween(1, 10);
         var credentials = IntStream.range(0, credentialsCount)
-                .mapToObj(i -> VerifiableCredential.Builder.newInstance().id(FAKER.internet().uuid()).build())
+                .mapToObj(i -> TestData.createVerifiableCredential())
                 .collect(Collectors.toList());
 
         // Act

@@ -1,11 +1,25 @@
-package org.eclipse.dataspaceconnector.identityhub.client;
+/*
+ *  Copyright (c) 2022 Microsoft Corporation
+ *
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Apache License, Version 2.0 which is available at
+ *  https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  SPDX-License-Identifier: Apache-2.0
+ *
+ *  Contributors:
+ *       Microsoft Corporation - initial API and implementation
+ *
+ */
+
+package org.eclipse.dataspaceconnector.identityhub;
 
 import com.github.javafaker.Faker;
 import org.eclipse.dataspaceconnector.identityhub.dtos.credentials.VerifiableCredential;
 
 import java.util.Map;
 
-public class TestUtil {
+public class TestData {
 
     private static final Faker FAKER = new Faker();
 

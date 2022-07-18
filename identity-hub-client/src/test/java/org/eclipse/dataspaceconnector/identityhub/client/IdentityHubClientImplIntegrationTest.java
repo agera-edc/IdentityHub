@@ -15,6 +15,7 @@
 package org.eclipse.dataspaceconnector.identityhub.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.dataspaceconnector.identityhub.TestData;
 import org.eclipse.dataspaceconnector.identityhub.dtos.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.junit.extensions.EdcExtension;
 import org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils;
@@ -25,13 +26,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.dataspaceconnector.identityhub.client.TestUtil.createVerifiableCredential;
 
 @ExtendWith(EdcExtension.class)
 public class IdentityHubClientImplIntegrationTest {
 
     private static final String API_URL = "http://localhost:8181/api/identity-hub";
-    private static final VerifiableCredential VC = createVerifiableCredential();
+    private static final VerifiableCredential VC = TestData.createVerifiableCredential();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private IdentityHubClient client;
 

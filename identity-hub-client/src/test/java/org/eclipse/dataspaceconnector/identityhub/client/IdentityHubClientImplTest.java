@@ -23,6 +23,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.eclipse.dataspaceconnector.identityhub.TestData;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestStatus;
@@ -35,7 +36,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.eclipse.dataspaceconnector.identityhub.client.TestUtil.createVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
 
 public class IdentityHubClientImplTest {
@@ -45,7 +45,7 @@ public class IdentityHubClientImplTest {
 
     @Test
     void getVerifiableCredentials() throws Exception {
-        var credential = createVerifiableCredential();
+        var credential = TestData.createVerifiableCredential();
 
         Interceptor interceptor = chain -> {
             var request = chain.request();
@@ -120,7 +120,7 @@ public class IdentityHubClientImplTest {
 
     @Test
     void addVerifiableCredentialsServerError() throws Exception {
-        var credential = createVerifiableCredential();
+        var credential = TestData.createVerifiableCredential();
         var errorMessage = FAKER.lorem().sentence();
         var body = "{}";
         int code = 500;
