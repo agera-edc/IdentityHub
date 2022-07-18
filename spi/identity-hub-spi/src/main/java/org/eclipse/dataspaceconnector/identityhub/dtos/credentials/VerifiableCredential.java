@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -33,12 +34,18 @@ import java.util.Objects;
 public class VerifiableCredential {
 
     private String id;
+    private Map<String, String> claims;
+
 
     private VerifiableCredential() {
     }
 
     public String getId() {
         return id;
+    }
+
+    public Map<String, String> getClaims() {
+        return Map.copyOf(claims);
     }
 
     @JsonPOJOBuilder(withPrefix = "")
@@ -56,6 +63,11 @@ public class VerifiableCredential {
 
         public Builder id(String id) {
             verifiableCredential.id = id;
+            return this;
+        }
+
+        public Builder claims(Map<String, String> claims) {
+            verifiableCredential.claims = Map.copyOf(claims);
             return this;
         }
 

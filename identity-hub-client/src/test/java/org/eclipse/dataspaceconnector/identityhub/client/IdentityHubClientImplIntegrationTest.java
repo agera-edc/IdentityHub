@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +33,12 @@ public class IdentityHubClientImplIntegrationTest {
 
     private static final String API_URL = "http://localhost:8181/api/identity-hub";
     private static final Faker FAKER = new Faker();
-    private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
+    private static final VerifiableCredential VC = VerifiableCredential.Builder.newInstance()
+            .id(FAKER.internet().uuid())
+            .claims(Map.of(
+                    FAKER.lorem().word(), FAKER.lorem().word(),
+                    FAKER.lorem().word(), FAKER.lorem().word()))
+            .build();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private IdentityHubClient client;
 
@@ -44,9 +50,8 @@ public class IdentityHubClientImplIntegrationTest {
 
     @Test
     void addAndQueryVerifiableCredentials() throws Exception {
-        var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
-        addVerifiableCredential(credential);
-        getVerifiableCredential(credential);
+        addVerifiableCredential(VC);
+        getVerifiableCredential(VC);
     }
 
     private void addVerifiableCredential(VerifiableCredential credential) throws IOException {
