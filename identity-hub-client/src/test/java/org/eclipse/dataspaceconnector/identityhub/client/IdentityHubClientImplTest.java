@@ -27,7 +27,6 @@ import org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject;
 import org.eclipse.dataspaceconnector.identityhub.dtos.MessageStatus;
 import org.eclipse.dataspaceconnector.identityhub.dtos.RequestStatus;
 import org.eclipse.dataspaceconnector.identityhub.dtos.ResponseObject;
-import org.eclipse.dataspaceconnector.identityhub.dtos.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.response.StatusResult;
 import org.junit.jupiter.api.Test;
@@ -36,17 +35,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.dataspaceconnector.identityhub.client.TestUtil.createVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.dtos.MessageResponseObject.MESSAGE_ID_VALUE;
 
 public class IdentityHubClientImplTest {
     private static final Faker FAKER = new Faker();
     private static final String HUB_URL = String.format("https://%s", FAKER.internet().url());
-    private static final String VERIFIABLE_CREDENTIAL_ID = FAKER.internet().uuid();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Test
     void getVerifiableCredentials() throws Exception {
-        var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+        var credential = createVerifiableCredential();
 
         Interceptor interceptor = chain -> {
             var request = chain.request();
@@ -121,7 +120,7 @@ public class IdentityHubClientImplTest {
 
     @Test
     void addVerifiableCredentialsServerError() throws Exception {
-        var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
+        var credential = createVerifiableCredential();
         var errorMessage = FAKER.lorem().sentence();
         var body = "{}";
         int code = 500;
