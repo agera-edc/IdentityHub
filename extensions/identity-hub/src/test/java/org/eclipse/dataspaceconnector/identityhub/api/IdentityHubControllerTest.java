@@ -62,6 +62,8 @@ public class IdentityHubControllerTest {
     void writeAndQueryObject() throws Exception {
         var verifiableCredential = VerifiableCredential.Builder.newInstance()
                 .id(FAKER.internet().uuid())
+                .claims(Map.of(
+                        FAKER.lorem().word(), FAKER.lorem().word()))
                 .build();
 
         collectionsWrite(verifiableCredential);

@@ -73,6 +73,7 @@ public class VerifiableCredential {
 
         public VerifiableCredential build() {
             Objects.requireNonNull(verifiableCredential.id, "VerifiableCredential must contain id property.");
+            Objects.requireNonNull(verifiableCredential.claims, "VerifiableCredential must contain claims property.");
             return verifiableCredential;
         }
     }

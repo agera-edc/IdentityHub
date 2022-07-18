@@ -15,7 +15,6 @@
 package org.eclipse.dataspaceconnector.identityhub.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.javafaker.Faker;
 import org.eclipse.dataspaceconnector.identityhub.dtos.credentials.VerifiableCredential;
 import org.eclipse.dataspaceconnector.junit.extensions.EdcExtension;
 import org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils;
@@ -32,7 +31,6 @@ import static org.eclipse.dataspaceconnector.identityhub.client.TestUtil.createV
 public class IdentityHubClientImplIntegrationTest {
 
     private static final String API_URL = "http://localhost:8181/api/identity-hub";
-    private static final Faker FAKER = new Faker();
     private static final VerifiableCredential VC = createVerifiableCredential();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private IdentityHubClient client;
