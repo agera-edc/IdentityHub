@@ -44,6 +44,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
 }
 
+publishing {
     publications {
         create<MavenPublication>("identity-hub-credentials-verifier") {
             artifactId = "identity-hub-credentials-verifier"
