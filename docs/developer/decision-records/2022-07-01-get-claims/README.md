@@ -68,10 +68,12 @@ The IdentityHubCredentialsVerifier returns a Map<String, Object>, it contains ve
 
 ```json
 <verifiable-credential-id>: {
-"vc": {
-"id": <verifiable-credential-id>,
-"credentialSubject": <claims>
-}
+  "vc": {
+    "id": <verifiable-credential-id>,
+    "credentialSubject": <claims>
+  }
+  "iss": <issuer did>, // part of the JWT claims
+  "sub": <subject> // part of the JWT claims
 }
 ```
 
@@ -84,7 +86,8 @@ For example:
       "credentialSubject": {
         "region": "eu"
       }, 
-       "iss": "did:web:issuer1"
+       "iss": "did:web:issuer1",
+       "sub": "did:web:subjectA"
     }
   },
   "vc_id_2": {
@@ -93,7 +96,8 @@ For example:
         "credentialSubject": {
            "region": "eu"
         },
-        "iss": "did:web:issuer2"
+        "iss": "did:web:issuer2",
+        "sub": "did:web:subjectA"
      }
   }
 }
