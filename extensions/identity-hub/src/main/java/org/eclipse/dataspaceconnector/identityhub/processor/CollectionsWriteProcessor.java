@@ -21,14 +21,13 @@ import org.eclipse.dataspaceconnector.identityhub.store.IdentityHubStore;
 
 import java.text.ParseException;
 
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtServiceImpl.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.model.MessageResponseObject.MESSAGE_ID_VALUE;
 
 /**
  * Processor of "CollectionsWrite" messages, in order to write objects into the {@link IdentityHubStore}.
  */
 public class CollectionsWriteProcessor implements MessageProcessor {
-
-    private static final String VERIFIABLE_CREDENTIALS_KEY = "vc";
     private final IdentityHubStore identityHubStore;
 
     public CollectionsWriteProcessor(IdentityHubStore identityHubStore) {

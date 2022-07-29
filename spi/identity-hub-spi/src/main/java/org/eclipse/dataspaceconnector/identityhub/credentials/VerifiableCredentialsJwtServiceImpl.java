@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredentialsJwtService {
-    private static final String VERIFIABLE_CREDENTIALS_KEY = "vc";
+    public static final String VERIFIABLE_CREDENTIALS_KEY = "vc";
     private ObjectMapper objectMapper;
 
     public VerifiableCredentialsJwtServiceImpl(ObjectMapper objectMapper) {

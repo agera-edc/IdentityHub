@@ -23,6 +23,7 @@ import com.nimbusds.jwt.SignedJWT;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtServiceImpl.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.buildSignedJwt;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
@@ -33,7 +34,6 @@ public class VerifiableCredentialsJwtServiceTest {
     static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     static final VerifiableCredentialsJwtService VERIFIABLE_CREDENTIALS_JWT_SERVICE = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
     static final Faker FAKER = new Faker();
-    static final String VERIFIABLE_CREDENTIALS_KEY = "vc";
     static final JWSHeader JWS_HEADER = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
 
     @Test

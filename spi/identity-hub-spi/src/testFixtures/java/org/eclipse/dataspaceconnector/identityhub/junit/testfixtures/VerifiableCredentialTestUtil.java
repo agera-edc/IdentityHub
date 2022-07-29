@@ -32,6 +32,8 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCr
 
 import java.util.Map;
 
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtServiceImpl.VERIFIABLE_CREDENTIALS_KEY;
+
 /**
  * Util class to manipulate VerifiableCredentials in tests.
  */
@@ -63,7 +65,7 @@ public class VerifiableCredentialTestUtil {
 
     public static SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, ECKey jwk) {
         var claims = new JWTClaimsSet.Builder()
-                .claim("vc", credential)
+                .claim(VERIFIABLE_CREDENTIALS_KEY, credential)
                 .issuer(issuer)
                 .subject(subject)
                 .expirationTime(null)
@@ -89,7 +91,7 @@ public class VerifiableCredentialTestUtil {
 
     public static Map<String, Object> toMap(VerifiableCredential verifiableCredential, String issuer, String subject) {
         return Map.of(verifiableCredential.getId(),
-                Map.of("vc", Map.of("credentialSubject", verifiableCredential.getCredentialSubject(),
+                Map.of(VERIFIABLE_CREDENTIALS_KEY, Map.of("credentialSubject", verifiableCredential.getCredentialSubject(),
                                 "id", verifiableCredential.getId()),
                 "sub", subject,
                 "iss", issuer));

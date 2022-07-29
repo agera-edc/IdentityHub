@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtServiceImpl.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.buildSignedJwt;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
@@ -151,7 +152,7 @@ public class IdentityHubCredentialsVerifierTest {
         // Arrange
         var jwsHeader = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
         var jwtClaims = new JWTClaimsSet.Builder()
-                .claim("vc", Map.of(FAKER.lorem().word(), FAKER.lorem().word()))
+                .claim(VERIFIABLE_CREDENTIALS_KEY, Map.of(FAKER.lorem().word(), FAKER.lorem().word()))
                 .issuer(FAKER.lorem().word())
                 .subject(subject)
                 .build();
