@@ -23,6 +23,7 @@ import org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableC
 import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
@@ -38,7 +39,7 @@ import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.Veri
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DidJwtCredentialsVerifierTest {
+class DidJwtCredentialsVerifierTest {
 
     private static final Faker FAKER = new Faker();
     private static final Monitor MONITOR = new ConsoleMonitor();
@@ -48,11 +49,18 @@ public class DidJwtCredentialsVerifierTest {
     private static final String SUBJECT = FAKER.internet().url();
     private static final String OTHER_SUBJECT = FAKER.internet().url() + "other";
     private static final SignedJWT JWT = buildSignedJwt(generateVerifiableCredential(), ISSUER, SUBJECT, JWK);
-    private DidPublicKeyResolver didPublicKeyResolver = mock(DidPublicKeyResolver.class);
-    private DidJwtCredentialsVerifier didJwtCredentialsVerifier = new DidJwtCredentialsVerifier(didPublicKeyResolver, MONITOR);
+    private DidPublicKeyResolver didPublicKeyResolver;
+    private DidJwtCredentialsVerifier didJwtCredentialsVerifier;
+
+    @BeforeEach
+    public void setUp() {
+        didPublicKeyResolver = mock(DidPublicKeyResolver.class);
+        didJwtCredentialsVerifier = new DidJwtCredentialsVerifier(didPublicKeyResolver, MONITOR);
+    }
+
 
     @Test
-    public void isSignedByIssuer_jwtSignedByIssuer() {
+    void isSignedByIssuer_jwtSignedByIssuer() {
 
         // Arrange
         when(didPublicKeyResolver.resolvePublicKey(ISSUER)).thenReturn(Result.success(toPublicKeyWrapper(JWK)));
@@ -62,7 +70,7 @@ public class DidJwtCredentialsVerifierTest {
     }
 
     @Test
-    public void isSignedByIssuer_jwtSignedByWrongIssuer() {
+    void isSignedByIssuer_jwtSignedByWrongIssuer() {
 
         // Arrange
         when(didPublicKeyResolver.resolvePublicKey(ISSUER)).thenReturn(Result.success(toPublicKeyWrapper(ANOTHER_JWK)));
@@ -72,7 +80,7 @@ public class DidJwtCredentialsVerifierTest {
     }
 
     @Test
-    public void isSignedByIssuer_PublicKeyCantBeResolved() {
+    void isSignedByIssuer_PublicKeyCantBeResolved() {
 
         // Arrange
         when(didPublicKeyResolver.resolvePublicKey(ISSUER)).thenReturn(Result.failure("Failed resolving public key"));
@@ -82,7 +90,7 @@ public class DidJwtCredentialsVerifierTest {
     }
 
     @Test
-    public void isSignedByIssuer_issuerDidCantBeResolved() throws ParseException {
+    void isSignedByIssuer_issuerDidCantBeResolved() throws ParseException {
 
         // Arrange
         when(didPublicKeyResolver.resolvePublicKey(JWT.getJWTClaimsSet().getIssuer())).thenReturn(Result.failure(FAKER.lorem().sentence()));
@@ -92,7 +100,7 @@ public class DidJwtCredentialsVerifierTest {
     }
 
     @Test
-    public void isSignedByIssuer_cantParsePayload() throws Exception {
+    void isSignedByIssuer_cantParsePayload() throws Exception {
 
         // Arrange
         var jws = mock(SignedJWT.class);
@@ -125,7 +133,7 @@ public class DidJwtCredentialsVerifierTest {
     }
 
     @Test
-    public void verifyClaims_OnInvalidJwt() throws Exception {
+    void verifyClaims_OnInvalidJwt() throws Exception {
         // Arrange
         var jwt = mock(SignedJWT.class);
         var message = FAKER.lorem().sentence();
@@ -143,7 +151,7 @@ public class DidJwtCredentialsVerifierTest {
                 .expirationTime(from(now().plus(1, DAYS)))
                 .build();
 
-        SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
+        var jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
         assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isTrue();
     }
@@ -156,7 +164,7 @@ public class DidJwtCredentialsVerifierTest {
                 .expirationTime(from(now().minus(1, DAYS)))
                 .build();
 
-        SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
+        var jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
         assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isFalse();
     }
@@ -169,7 +177,7 @@ public class DidJwtCredentialsVerifierTest {
                 .notBeforeTime(from(now().minus(1, DAYS)))
                 .build();
 
-        SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
+        var jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
         assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isTrue();
     }
@@ -182,7 +190,7 @@ public class DidJwtCredentialsVerifierTest {
                 .notBeforeTime(from(now().plus(1, DAYS)))
                 .build();
 
-        SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
+        var jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
         assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isFalse();
     }

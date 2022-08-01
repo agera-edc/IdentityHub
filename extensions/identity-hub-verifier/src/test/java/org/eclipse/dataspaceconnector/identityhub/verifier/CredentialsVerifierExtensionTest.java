@@ -46,7 +46,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(EdcExtension.class)
-public class CredentialsVerifierExtensionTest {
+class CredentialsVerifierExtensionTest {
     private static final Faker FAKER = new Faker();
     private static final int PORT = getFreePort();
     private static final String API_URL = String.format("http://localhost:%d/api/identity-hub", PORT);
@@ -64,7 +64,7 @@ public class CredentialsVerifierExtensionTest {
     }
 
     @Test
-    public void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier) {
+    void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier) {
         // Arrange
         var jwk = generateEcKey();
         when(publicKeyResolver.resolvePublicKey(anyString())).thenReturn(Result.success(toPublicKeyWrapper(jwk)));

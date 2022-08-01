@@ -42,11 +42,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class IdentityHubCredentialsVerifierTest {
+class IdentityHubCredentialsVerifierTest {
 
     private static final Faker FAKER = new Faker();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -55,14 +54,14 @@ public class IdentityHubCredentialsVerifierTest {
             .service(List.of(new Service("IdentityHub", "IdentityHub", HUB_BASE_URL))).build();
     private static final String ISSUER = FAKER.internet().url();
     private static final String SUBJECT = FAKER.internet().url();
-    private Monitor monitorMock = mock(Monitor.class);
-    private IdentityHubClient identityHubClientMock = mock(IdentityHubClient.class);
-    private JwtCredentialsVerifier jwtCredentialsVerifierMock = mock(JwtCredentialsVerifier.class);
-    private VerifiableCredentialsJwtServiceImpl verifiableCredentialsJwtService = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
-    private CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtService);
+    private final Monitor monitorMock = mock(Monitor.class);
+    private final IdentityHubClient identityHubClientMock = mock(IdentityHubClient.class);
+    private final JwtCredentialsVerifier jwtCredentialsVerifierMock = mock(JwtCredentialsVerifier.class);
+    private final VerifiableCredentialsJwtServiceImpl verifiableCredentialsJwtService = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
+    private final CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtService);
 
     @Test
-    public void getVerifiedClaims_getValidClaims() throws Exception {
+    void getVerifiedClaims_getValidClaims() {
 
         // Arrange
         var credential = generateVerifiableCredential();
@@ -86,7 +85,7 @@ public class IdentityHubCredentialsVerifierTest {
     }
 
     @Test
-    public void getVerifiedClaims_filtersSignedByWrongIssuer() throws Exception {
+    void getVerifiedClaims_filtersSignedByWrongIssuer() {
 
         // Arrange
         var credential = generateVerifiableCredential();
@@ -98,11 +97,11 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.succeeded()).isTrue();
-        assertThat(credentials.getContent().size()).isEqualTo(0);
+        assertThat(credentials.getContent()).isEmpty();
     }
 
     @Test
-    public void getVerifiedClaims_hubUrlNotResolved() {
+    void getVerifiedClaims_hubUrlNotResolved() {
         // Arrange
         var didDocument = DidDocument.Builder.newInstance().build();
 
@@ -115,7 +114,7 @@ public class IdentityHubCredentialsVerifierTest {
     }
 
     @Test
-    public void getVerifiedClaims_idHubCallFails() {
+    void getVerifiedClaims_idHubCallFails() {
 
         // Arrange
         when(identityHubClientMock.getVerifiableCredentials(HUB_BASE_URL)).thenReturn(StatusResult.failure(ResponseStatus.FATAL_ERROR));
@@ -128,7 +127,7 @@ public class IdentityHubCredentialsVerifierTest {
     }
 
     @Test
-    public void getVerifiedClaims_verifiableCredentialsWithWrongFormat() {
+    void getVerifiedClaims_verifiableCredentialsWithWrongFormat() {
 
         // Arrange
         var jws = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.ES256).build(), new JWTClaimsSet.Builder().build());
@@ -139,13 +138,13 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.succeeded()).isTrue();
-        assertThat(credentials.getContent().isEmpty());
-        verify(monitorMock, times(1)).warning(anyString());
+        assertThat(credentials.getContent()).isEmpty();
+        verify(monitorMock).warning(anyString());
 
     }
 
     @Test
-    public void getVerifiedClaims_verifiableCredentialsWithMissingId() {
+    void getVerifiedClaims_verifiableCredentialsWithMissingId() {
 
         // Arrange
         var jwsHeader = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
@@ -162,7 +161,7 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.succeeded()).isTrue();
-        assertThat(credentials.getContent().isEmpty());
-        verify(monitorMock, times(1)).warning(anyString());
+        assertThat(credentials.getContent()).isEmpty();
+        verify(monitorMock).warning(anyString());
     }
 }
