@@ -63,7 +63,8 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
      *           "credentialSubject": {
      *             "region": "eu"
      *           },
-     *            "iss": "did:web:issuer1"
+     *            "iss": "did:web:issuer1",
+     *            "sub": "did:web:subjectA"
      *         }
      *       }
      *   }
