@@ -128,7 +128,7 @@ class IdentityHubControllerTest {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("complianceCredential.issuer", equalTo("did:web:compliance.gaia-x.eu"));
+                .body("selfDescriptionCredential.credentialSubject.gx-participant:headquarterAddress.gx-participant:country.@value", equalTo("FR"));
     }
 
     private RequestSpecification baseRequest() {

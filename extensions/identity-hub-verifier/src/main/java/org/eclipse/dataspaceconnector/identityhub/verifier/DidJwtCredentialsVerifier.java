@@ -56,7 +56,7 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
             monitor.warning(String.format("Failed finding publicKey of issuer: %s", issuer));
             return false;
         }
-        Result<Void> signatureResult = verifySignature(jwt, issuerPublicKey.getContent());
+        var signatureResult = verifySignature(jwt, issuerPublicKey.getContent());
         return signatureResult.succeeded();
     }
 
