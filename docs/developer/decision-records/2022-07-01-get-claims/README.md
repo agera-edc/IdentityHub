@@ -64,7 +64,7 @@ For each VerifiableCredential:
 
 ## Claims format
 
-The IdentityHubCredentialsVerifier returns a Map<String, Object>, it contains verifiable credentials with the following format:
+The `IdentityHubCredentialsVerifier` returns a `Map<String, Object>`, which contains verifiable credentials with the following format:
 
 ```json
 <verifiable-credential-id>: {
