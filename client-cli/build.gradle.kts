@@ -22,7 +22,7 @@ dependencies {
     annotationProcessor("info.picocli:picocli-codegen:${picoCliVersion}")
 
     implementation(project(":identity-hub-util"))
-    implementation(project(":identity-hub-core:identity-hub-client"))
+    implementation(project(":extensions:identity-hub-client"))
     implementation("${edcGroup}:identity-did-spi:${edcVersion}")
     implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
