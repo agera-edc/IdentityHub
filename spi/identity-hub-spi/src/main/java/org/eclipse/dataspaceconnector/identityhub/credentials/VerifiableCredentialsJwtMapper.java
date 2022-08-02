@@ -20,6 +20,7 @@ import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
+import java.text.ParseException;
 import java.util.Map;
 
 /**
@@ -37,9 +38,9 @@ public interface VerifiableCredentialsJwtMapper {
      * @param subject    The subject of the verifiable credential
      * @param privateKey The private key of the issuer, used for signing
      * @return The Verifiable Credential as a JWT
-     * @throws JOSEException In case the credential can not be signed
+     * @throws Exception In case the credential can not be signed
      */
-    SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws JOSEException;
+    SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws Exception;
 
     /**
      * Extract verifiable credentials from a JWT. The credential is represented with the following format
