@@ -77,6 +77,8 @@ The `IdentityHubCredentialsVerifier` returns a `Map<String, Object>`, which cont
 }
 ```
 
+The credentialSubject field can contain claims with various format, see the [Credential Subject documentation](https://www.w3.org/TR/vc-data-model/#credential-subject) for more details.
+
 For example:
 ```json
 {
