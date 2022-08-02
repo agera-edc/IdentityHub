@@ -12,7 +12,7 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.identityhub.util;
+package org.eclipse.dataspaceconnector.identityhub.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
@@ -25,7 +25,6 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredenti
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
-import java.text.ParseException;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,7 +37,7 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
     }
 
     @Override
-    public SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws JOSEException, ParseException {
+    public SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws JOSEException {
         var jwsHeader = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
         var claims = new JWTClaimsSet.Builder()
                 .claim(VERIFIABLE_CREDENTIALS_KEY, credential)
@@ -50,7 +49,7 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
 
         jws.sign(privateKey.signer());
 
-        return SignedJWT.parse(jws.serialize());
+        return jws;
     }
 
     @Override

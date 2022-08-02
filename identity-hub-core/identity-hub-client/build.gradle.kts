@@ -35,6 +35,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("${edcGroup}:core-spi:${edcVersion}")
     implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
+    implementation("${edcGroup}:identity-did-spi:${edcVersion}")
 
     testImplementation(project(":extensions:identity-hub"))
     testImplementation(testFixtures(project(":spi:identity-hub-spi")))
