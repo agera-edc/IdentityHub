@@ -44,6 +44,11 @@ dependencies {
     testImplementation("com.github.javafaker:javafaker:${faker}")
 }
 
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+publishing {
+    publications {
+        create<MavenPublication>("identity-hub-util") {
+            artifactId = "identity-hub-util"
+            from(components["java"])
+        }
+    }
 }
