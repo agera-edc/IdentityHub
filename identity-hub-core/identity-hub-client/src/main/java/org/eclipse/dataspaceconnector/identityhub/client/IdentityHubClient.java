@@ -32,8 +32,6 @@ public interface IdentityHubClient {
      *
      * @param hubBaseUrl Base URL of the IdentityHub instance.
      * @return status result containing VerifiableCredentials if request successful.
-     * @throws IOException Signaling that an I/O exception has occurred. For example during JSON serialization or when
-     *                     reaching out to the Identity Hub server.
      */
     StatusResult<Collection<SignedJWT>> getVerifiableCredentials(String hubBaseUrl);
 
@@ -43,8 +41,6 @@ public interface IdentityHubClient {
      * @param hubBaseUrl           Base URL of the IdentityHub instance.
      * @param verifiableCredential A verifiable credential to be saved.
      * @return status result.
-     * @throws IOException Signaling that an I/O exception has occurred. For example during JSON serialization or when
-     *                     reaching out to the Identity Hub server.
      */
     StatusResult<Void> addVerifiableCredential(String hubBaseUrl, SignedJWT verifiableCredential);
 
