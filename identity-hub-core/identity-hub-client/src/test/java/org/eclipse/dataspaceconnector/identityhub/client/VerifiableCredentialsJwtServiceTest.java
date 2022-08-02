@@ -12,7 +12,7 @@
  *
  */
 
-package org.eclipse.dataspaceconnector.identityhub.util;
+package org.eclipse.dataspaceconnector.identityhub.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;

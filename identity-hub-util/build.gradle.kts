@@ -34,14 +34,6 @@ dependencies {
     implementation(project(":spi:identity-hub-spi"))
     implementation("${edcGroup}:identity-did-spi:${edcVersion}")
     implementation("${edcGroup}:identity-did-crypto:${edcVersion}")
-
-    testImplementation(testFixtures(project(":spi:identity-hub-spi")))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
-    testImplementation("org.assertj:assertj-core:${assertj}")
-    testImplementation("com.github.javafaker:javafaker:${faker}")
 }
 
 publishing {

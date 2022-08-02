@@ -36,6 +36,7 @@ dependencies {
     implementation("${edcGroup}:core-spi:${edcVersion}")
     implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
     implementation("${edcGroup}:identity-did-spi:${edcVersion}")
+    implementation("${edcGroup}:identity-did-crypto:${edcVersion}")
 
     testImplementation(project(":extensions:identity-hub"))
     testImplementation(testFixtures(project(":spi:identity-hub-spi")))
