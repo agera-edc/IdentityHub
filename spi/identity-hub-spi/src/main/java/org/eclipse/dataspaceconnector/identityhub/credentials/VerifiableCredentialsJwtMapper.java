@@ -14,13 +14,11 @@
 
 package org.eclipse.dataspaceconnector.identityhub.credentials;
 
-import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
-import java.text.ParseException;
 import java.util.Map;
 
 /**
