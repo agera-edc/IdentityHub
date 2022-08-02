@@ -21,13 +21,13 @@ import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService;
-import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtServiceImpl;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
+import org.eclipse.dataspaceconnector.identityhub.util.VerifiableCredentialsJwtServiceImpl;
 
 import java.util.Map;
 
-import static org.eclipse.dataspaceconnector.identityhub.credentials.CryptoUtils.readPrivateEcKey;
-import static org.eclipse.dataspaceconnector.identityhub.credentials.CryptoUtils.readPublicEcKey;
+import static org.eclipse.dataspaceconnector.identityhub.util.CryptoUtils.readPrivateEcKey;
+import static org.eclipse.dataspaceconnector.identityhub.util.CryptoUtils.readPublicEcKey;
 
 class CliTestUtils {
     public static final String PUBLIC_KEY_PATH = "src/test/resources/test-public-key.pem";

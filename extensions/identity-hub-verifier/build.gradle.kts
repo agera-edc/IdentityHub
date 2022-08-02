@@ -29,6 +29,7 @@ dependencies {
     implementation(project(":extensions:identity-hub"))
     implementation(project(":identity-hub-core:identity-hub-client"))
     implementation(project(":spi:identity-hub-spi"))
+    implementation(project(":identity-hub-util"))
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:identity-did-spi:${edcVersion}")
     implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")

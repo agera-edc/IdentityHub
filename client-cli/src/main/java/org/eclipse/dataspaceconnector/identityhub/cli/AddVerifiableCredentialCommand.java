@@ -24,7 +24,7 @@ import picocli.CommandLine.ParentCommand;
 
 import java.util.concurrent.Callable;
 
-import static org.eclipse.dataspaceconnector.identityhub.credentials.CryptoUtils.readPrivateEcKey;
+import static org.eclipse.dataspaceconnector.identityhub.util.CryptoUtils.readPrivateEcKey;
 
 
 @Command(name = "add", description = "Adds a verifiable credential to identity hub")
