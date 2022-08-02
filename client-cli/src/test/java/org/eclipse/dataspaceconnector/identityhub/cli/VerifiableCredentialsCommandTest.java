@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
-import org.eclipse.dataspaceconnector.identityhub.client.VerifiableCredentialsJwtServiceImpl;
+import org.eclipse.dataspaceconnector.identityhub.client.VerifiableCredentialsJwtMapperImpl;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ import static org.eclipse.dataspaceconnector.identityhub.cli.CliTestUtils.PRIVAT
 import static org.eclipse.dataspaceconnector.identityhub.cli.CliTestUtils.createVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.cli.CliTestUtils.signVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.cli.CliTestUtils.verifyVerifiableCredentialSignature;
-import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMapper.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.spi.response.StatusResult.success;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -65,7 +65,7 @@ class VerifiableCredentialsCommandTest {
     @BeforeEach
     void setUp() {
         app.identityHubClient = mock(IdentityHubClient.class);
-        app.verifiableCredentialsJwtService = new VerifiableCredentialsJwtServiceImpl(new ObjectMapper());
+        app.verifiableCredentialsJwtMapper = new VerifiableCredentialsJwtMapperImpl(new ObjectMapper());
         app.hubUrl = HUB_URL;
         cmd.setOut(new PrintWriter(out));
         cmd.setErr(new PrintWriter(err));

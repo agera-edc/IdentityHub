@@ -21,7 +21,7 @@ import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
-import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
@@ -29,10 +29,10 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredentialsJwtService {
+public class VerifiableCredentialsJwtMapperImpl implements VerifiableCredentialsJwtMapper {
     private ObjectMapper objectMapper;
 
-    public VerifiableCredentialsJwtServiceImpl(ObjectMapper objectMapper) {
+    public VerifiableCredentialsJwtMapperImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

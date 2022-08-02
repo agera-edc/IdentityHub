@@ -34,7 +34,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.map;
-import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMapper.VERIFIABLE_CREDENTIALS_KEY;
 
 @IntegrationTest
 @ExtendWith(EdcExtension.class)
