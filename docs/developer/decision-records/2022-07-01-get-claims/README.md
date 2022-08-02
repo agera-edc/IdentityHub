@@ -67,13 +67,13 @@ For each VerifiableCredential:
 The `IdentityHubCredentialsVerifier` returns a `Map<String, Object>`, which contains verifiable credentials with the following format:
 
 ```json
-<verifiable-credential-id>: {
+"<verifiable-credential-id>": {
   "vc": {
-    "id": <verifiable-credential-id>,
-    "credentialSubject": <claims>
+    "id": "<verifiable-credential-id>",
+    "credentialSubject": "<claims>"
   }
-  "iss": <issuer did>, // part of the JWT claims
-  "sub": <subject> // part of the JWT claims
+  "iss": "<issuer did>, (part of the JWT claims)"
+  "sub": "<subject>, (part of the JWT claims)"
 }
 ```
 
