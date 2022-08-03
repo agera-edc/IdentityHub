@@ -16,7 +16,6 @@ package org.eclipse.dataspaceconnector.identityhub.verifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import org.eclipse.dataspaceconnector.iam.did.resolution.DidPublicKeyResolverImpl;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.Service;
@@ -58,7 +57,7 @@ public class CredentialsVerifierExtensionTest {
     @BeforeEach
     void setUp(EdcExtension extension) {
         identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), new ConsoleMonitor());
-        publicKeyResolver = mock(DidPublicKeyResolverImpl.class);
+        publicKeyResolver = mock(DidPublicKeyResolver.class);
         extension.registerServiceMock(DidPublicKeyResolver.class, publicKeyResolver);
         extension.setConfiguration(Map.of("web.http.port", String.valueOf(PORT)));
     }
