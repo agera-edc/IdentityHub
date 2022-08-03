@@ -20,8 +20,6 @@ plugins {
 
 val edcVersion: String by project
 val edcGroup: String by project
-val identityHubVersion: String by project
-val identityHubGroup: String by project
 
 dependencies {
     implementation("${edcGroup}:core:${edcVersion}")
