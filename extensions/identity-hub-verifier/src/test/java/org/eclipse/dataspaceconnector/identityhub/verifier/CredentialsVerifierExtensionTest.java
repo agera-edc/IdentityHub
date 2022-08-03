@@ -16,7 +16,6 @@ package org.eclipse.dataspaceconnector.identityhub.verifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import org.eclipse.dataspaceconnector.iam.did.resolution.DidPublicKeyResolverImpl;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.Service;
@@ -42,7 +41,6 @@ import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.Veri
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toPublicKeyWrapper;
 import static org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils.getFreePort;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(EdcExtension.class)
@@ -52,20 +50,18 @@ public class CredentialsVerifierExtensionTest {
     private static final String API_URL = String.format("http://localhost:%d/api/identity-hub", PORT);
     private static final String CREDENTIAL_ISSUER = FAKER.internet().url();
     private static final String SUBJECT = FAKER.internet().url();
-    private IdentityHubClient identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), new ConsoleMonitor());
-    private DidPublicKeyResolver publicKeyResolver = mock(DidPublicKeyResolver.class);
+    private final IdentityHubClient identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), new ConsoleMonitor());
 
     @BeforeEach
     void setUp(EdcExtension extension) {
-        extension.registerServiceMock(DidPublicKeyResolver.class, publicKeyResolver);
         extension.setConfiguration(Map.of("web.http.port", String.valueOf(PORT)));
     }
 
     @Test
-    public void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier) {
+    public void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier, DidPublicKeyResolver mockResolver) {
         // Arrange
         var jwk = generateEcKey();
-        when(publicKeyResolver.resolvePublicKey(anyString())).thenReturn(Result.success(toPublicKeyWrapper(jwk)));
+        when(mockResolver.resolvePublicKey(anyString())).thenReturn(Result.success(toPublicKeyWrapper(jwk)));
         var didDocument = DidDocument.Builder.newInstance()
                 .id(SUBJECT)
                 .service(List.of(new Service("IdentityHub", "IdentityHub", API_URL)))
