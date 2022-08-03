@@ -39,7 +39,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("io.rest-assured:rest-assured:${restAssured}")
     testImplementation("com.github.javafaker:javafaker:${faker}")
-    testImplementation(testFixtures(project(":spi:identity-hub-spi")))
+    testImplementation(testFixtures(project(":identity-hub-core:identity-hub-util")))
 }
 
 publishing {

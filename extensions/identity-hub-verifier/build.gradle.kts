@@ -28,13 +28,14 @@ val faker: String by project
 dependencies {
     implementation(project(":extensions:identity-hub"))
     implementation(project(":identity-hub-core:identity-hub-client"))
+    implementation(project(":identity-hub-core:identity-hub-util"))
     implementation(project(":spi:identity-hub-spi"))
     implementation("${edcGroup}:core:${edcVersion}")
     implementation("${edcGroup}:identity-did-spi:${edcVersion}")
     implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
 
-    testImplementation(testFixtures(project(":spi:identity-hub-spi")))
+    testImplementation(testFixtures(project(":identity-hub-core:identity-hub-util")))
     testImplementation("com.github.javafaker:javafaker:${faker}")
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
