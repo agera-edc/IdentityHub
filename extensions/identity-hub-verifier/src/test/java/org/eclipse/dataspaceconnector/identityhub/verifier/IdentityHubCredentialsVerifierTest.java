@@ -30,6 +30,7 @@ import org.eclipse.dataspaceconnector.spi.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.response.StatusResult;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +59,7 @@ public class IdentityHubCredentialsVerifierTest {
     private Monitor monitorMock = mock(Monitor.class);
     private IdentityHubClient identityHubClientMock = mock(IdentityHubClient.class);
     private JwtCredentialsVerifier jwtCredentialsVerifierMock = mock(JwtCredentialsVerifier.class);
-    private VerifiableCredentialsJwtMapperImpl verifiableCredentialsJwtService = new VerifiableCredentialsJwtMapperImpl(OBJECT_MAPPER);
+    private VerifiableCredentialsJwtMapperImpl verifiableCredentialsJwtService = new VerifiableCredentialsJwtMapperImpl(OBJECT_MAPPER, Clock.systemUTC());
     private CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtService);
 
     @Test
