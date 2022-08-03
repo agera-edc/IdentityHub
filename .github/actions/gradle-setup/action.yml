@@ -7,7 +7,7 @@ runs:
     - name: Checkout EDC
       uses: actions/checkout@v2
       with:
-        repository: eclipse-dataspaceconnector/DataSpaceConnector
+        repository: agera-edc/DataSpaceConnector
         path: DataSpaceConnector
         ref: 56a6ac8749774ed1d8af582134320ba7caf5c1d3
 
