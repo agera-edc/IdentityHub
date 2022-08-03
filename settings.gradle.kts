@@ -2,6 +2,7 @@ rootProject.name = "identity-hub"
 
 include(":spi:identity-hub-spi")
 include(":spi:identity-hub-store-spi")
+include(":spi:identity-hub-client-spi")
 include(":extensions:identity-hub")
 include(":extensions:identity-hub-client")
 include(":identity-hub-core:identity-hub-model")

@@ -47,11 +47,6 @@ public class CredentialsVerifierExtension implements ServiceExtension {
 
     private DidPublicKeyResolver didPublicKeyResolver;
 
-    @Override
-    public void initialize(ServiceExtensionContext context) {
-        monitor.info("Initialized Identity Hub DID extension");
-    }
-
     @Provider(isDefault = true)
     public JwtCredentialsVerifier createJwtVerifier(ServiceExtensionContext context) {
         // Lazy instantiation of DidPublicKeyResolver to prevent injection issues. As the same extension is providing and requiring JwtCredentialsVerifier,
@@ -59,7 +54,7 @@ public class CredentialsVerifierExtension implements ServiceExtension {
         if (didPublicKeyResolver == null) {
             didPublicKeyResolver = context.getService(DidPublicKeyResolver.class);
         }
-        return new DidJwtCredentialsVerifier(didPublicKeyResolver, monitor);
+        return new DidJwtCredentialsVerifier(didPublicKeyResolver, context.getMonitor());
     }
 
     @Provider

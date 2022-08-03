@@ -27,7 +27,7 @@ val assertj: String by project
 val nimbusVersion: String by project
 
 dependencies {
-    api(project(":spi:identity-hub-spi"))
+    api(project(":spi:identity-hub-client-spi"))
     api(project(":identity-hub-core:identity-hub-model"))
     api("${edcGroup}:core-spi:${edcVersion}")
     implementation("${edcGroup}:http:${edcVersion}")
