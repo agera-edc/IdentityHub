@@ -24,6 +24,7 @@ import org.eclipse.dataspaceconnector.identityhub.client.VerifiableCredentialsJw
 import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 
+import java.time.Clock;
 import java.util.Map;
 
 import static org.eclipse.dataspaceconnector.identityhub.util.CryptoUtils.readPrivateEcKey;
@@ -35,7 +36,7 @@ class CliTestUtils {
     public static final PublicKeyWrapper PUBLIC_KEY;
     public static final PrivateKeyWrapper PRIVATE_KEY;
     private static final Faker FAKER = new Faker();
-    private static final VerifiableCredentialsJwtMapper VC_JWT_SERVICE = new VerifiableCredentialsJwtMapperImpl(new ObjectMapper());
+    private static final VerifiableCredentialsJwtMapper VC_JWT_SERVICE = new VerifiableCredentialsJwtMapperImpl(new ObjectMapper(), Clock.systemUTC());
 
     static {
         try {

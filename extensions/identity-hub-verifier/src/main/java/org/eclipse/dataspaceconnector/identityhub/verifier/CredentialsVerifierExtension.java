@@ -66,7 +66,7 @@ public class CredentialsVerifierExtension implements ServiceExtension {
     public CredentialsVerifier createCredentialsVerifier(ServiceExtensionContext context) {
         var client = new IdentityHubClientImpl(httpClient, typeManager.getMapper(), monitor);
         // TODO: Inject instead of instantiating
-        var verifiableCredentialsJwtService = new VerifiableCredentialsJwtMapperImpl(typeManager.getMapper());
+        var verifiableCredentialsJwtService = new VerifiableCredentialsJwtMapperImpl(typeManager.getMapper(), context.getClock());
         return new IdentityHubCredentialsVerifier(client, monitor, jwtCredentialsVerifier, verifiableCredentialsJwtService);
     }
 }

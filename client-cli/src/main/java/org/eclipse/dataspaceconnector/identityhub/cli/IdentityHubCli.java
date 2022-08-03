@@ -24,6 +24,8 @@ import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
+import java.time.Clock;
+
 @Command(name = "identity-hub-cli", mixinStandardHelpOptions = true,
         description = "Client utility for MVD identity hub.",
         subcommands = {
@@ -57,7 +59,8 @@ public class IdentityHubCli {
         var okHttpClient = new OkHttpClient.Builder().build();
         var objectMapper = new ObjectMapper();
         var monitor = new ConsoleMonitor();
+        var clock = Clock.systemUTC();
         this.identityHubClient = new IdentityHubClientImpl(okHttpClient, objectMapper, monitor);
-        this.verifiableCredentialsJwtMapper = new VerifiableCredentialsJwtMapperImpl(objectMapper);
+        this.verifiableCredentialsJwtMapper = new VerifiableCredentialsJwtMapperImpl(objectMapper, clock);
     }
 }

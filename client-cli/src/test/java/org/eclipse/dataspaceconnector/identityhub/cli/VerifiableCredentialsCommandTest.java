@@ -29,6 +29,7 @@ import picocli.CommandLine;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,15 +58,15 @@ class VerifiableCredentialsCommandTest {
     private static final SignedJWT SIGNED_VC2 = signVerifiableCredential(VC2);
     private static final String HUB_URL = FAKER.internet().url();
 
-    private IdentityHubCli app = new IdentityHubCli();
-    private CommandLine cmd = new CommandLine(app);
-    private StringWriter out = new StringWriter();
-    private StringWriter err = new StringWriter();
+    private final IdentityHubCli app = new IdentityHubCli();
+    private final CommandLine cmd = new CommandLine(app);
+    private final StringWriter out = new StringWriter();
+    private final StringWriter err = new StringWriter();
 
     @BeforeEach
     void setUp() {
         app.identityHubClient = mock(IdentityHubClient.class);
-        app.verifiableCredentialsJwtMapper = new VerifiableCredentialsJwtMapperImpl(new ObjectMapper());
+        app.verifiableCredentialsJwtMapper = new VerifiableCredentialsJwtMapperImpl(new ObjectMapper(), Clock.systemUTC());
         app.hubUrl = HUB_URL;
         cmd.setOut(new PrintWriter(out));
         cmd.setErr(new PrintWriter(err));

@@ -26,15 +26,19 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCr
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.text.ParseException;
+import java.time.Clock;
 import java.util.AbstractMap;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
 public class VerifiableCredentialsJwtMapperImpl implements VerifiableCredentialsJwtMapper {
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+    private final Clock clock;
 
-    public VerifiableCredentialsJwtMapperImpl(ObjectMapper objectMapper) {
+    public VerifiableCredentialsJwtMapperImpl(ObjectMapper objectMapper, Clock clock) {
         this.objectMapper = objectMapper;
+        this.clock = clock;
     }
 
     @Override
@@ -42,6 +46,7 @@ public class VerifiableCredentialsJwtMapperImpl implements VerifiableCredentials
         var jwsHeader = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
         var claims = new JWTClaimsSet.Builder()
                 .claim(VERIFIABLE_CREDENTIALS_KEY, credential)
+                .issueTime(Date.from(clock.instant()))
                 .issuer(issuer)
                 .subject(subject)
                 .build();
@@ -65,7 +70,7 @@ public class VerifiableCredentialsJwtMapperImpl implements VerifiableCredentials
 
             return Result.success(new AbstractMap.SimpleEntry<>(verifiableCredential.getId(), payload));
         } catch (RuntimeException e) {
-            return Result.failure(Objects.requireNonNullElseGet(e.getMessage(), () -> e.toString()));
+            return Result.failure(Objects.requireNonNullElseGet(e.getMessage(), e::toString));
         }
     }
 }

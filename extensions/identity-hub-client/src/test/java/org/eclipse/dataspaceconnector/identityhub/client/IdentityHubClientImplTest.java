@@ -48,7 +48,7 @@ public class IdentityHubClientImplTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Test
-    void getVerifiableCredentials() throws Exception {
+    void getVerifiableCredentials() {
         var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
         var jws = buildSignedJwt(credential, FAKER.internet().url(), FAKER.internet().url(), generateEcKey());
 
@@ -124,7 +124,7 @@ public class IdentityHubClientImplTest {
     }
 
     @Test
-    void addVerifiableCredentialsServerError() throws Exception {
+    void addVerifiableCredentialsServerError() {
         var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
         var jws = buildSignedJwt(credential, FAKER.internet().url(), FAKER.internet().url(), generateEcKey());
         var errorMessage = FAKER.lorem().sentence();
@@ -150,12 +150,12 @@ public class IdentityHubClientImplTest {
     }
 
     @Test
-    void addVerifiableCredentialsIoException() throws Exception {
+    void addVerifiableCredentialsIoException() {
         var credential = VerifiableCredential.Builder.newInstance().id(VERIFIABLE_CREDENTIAL_ID).build();
         var jws = buildSignedJwt(credential, FAKER.internet().url(), FAKER.internet().url(), generateEcKey());
         var exceptionMessage = FAKER.lorem().sentence();
         Interceptor interceptor = chain -> {
-            var request = chain.request();
+            chain.request();
             throw new IOException(exceptionMessage);
         };
 
