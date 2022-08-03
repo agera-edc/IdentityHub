@@ -41,7 +41,6 @@ import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.Veri
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toPublicKeyWrapper;
 import static org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils.getFreePort;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(EdcExtension.class)
@@ -52,21 +51,18 @@ public class CredentialsVerifierExtensionTest {
     private static final String CREDENTIAL_ISSUER = FAKER.internet().url();
     private static final String SUBJECT = FAKER.internet().url();
     private IdentityHubClient identityHubClient;
-    private DidPublicKeyResolver publicKeyResolver;
 
     @BeforeEach
     void setUp(EdcExtension extension) {
         identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), new ConsoleMonitor());
-        publicKeyResolver = mock(DidPublicKeyResolver.class);
-        extension.registerServiceMock(DidPublicKeyResolver.class, publicKeyResolver);
         extension.setConfiguration(Map.of("web.http.port", String.valueOf(PORT)));
     }
 
     @Test
-    public void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier) {
+    public void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier, DidPublicKeyResolver mockPublicKeyResolver) {
         // Arrange
         var jwk = generateEcKey();
-        when(publicKeyResolver.resolvePublicKey(anyString())).thenReturn(Result.success(toPublicKeyWrapper(jwk)));
+        when(mockPublicKeyResolver.resolvePublicKey(anyString())).thenReturn(Result.success(toPublicKeyWrapper(jwk)));
         var didDocument = DidDocument.Builder.newInstance()
                 .id(SUBJECT)
                 .service(List.of(new Service("IdentityHub", "IdentityHub", API_URL)))
