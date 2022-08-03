@@ -59,8 +59,8 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
             System.err.println("Error with resolver");
             e.printStackTrace(System.err);
             return false;
-
         }
+
         if (issuerPublicKey.failed()) {
             monitor.warning(String.format("Failed finding publicKey of issuer: %s", issuer));
             return false;
