@@ -9,7 +9,7 @@ runs:
       with:
         repository: agera-edc/DataSpaceConnector
         path: DataSpaceConnector
-        ref: 56a6ac8749774ed1d8af582134320ba7caf5c1d3
+        ref: de5dcee3d5afa0506d477fe0e44f30915e4aa7eb
 
     # Install Java and cache MVD Gradle build.
     - uses: actions/setup-java@v2
