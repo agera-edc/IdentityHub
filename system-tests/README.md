@@ -40,5 +40,4 @@ docker-compose -f system-tests/tests/docker-compose.yml up --build
 Run test with:
 
 ```bash
-INTEGRATION_TEST=true ./gradlew :system-tests:tests:test
-```
+VerifiableCredentialsIntegrationTest```

@@ -52,13 +52,11 @@ public class CredentialsVerifierExtensionTest {
     private static final String API_URL = String.format("http://localhost:%d/api/identity-hub", PORT);
     private static final String CREDENTIAL_ISSUER = FAKER.internet().url();
     private static final String SUBJECT = FAKER.internet().url();
-    private IdentityHubClient identityHubClient;
-    private DidPublicKeyResolver publicKeyResolver;
+    private IdentityHubClient identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), new ConsoleMonitor());
+    private DidPublicKeyResolver publicKeyResolver = mock(DidPublicKeyResolver.class);
 
     @BeforeEach
     void setUp(EdcExtension extension) {
-        identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), new ConsoleMonitor());
-        publicKeyResolver = mock(DidPublicKeyResolverImpl.class);
         extension.registerServiceMock(DidPublicKeyResolver.class, publicKeyResolver);
         extension.setConfiguration(Map.of("web.http.port", String.valueOf(PORT)));
     }

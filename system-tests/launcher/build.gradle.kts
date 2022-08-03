@@ -23,7 +23,9 @@ val edcGroup: String by project
 
 dependencies {
     implementation("${edcGroup}:core:${edcVersion}")
+    implementation("${edcGroup}:identity-did-core:${edcVersion}")
     implementation(project(":extensions:identity-hub"))
+    implementation(project(":extensions:identity-hub-jwt-verifier"))
 }
 
 application {

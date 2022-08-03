@@ -35,7 +35,6 @@ dependencies {
     implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
     implementation(project(":extensions:identity-hub-client"))
-    testImplementation(project(":extensions:identity-hub-jwt-verifier"))
 
     testImplementation(testFixtures(project(":spi:identity-hub-spi")))
     testImplementation("com.github.javafaker:javafaker:${faker}")
@@ -49,8 +48,8 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("identity-hub-credentials-verifier") {
-            artifactId = "identity-hub-credentials-verifier"
+        create<MavenPublication>("identity-hub-jwt-verifier") {
+            artifactId = "identity-hub-jwt-verifier"
             from(components["java"])
         }
     }
