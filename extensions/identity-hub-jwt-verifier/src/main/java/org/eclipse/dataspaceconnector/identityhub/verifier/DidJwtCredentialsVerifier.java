@@ -51,7 +51,16 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
             monitor.warning("Error parsing issuer from JWT", e);
             return false;
         }
-        var issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer);
+        Result<PublicKeyWrapper> issuerPublicKey ;
+        try {
+            issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer);
+        } catch (Exception e) {
+            monitor.warning("Error with resolver", e);
+            System.err.println("Error with resolver");
+            e.printStackTrace(System.err);
+            return false;
+
+        }
         if (issuerPublicKey.failed()) {
             monitor.warning(String.format("Failed finding publicKey of issuer: %s", issuer));
             return false;
