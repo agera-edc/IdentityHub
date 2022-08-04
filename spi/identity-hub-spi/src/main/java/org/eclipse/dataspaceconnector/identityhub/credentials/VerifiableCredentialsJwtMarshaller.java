@@ -17,12 +17,9 @@ package org.eclipse.dataspaceconnector.identityhub.credentials;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
-import org.eclipse.dataspaceconnector.spi.result.Result;
-
-import java.util.Map;
 
 /**
- * Service with operations for manipulation of VerifiableCredentials in JWT format.
+ * Formats {@link VerifiableCredential}s into JWT payloads.
  */
 public interface VerifiableCredentialsJwtMarshaller {
 

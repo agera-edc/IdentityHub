@@ -15,14 +15,13 @@
 package org.eclipse.dataspaceconnector.identityhub.credentials;
 
 import com.nimbusds.jwt.SignedJWT;
-import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.util.Map;
 
 /**
- * Service with operations for manipulation of VerifiableCredentials in JWT format.
+ * Extracts {@link VerifiableCredential}s from JWT payloads.
  */
 public interface VerifiableCredentialsJwtUnmarshaller {
 
@@ -42,7 +41,7 @@ public interface VerifiableCredentialsJwtUnmarshaller {
      *     // other JWT claims
      * }
      * }</pre>
-     * The representation is used to support any type of <a href="https://www.w3.org/TR/vc-data-model">verifiable credentials</a> .
+     * The representation is used to support any type of <a href="https://www.w3.org/TR/vc-data-model">verifiable credentials</a>.
      * When applying policies, the policy engine might need to access the issuer of the claim. That's why the JWT claims are included.
      *
      * @param jwt SignedJWT containing a verifiableCredential in its payload.
