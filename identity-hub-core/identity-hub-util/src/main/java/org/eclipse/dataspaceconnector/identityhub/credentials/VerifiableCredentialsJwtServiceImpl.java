@@ -24,16 +24,20 @@ import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
+import java.sql.Date;
 import java.text.ParseException;
+import java.time.Clock;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredentialsJwtService {
     private final ObjectMapper objectMapper;
+    private final Clock clock;
 
     public VerifiableCredentialsJwtServiceImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+        this.clock = Clock.systemUTC();
     }
 
     @Override
@@ -43,6 +47,7 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
                 .claim(VERIFIABLE_CREDENTIALS_KEY, credential)
                 .issuer(issuer)
                 .subject(subject)
+                .issueTime(Date.from(clock.instant()))
                 .build();
 
         var jws = new SignedJWT(jwsHeader, claims);
