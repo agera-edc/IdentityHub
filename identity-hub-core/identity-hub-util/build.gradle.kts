@@ -29,15 +29,13 @@ val assertj: String by project
 
 dependencies {
     api(project(":spi:identity-hub-spi"))
-    api("org.jetbrains:annotations:${jetBrainsAnnotationsVersion}")
+    api("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
+
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
-    implementation("${edcGroup}:identity-did-spi:${edcVersion}")
     implementation("${edcGroup}:identity-did-crypto:${edcVersion}")
 
     testFixturesImplementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
     testFixturesImplementation("com.github.javafaker:javafaker:${faker}")
-    testFixturesImplementation("${edcGroup}:identity-did-spi:${edcVersion}")
     testFixturesImplementation("${edcGroup}:identity-did-crypto:${edcVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
