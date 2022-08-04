@@ -43,14 +43,15 @@ class VerifiableCredentialsJwtUnmarshallerTest {
     VerifiableCredentialsJwtUnmarshaller service = new VerifiableCredentialsJwtUnmarshallerImpl();
 
     @Test
-    void extractCredential_OnJwtWithValidCredential() throws Exception {
+    void extractCredential_OnJwtWithValidCredential() {
         // Arrange
         var issuer = FAKER.lorem().word();
         var subject = FAKER.lorem().word();
         var jwt = marshaller.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
+        assertThat(jwt.succeeded()).isTrue();
 
         // Act
-        var result = service.extractCredential(jwt);
+        var result = service.extractCredential(jwt.getContent());
 
         // Assert
         assertThat(result.succeeded()).isTrue();

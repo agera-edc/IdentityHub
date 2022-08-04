@@ -26,6 +26,7 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCr
 import java.time.Clock;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.CryptoUtils.readPrivateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.CryptoUtils.readPublicEcKey;
 
@@ -59,16 +60,13 @@ class CliTestUtils {
     }
 
     public static SignedJWT signVerifiableCredential(VerifiableCredential vc) {
-        try {
-
-            return VC_MARSHALLER.buildSignedJwt(
+            var result = VC_MARSHALLER.buildSignedJwt(
                     vc,
                     "identity-hub-test-issuer",
                     "identity-hub-test-subject",
                     PRIVATE_KEY);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            assertThat(result.succeeded()).isTrue();
+            return result.getContent();
     }
 
     public static boolean verifyVerifiableCredentialSignature(SignedJWT jwt) {

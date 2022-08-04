@@ -52,9 +52,11 @@ class VerifiableCredentialsJwtMarshallerTest {
         var subject = FAKER.lorem().word();
 
         // Act
-        var signedJwt = service.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
+        var signedJwtResult = service.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
 
         // Assert
+        assertThat(signedJwtResult.succeeded()).isTrue();
+        var signedJwt = signedJwtResult.getContent();
         boolean result = signedJwt.verify(publicKey.verifier());
         assertThat(result).isTrue();
 

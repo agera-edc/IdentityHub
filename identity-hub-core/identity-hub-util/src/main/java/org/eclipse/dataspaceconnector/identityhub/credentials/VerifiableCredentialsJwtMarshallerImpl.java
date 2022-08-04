@@ -21,6 +21,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.sql.Date;
 import java.text.ParseException;
@@ -36,7 +37,7 @@ public class VerifiableCredentialsJwtMarshallerImpl implements VerifiableCredent
     }
 
     @Override
-    public SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws JOSEException, ParseException {
+    public Result<SignedJWT> buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) {
         var jwsHeader = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
         var claims = new JWTClaimsSet.Builder()
                 .claim(VERIFIABLE_CREDENTIALS_KEY, credential)
@@ -47,8 +48,12 @@ public class VerifiableCredentialsJwtMarshallerImpl implements VerifiableCredent
 
         var jws = new SignedJWT(jwsHeader, claims);
 
-        jws.sign(privateKey.signer());
+        try {
+            jws.sign(privateKey.signer());
+        } catch (JOSEException e) {
+            return Result.failure(e.getMessage());
+        }
 
-        return SignedJWT.parse(jws.serialize());
+        return Result.success(jws);
     }
 }

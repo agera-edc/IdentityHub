@@ -17,6 +17,7 @@ package org.eclipse.dataspaceconnector.identityhub.credentials;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 
 /**
  * Formats {@link VerifiableCredential}s into JWT payloads.
@@ -31,7 +32,6 @@ public interface VerifiableCredentialsJwtMarshaller {
      * @param subject    The subject of the verifiable credential
      * @param privateKey The private key of the issuer, used for signing
      * @return The Verifiable Credential as a JWT
-     * @throws Exception In case the credential can not be signed
      */
-    SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws Exception;
+    Result<SignedJWT> buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey);
 }
