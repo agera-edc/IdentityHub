@@ -31,11 +31,11 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredentialsJwtService {
+public class VerifiableCredentialsJwtUnmarshallerImpl implements VerifiableCredentialsJwtUnmarshaller {
     private final ObjectMapper objectMapper;
     private final Clock clock;
 
-    public VerifiableCredentialsJwtServiceImpl(ObjectMapper objectMapper) {
+    public VerifiableCredentialsJwtUnmarshallerImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
         this.clock = Clock.systemUTC();
     }

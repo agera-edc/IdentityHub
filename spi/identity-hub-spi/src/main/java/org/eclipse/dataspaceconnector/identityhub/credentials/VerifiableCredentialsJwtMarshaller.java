@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Service with operations for manipulation of VerifiableCredentials in JWT format.
  */
-public interface VerifiableCredentialsJwtService {
+public interface VerifiableCredentialsJwtMarshaller {
 
     String VERIFIABLE_CREDENTIALS_KEY = "vc";
 

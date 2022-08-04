@@ -31,11 +31,11 @@ import java.time.Instant;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.map;
-import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 
-public class VerifiableCredentialsJwtServiceTest {
+public class VerifiableCredentialsJwtUnmarshallerTest {
 
     private static final Faker FAKER = new Faker();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -43,14 +43,14 @@ public class VerifiableCredentialsJwtServiceTest {
     private static final JWSHeader JWS_HEADER = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
     private EcPrivateKeyWrapper privateKey;
     private EcPublicKeyWrapper publicKey;
-    private VerifiableCredentialsJwtService service;
+    private VerifiableCredentialsJwtUnmarshaller service;
 
     @BeforeEach
     public void setUp() {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
         publicKey = new EcPublicKeyWrapper(key);
-        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
+        service = new VerifiableCredentialsJwtUnmarshallerImpl(OBJECT_MAPPER);
     }
 
     @Test

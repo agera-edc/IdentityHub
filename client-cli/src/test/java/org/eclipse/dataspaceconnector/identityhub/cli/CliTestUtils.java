@@ -20,8 +20,8 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
-import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService;
-import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtServiceImpl;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshallerImpl;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 
 import java.util.Map;
@@ -35,7 +35,7 @@ class CliTestUtils {
     public static final PublicKeyWrapper PUBLIC_KEY;
     public static final PrivateKeyWrapper PRIVATE_KEY;
     private static final Faker FAKER = new Faker();
-    private static final VerifiableCredentialsJwtService VC_JWT_SERVICE = new VerifiableCredentialsJwtServiceImpl(new ObjectMapper());
+    private static final VerifiableCredentialsJwtUnmarshaller VC_JWT_SERVICE = new VerifiableCredentialsJwtUnmarshallerImpl(new ObjectMapper());
 
     static {
         try {
