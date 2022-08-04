@@ -51,7 +51,7 @@ class AddVerifiableCredentialCommand implements Callable<Integer> {
     private String privateKeyPemFile;
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         var out = spec.commandLine().getOut();
 
         VerifiableCredential vc;
@@ -64,7 +64,7 @@ class AddVerifiableCredentialCommand implements Callable<Integer> {
         SignedJWT signedJwt;
         try {
             var privateKey = readPrivateEcKey(privateKeyPemFile);
-            signedJwt = command.cli.verifiableCredentialsJwtUnmarshaller.buildSignedJwt(vc, issuer, subject, privateKey);
+            signedJwt = command.cli.verifiableCredentialsJwtMarshaller.buildSignedJwt(vc, issuer, subject, privateKey);
         } catch (Exception e) {
             throw new CliException("Error while signing Verifiable Credential", e);
         }

@@ -16,87 +16,59 @@ package org.eclipse.dataspaceconnector.identityhub.credentials;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPrivateKeyWrapper;
+import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.map;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 
-public class VerifiableCredentialsJwtUnmarshallerTest {
+public class VerifiableCredentialsJwtMarshallerTest {
 
     private static final Faker FAKER = new Faker();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final VerifiableCredential VERIFIABLE_CREDENTIAL = generateVerifiableCredential();
-    private static final JWSHeader JWS_HEADER = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
     private EcPrivateKeyWrapper privateKey;
-    private VerifiableCredentialsJwtMarshaller marshaller;
-    private VerifiableCredentialsJwtUnmarshaller service;
+    private EcPublicKeyWrapper publicKey;
+    private VerifiableCredentialsJwtMarshaller service;
 
     @BeforeEach
     public void setUp() {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
-        marshaller = new VerifiableCredentialsJwtMarshallerImpl(OBJECT_MAPPER);
-        service = new VerifiableCredentialsJwtUnmarshallerImpl(OBJECT_MAPPER);
+        publicKey = new EcPublicKeyWrapper(key);
+        service = new VerifiableCredentialsJwtMarshallerImpl(OBJECT_MAPPER);
     }
 
     @Test
-    public void extractCredential_OnJwtWithValidCredential() throws Exception {
+    public void buildSignedJwt_success() throws Exception {
         // Arrange
         var issuer = FAKER.lorem().word();
         var subject = FAKER.lorem().word();
-        var jwt = marshaller.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
+        var startTime = Instant.now().truncatedTo(SECONDS); // as issue time claim is rounded down
 
         // Act
-        var result = service.extractCredential(jwt);
+        var signedJwt = service.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
 
         // Assert
-        assertThat(result.succeeded()).isTrue();
-        assertThat(result.getContent().getKey()).isEqualTo(VERIFIABLE_CREDENTIAL.getId());
-        assertThat(result.getContent().getValue())
-                .asInstanceOf(map(String.class, Object.class))
+        boolean result = signedJwt.verify(publicKey.verifier());
+        assertThat(result).isTrue();
+
+        assertThat(signedJwt.getJWTClaimsSet().toJSONObject())
                 .containsEntry("iss", issuer)
                 .containsEntry("sub", subject)
                 .extractingByKey(VERIFIABLE_CREDENTIALS_KEY)
                 .satisfies(c -> assertThat(OBJECT_MAPPER.convertValue(c, VerifiableCredential.class))
                         .usingRecursiveComparison()
                         .isEqualTo(VERIFIABLE_CREDENTIAL));
+
+        assertThat(signedJwt.getJWTClaimsSet().getIssueTime()).isBetween(startTime, Instant.now());
     }
-
-    @Test
-    public void extractCredential_OnJwtWithMissingVcField() {
-        // Arrange
-        var claims = new JWTClaimsSet.Builder().claim(FAKER.lorem().word(), FAKER.lorem().word()).build();
-        var jws = new SignedJWT(JWS_HEADER, claims);
-
-        // Act
-        var result = service.extractCredential(jws);
-
-        // Assert
-        assertThat(result.failed()).isTrue();
-        assertThat(result.getFailureMessages()).containsExactly(String.format("No %s field found", VERIFIABLE_CREDENTIALS_KEY));
-    }
-
-    @Test
-    public void extractCredential_OnJwtWithWrongFormat() {
-        // Arrange
-        var claims = new JWTClaimsSet.Builder().claim(VERIFIABLE_CREDENTIALS_KEY, FAKER.lorem().word()).build();
-        var jws = new SignedJWT(JWS_HEADER, claims);
-
-        // Act
-        var result = service.extractCredential(jws);
-
-        // Assert
-        assertThat(result.failed()).isTrue();
-    }
-
 }

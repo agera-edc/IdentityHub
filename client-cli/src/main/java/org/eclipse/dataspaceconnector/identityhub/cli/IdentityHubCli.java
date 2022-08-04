@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshaller;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerImpl;
 import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller;
 import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshallerImpl;
 import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
@@ -36,6 +38,8 @@ public class IdentityHubCli {
     IdentityHubClient identityHubClient;
 
     VerifiableCredentialsJwtUnmarshaller verifiableCredentialsJwtUnmarshaller;
+
+    VerifiableCredentialsJwtMarshaller verifiableCredentialsJwtMarshaller;
 
     public static void main(String... args) {
         CommandLine commandLine = getCommandLine();
@@ -59,5 +63,6 @@ public class IdentityHubCli {
         var monitor = new ConsoleMonitor();
         this.identityHubClient = new IdentityHubClientImpl(okHttpClient, objectMapper, monitor);
         this.verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl(objectMapper);
+        this.verifiableCredentialsJwtMarshaller = new VerifiableCredentialsJwtMarshallerImpl(objectMapper);
     }
 }

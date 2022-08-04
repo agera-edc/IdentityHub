@@ -26,8 +26,6 @@ import java.util.Map;
  */
 public interface VerifiableCredentialsJwtMarshaller {
 
-    String VERIFIABLE_CREDENTIALS_KEY = "vc";
-
     /**
      * Builds a verifiable credential as a signed JWT
      *
@@ -39,27 +37,4 @@ public interface VerifiableCredentialsJwtMarshaller {
      * @throws Exception In case the credential can not be signed
      */
     SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws Exception;
-
-    /**
-     * Extract verifiable credentials from a JWT. The credential is represented with the following format
-     * <pre>{@code
-     * "credentialId" : {
-     *     "vc": {
-     *         "credentialSubject": {
-     *             // some claims about the subject.
-     *         }
-     *     }
-     *     "iss": "issuer-value",
-     *     "sub": "subject-value",
-     *     // other JWT claims
-     * }
-     * }</pre>
-     * The representation is used to support any type of <a href="https://www.w3.org/TR/vc-data-model">verifiable credentials</a> .
-     * When applying policies, the policy engine might need to access the issuer of the claim. That's why the JWT claims are included.
-     *
-     * @param jwt SignedJWT containing a verifiableCredential in its payload.
-     * @return VerifiableCredential represented as {@code Map.Entry<String, Object>}.
-     */
-    Result<Map.Entry<String, Object>> extractCredential(SignedJWT jwt);
-
 }
