@@ -50,7 +50,7 @@ public class VerifiableCredentialsJwtServiceTest {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
         publicKey = new EcPublicKeyWrapper(key);
-        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
+        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER, monitor);
     }
 
     @Test

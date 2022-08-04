@@ -90,9 +90,11 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
         var successfulResults = partitionedResult.get(true);
         var failedResults = partitionedResult.get(false);
 
-        failedResults.forEach(result -> monitor.warning(String.join(",", result.getFailureMessages())));
-
         monitor.info(String.format("Validated %s verifiable credentials", successfulResults.size()));
+        monitor.info(String.format("Filtered out %s verifiable credentials", failedResults.size()));
+
+        failedResults.forEach(result -> monitor.warning("Invalid credentials: " + String.join(",", result.getFailureMessages())));
+
 
         var claims = successfulResults.stream()
                 .map(AbstractResult::getContent)

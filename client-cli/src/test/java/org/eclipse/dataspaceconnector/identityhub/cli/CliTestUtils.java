@@ -35,7 +35,7 @@ class CliTestUtils {
     public static final PublicKeyWrapper PUBLIC_KEY;
     public static final PrivateKeyWrapper PRIVATE_KEY;
     private static final Faker FAKER = new Faker();
-    private static final VerifiableCredentialsJwtService VC_JWT_SERVICE = new VerifiableCredentialsJwtServiceImpl(new ObjectMapper());
+    private static final VerifiableCredentialsJwtService VC_JWT_SERVICE = new VerifiableCredentialsJwtServiceImpl(new ObjectMapper(), monitor);
 
     static {
         try {
