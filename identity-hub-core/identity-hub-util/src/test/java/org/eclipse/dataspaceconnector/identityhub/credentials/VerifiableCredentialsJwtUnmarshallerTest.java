@@ -14,8 +14,6 @@
 
 package org.eclipse.dataspaceconnector.identityhub.credentials;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.javafaker.Faker;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.jwk.ECKey;
@@ -29,15 +27,14 @@ import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.map;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerTest.FAKER;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerTest.OBJECT_MAPPER;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerTest.VERIFIABLE_CREDENTIAL;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
-import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 
 class VerifiableCredentialsJwtUnmarshallerTest {
 
-    static final Faker FAKER = new Faker();
-    static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    static final VerifiableCredential VERIFIABLE_CREDENTIAL = generateVerifiableCredential();
     static final JWSHeader JWS_HEADER = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
 
     ECKey key = generateEcKey();
