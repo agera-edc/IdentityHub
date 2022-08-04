@@ -77,12 +77,14 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             return Result.failure(jwts.getFailureMessages());
         }
 
-        monitor.info("Retrieved %s verifiable credentials: " + jwts.getContent().size());
+        monitor.info(String.format("Retrieved %s verifiable credentials", jwts.getContent().size()));
 
         var verifiedJwt = jwts.getContent()
                 .stream()
                 .filter(jwt -> jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId()))
                 .filter(jwtCredentialsVerifier::isSignedByIssuer);
+
+        monitor.info("Filtering valid verifiable credentials");
 
         var partitionedResult = verifiedJwt.map(verifiableCredentialsJwtService::extractCredential).collect(partitioningBy(AbstractResult::succeeded));
         var successfulResults = partitionedResult.get(true);
