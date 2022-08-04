@@ -14,18 +14,19 @@
 
 package org.eclipse.dataspaceconnector.identityhub.cli;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.spi.key.PublicKeyWrapper;
-import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService;
-import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtServiceImpl;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshaller;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerImpl;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 
+import java.time.Clock;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.CryptoUtils.readPrivateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.CryptoUtils.readPublicEcKey;
 
@@ -35,7 +36,7 @@ class CliTestUtils {
     public static final PublicKeyWrapper PUBLIC_KEY;
     public static final PrivateKeyWrapper PRIVATE_KEY;
     private static final Faker FAKER = new Faker();
-    private static final VerifiableCredentialsJwtService VC_JWT_SERVICE = new VerifiableCredentialsJwtServiceImpl(new ObjectMapper());
+    private static final VerifiableCredentialsJwtMarshaller VC_MARSHALLER = new VerifiableCredentialsJwtMarshallerImpl(Clock.systemUTC());
 
     static {
         try {
@@ -59,16 +60,13 @@ class CliTestUtils {
     }
 
     public static SignedJWT signVerifiableCredential(VerifiableCredential vc) {
-        try {
-
-            return VC_JWT_SERVICE.buildSignedJwt(
+            var result = VC_MARSHALLER.buildSignedJwt(
                     vc,
                     "identity-hub-test-issuer",
                     "identity-hub-test-subject",
                     PRIVATE_KEY);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            assertThat(result.succeeded()).isTrue();
+            return result.getContent();
     }
 
     public static boolean verifyVerifiableCredentialSignature(SignedJWT jwt) {

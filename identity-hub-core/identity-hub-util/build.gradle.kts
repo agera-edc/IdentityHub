@@ -8,38 +8,37 @@
  *  SPDX-License-Identifier: Apache-2.0
  *
  *  Contributors:
- *       Microsoft Corporation - initial API and implementation
+ *       Microsoft Corporation - initial implementation
  *
  */
 
 plugins {
     `java-library`
+    `java-test-fixtures`
     `maven-publish`
 }
 
+val jetBrainsAnnotationsVersion: String by project
 val jacksonVersion: String by project
-val okHttpVersion: String by project
-val edcVersion: String by project
-val edcGroup: String by project
-val jupiterVersion: String by project
-val faker: String by project
-val assertj: String by project
 val nimbusVersion: String by project
+val faker: String by project
+val edcGroup: String by project
+val edcVersion: String by project
+val jupiterVersion: String by project
+val mockitoVersion: String by project
+val assertj: String by project
 
 dependencies {
     api(project(":spi:identity-hub-spi"))
-    api(project(":identity-hub-core:identity-hub-model"))
-    api("${edcGroup}:core-spi:${edcVersion}")
-    implementation("${edcGroup}:http:${edcVersion}")
-    implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    implementation("${edcGroup}:core-spi:${edcVersion}")
-    implementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
+    api("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
 
-    testImplementation(project(":extensions:identity-hub"))
-    testImplementation(testFixtures(project(":identity-hub-core:identity-hub-util")))
-    testImplementation("${edcGroup}:common-util:${edcVersion}:test-fixtures")
-    testImplementation("${edcGroup}:junit:${edcVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("${edcGroup}:identity-did-crypto:${edcVersion}")
+
+    testFixturesImplementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
+    testFixturesImplementation("com.github.javafaker:javafaker:${faker}")
+    testFixturesImplementation("${edcGroup}:identity-did-crypto:${edcVersion}")
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
     testImplementation("org.assertj:assertj-core:${assertj}")
@@ -48,8 +47,8 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("identity-hub-client") {
-            artifactId = "identity-hub-client"
+        create<MavenPublication>("identity-hub-spi") {
+            artifactId = "identity-hub-spi"
             from(components["java"])
         }
     }

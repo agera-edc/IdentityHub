@@ -24,7 +24,7 @@ import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifie
 import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.Service;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
-import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtServiceImpl;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshallerImpl;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.response.StatusResult;
@@ -49,7 +49,6 @@ import static org.mockito.Mockito.when;
 public class IdentityHubCredentialsVerifierTest {
 
     private static final Faker FAKER = new Faker();
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String HUB_BASE_URL = "https://" + FAKER.internet().url();
     private static final DidDocument DID_DOCUMENT = DidDocument.Builder.newInstance()
             .service(List.of(new Service("IdentityHub", "IdentityHub", HUB_BASE_URL))).build();
@@ -58,8 +57,8 @@ public class IdentityHubCredentialsVerifierTest {
     private Monitor monitorMock = mock(Monitor.class);
     private IdentityHubClient identityHubClientMock = mock(IdentityHubClient.class);
     private JwtCredentialsVerifier jwtCredentialsVerifierMock = mock(JwtCredentialsVerifier.class);
-    private VerifiableCredentialsJwtServiceImpl verifiableCredentialsJwtService = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
-    private CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtService);
+    private VerifiableCredentialsJwtUnmarshallerImpl verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl();
+    private CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtUnmarshaller);
 
     @Test
     public void getVerifiedClaims_getValidClaims() throws Exception {

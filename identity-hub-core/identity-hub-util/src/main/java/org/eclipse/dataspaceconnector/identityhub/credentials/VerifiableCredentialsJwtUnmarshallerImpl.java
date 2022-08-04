@@ -15,42 +15,16 @@
 package org.eclipse.dataspaceconnector.identityhub.credentials;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
-import java.text.ParseException;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredentialsJwtService {
-    private ObjectMapper objectMapper;
-
-    public VerifiableCredentialsJwtServiceImpl(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    @Override
-    public SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws JOSEException, ParseException {
-        var jwsHeader = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
-        var claims = new JWTClaimsSet.Builder()
-                .claim(VERIFIABLE_CREDENTIALS_KEY, credential)
-                .issuer(issuer)
-                .subject(subject)
-                .build();
-
-        var jws = new SignedJWT(jwsHeader, claims);
-
-        jws.sign(privateKey.signer());
-
-        return SignedJWT.parse(jws.serialize());
-    }
+public class VerifiableCredentialsJwtUnmarshallerImpl implements VerifiableCredentialsJwtUnmarshaller {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Result<Map.Entry<String, Object>> extractCredential(SignedJWT jwt) {
@@ -64,7 +38,7 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
 
             return Result.success(new AbstractMap.SimpleEntry<>(verifiableCredential.getId(), payload));
         } catch (RuntimeException e) {
-            return Result.failure(Objects.requireNonNullElseGet(e.getMessage(), () -> e.toString()));
+            return Result.failure(Objects.requireNonNullElseGet(e.getMessage(), e::toString));
         }
     }
 }

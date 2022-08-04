@@ -48,8 +48,8 @@ public class DidJwtCredentialsVerifierTest {
     private static final String SUBJECT = FAKER.internet().url();
     private static final String OTHER_SUBJECT = FAKER.internet().url() + "other";
     private static final SignedJWT JWT = buildSignedJwt(generateVerifiableCredential(), ISSUER, SUBJECT, JWK);
-    private DidPublicKeyResolver didPublicKeyResolver = mock(DidPublicKeyResolver.class);
-    private DidJwtCredentialsVerifier didJwtCredentialsVerifier = new DidJwtCredentialsVerifier(didPublicKeyResolver, MONITOR);
+    private final DidPublicKeyResolver didPublicKeyResolver = mock(DidPublicKeyResolver.class);
+    private final DidJwtCredentialsVerifier didJwtCredentialsVerifier = new DidJwtCredentialsVerifier(didPublicKeyResolver, MONITOR);
 
     @Test
     public void isSignedByIssuer_jwtSignedByIssuer() {
