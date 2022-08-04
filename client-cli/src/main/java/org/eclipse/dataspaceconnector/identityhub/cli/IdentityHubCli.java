@@ -39,9 +39,9 @@ public class IdentityHubCli {
 
     IdentityHubClient identityHubClient;
 
-    VerifiableCredentialsJwtUnmarshaller verifiableCredentialsJwtUnmarshaller;
-
     VerifiableCredentialsJwtMarshaller verifiableCredentialsJwtMarshaller;
+
+    VerifiableCredentialsJwtUnmarshaller verifiableCredentialsJwtUnmarshaller;
 
     public static void main(String... args) {
         CommandLine commandLine = getCommandLine();

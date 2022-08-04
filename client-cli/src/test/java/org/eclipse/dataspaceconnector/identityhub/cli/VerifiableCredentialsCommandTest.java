@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
+import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerImpl;
 import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshallerImpl;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,7 @@ import picocli.CommandLine;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,14 +59,15 @@ class VerifiableCredentialsCommandTest {
     private static final SignedJWT SIGNED_VC2 = signVerifiableCredential(VC2);
     private static final String HUB_URL = FAKER.internet().url();
 
-    private IdentityHubCli app = new IdentityHubCli();
-    private CommandLine cmd = new CommandLine(app);
-    private StringWriter out = new StringWriter();
-    private StringWriter err = new StringWriter();
+    IdentityHubCli app = new IdentityHubCli();
+    CommandLine cmd = new CommandLine(app);
+    StringWriter out = new StringWriter();
+    StringWriter err = new StringWriter();
 
     @BeforeEach
     void setUp() {
         app.identityHubClient = mock(IdentityHubClient.class);
+        app.verifiableCredentialsJwtMarshaller = new VerifiableCredentialsJwtMarshallerImpl(Clock.systemUTC());
         app.verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl();
         app.hubUrl = HUB_URL;
         cmd.setOut(new PrintWriter(out));
@@ -119,9 +122,10 @@ class VerifiableCredentialsCommandTest {
         assertThat(verifyVerifiableCredentialSignature(signedJwt)).isTrue();
 
         // verify verifiable credential claim
-        var vcClaim = signedJwt.getJWTClaimsSet().getJSONObjectClaim(VERIFIABLE_CREDENTIALS_KEY).toJSONString();
-        var verifiableCredential = MAPPER.readValue(vcClaim, VerifiableCredential.class);
-        assertThat(verifiableCredential).usingRecursiveComparison().isEqualTo(VC1);
+        var verifiableCredential = signedJwt.getJWTClaimsSet().getClaim(VERIFIABLE_CREDENTIALS_KEY);
+        assertThat(verifiableCredential)
+                .isInstanceOf(VerifiableCredential.class)
+                .usingRecursiveComparison().isEqualTo(VC1);
     }
 
     @Test
@@ -153,7 +157,7 @@ class VerifiableCredentialsCommandTest {
         // assert
         assertThat(exitCode).isNotEqualTo(0);
         assertThat(outContent).isEmpty();
-        assertThat(errContent).contains("Error while signing Verifiable Credential");
+        assertThat(errContent).contains("Error while reading private key file: non-existing-key");
     }
 
     private int executeList() {

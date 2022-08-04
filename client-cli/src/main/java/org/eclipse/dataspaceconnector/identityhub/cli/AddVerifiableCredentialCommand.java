@@ -16,6 +16,7 @@ package org.eclipse.dataspaceconnector.identityhub.cli;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.dataspaceconnector.iam.did.spi.key.PrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -50,7 +51,7 @@ class AddVerifiableCredentialCommand implements Callable<Integer> {
     private String privateKeyPemFile;
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         var out = spec.commandLine().getOut();
 
         VerifiableCredential vc;
@@ -60,7 +61,13 @@ class AddVerifiableCredentialCommand implements Callable<Integer> {
             throw new CliException("Error while processing request json.");
         }
 
-        var privateKey = readPrivateEcKey(privateKeyPemFile);
+        PrivateKeyWrapper privateKey;
+        try {
+            privateKey = readPrivateEcKey(privateKeyPemFile);
+        }
+        catch (Exception e) {
+            throw new CliException("Error while reading private key file: " + e.getMessage());
+        }
         var signedJwt = command.cli.verifiableCredentialsJwtMarshaller.buildSignedJwt(vc, issuer, subject, privateKey);
         if (signedJwt.failed()) {
             throw new CliException("Error while signing Verifiable Credential: " + signedJwt.getFailureDetail());
