@@ -90,7 +90,7 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
         try {
             var verified = jwt.verify(issuerPublicKey.verifier());
             if (!verified) {
-                return Result.failure("Invalid signature");
+                return Result.failure("Invalid JWT signature");
             }
             return Result.success();
         } catch (JOSEException e) {
