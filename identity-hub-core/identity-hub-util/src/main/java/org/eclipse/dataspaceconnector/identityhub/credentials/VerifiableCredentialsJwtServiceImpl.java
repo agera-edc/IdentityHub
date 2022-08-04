@@ -29,10 +29,8 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
-
 public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredentialsJwtService {
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public VerifiableCredentialsJwtServiceImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -66,7 +64,7 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
 
             return Result.success(new AbstractMap.SimpleEntry<>(verifiableCredential.getId(), payload));
         } catch (RuntimeException e) {
-            return Result.failure(Objects.requireNonNullElseGet(e.getMessage(), () -> e.toString()));
+            return Result.failure(Objects.requireNonNullElseGet(e.getMessage(), e::toString));
         }
     }
 }
