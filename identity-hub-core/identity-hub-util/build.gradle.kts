@@ -25,6 +25,7 @@ val faker: String by project
 val edcGroup: String by project
 val edcVersion: String by project
 val jupiterVersion: String by project
+val mockitoVersion: String by project
 val assertj: String by project
 
 dependencies {
@@ -37,6 +38,7 @@ dependencies {
     testFixturesImplementation("com.nimbusds:nimbus-jose-jwt:${nimbusVersion}")
     testFixturesImplementation("com.github.javafaker:javafaker:${faker}")
     testFixturesImplementation("${edcGroup}:identity-did-crypto:${edcVersion}")
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
     testImplementation("org.assertj:assertj-core:${assertj}")
