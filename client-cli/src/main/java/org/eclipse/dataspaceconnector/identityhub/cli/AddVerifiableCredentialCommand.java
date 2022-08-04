@@ -64,8 +64,7 @@ class AddVerifiableCredentialCommand implements Callable<Integer> {
         PrivateKeyWrapper privateKey;
         try {
             privateKey = readPrivateEcKey(privateKeyPemFile);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new CliException("Error while reading private key file: " + e.getMessage());
         }
         var signedJwt = command.cli.verifiableCredentialsJwtMarshaller.buildSignedJwt(vc, issuer, subject, privateKey);
@@ -79,5 +78,4 @@ class AddVerifiableCredentialCommand implements Callable<Integer> {
 
         return 0;
     }
-
 }
