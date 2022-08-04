@@ -16,44 +16,40 @@ package org.eclipse.dataspaceconnector.identityhub.credentials;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import com.nimbusds.jose.jwk.ECKey;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
 import java.time.Instant;
 
+import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 
-public class VerifiableCredentialsJwtMarshallerTest {
+class VerifiableCredentialsJwtMarshallerTest {
 
-    private static final Faker FAKER = new Faker();
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final VerifiableCredential VERIFIABLE_CREDENTIAL = generateVerifiableCredential();
-    private EcPrivateKeyWrapper privateKey;
-    private EcPublicKeyWrapper publicKey;
-    private VerifiableCredentialsJwtMarshaller service;
+    static final Faker FAKER = new Faker();
+    static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    static final VerifiableCredential VERIFIABLE_CREDENTIAL = generateVerifiableCredential();
 
-    @BeforeEach
-    public void setUp() {
-        var key = generateEcKey();
-        privateKey = new EcPrivateKeyWrapper(key);
-        publicKey = new EcPublicKeyWrapper(key);
-        service = new VerifiableCredentialsJwtMarshallerImpl(Clock.systemUTC());
-    }
+    Instant now = Instant.now();
+    Clock clock = Clock.fixed(now, UTC);
+    ECKey key = generateEcKey();
+    EcPrivateKeyWrapper privateKey = new EcPrivateKeyWrapper(key);
+    EcPublicKeyWrapper publicKey = new EcPublicKeyWrapper(key);
+    VerifiableCredentialsJwtMarshaller service = new VerifiableCredentialsJwtMarshallerImpl(clock);
 
     @Test
-    public void buildSignedJwt_success() throws Exception {
+    void buildSignedJwt_success() throws Exception {
         // Arrange
         var issuer = FAKER.lorem().word();
         var subject = FAKER.lorem().word();
-        var startTime = Instant.now().truncatedTo(SECONDS); // as issue time claim is rounded down
 
         // Act
         var signedJwt = service.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
@@ -70,6 +66,6 @@ public class VerifiableCredentialsJwtMarshallerTest {
                         .usingRecursiveComparison()
                         .isEqualTo(VERIFIABLE_CREDENTIAL));
 
-        assertThat(signedJwt.getJWTClaimsSet().getIssueTime()).isBetween(startTime, Instant.now());
+        assertThat(signedJwt.getJWTClaimsSet().getIssueTime()).isEqualTo(now.truncatedTo(SECONDS));
     }
 }
