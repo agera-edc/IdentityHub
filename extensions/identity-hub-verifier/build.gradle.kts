@@ -36,7 +36,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:${okHttpVersion}")
 
     testImplementation(testFixtures(project(":identity-hub-core:identity-hub-util")))
-    testImplementation(project(":extensions:identity-did-mock"))
     testImplementation("com.github.javafaker:javafaker:${faker}")
     testImplementation("org.assertj:assertj-core:${assertj}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
