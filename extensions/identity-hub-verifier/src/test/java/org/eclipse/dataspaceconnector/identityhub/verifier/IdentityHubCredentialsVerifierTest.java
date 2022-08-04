@@ -14,7 +14,6 @@
 
 package org.eclipse.dataspaceconnector.identityhub.verifier;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -61,7 +60,7 @@ public class IdentityHubCredentialsVerifierTest {
     private CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtUnmarshaller);
 
     @Test
-    public void getVerifiedClaims_getValidClaims() throws Exception {
+    public void getVerifiedClaims_getValidClaims() {
 
         // Arrange
         var credential = generateVerifiableCredential();
@@ -85,7 +84,7 @@ public class IdentityHubCredentialsVerifierTest {
     }
 
     @Test
-    public void getVerifiedClaims_filtersSignedByWrongIssuer() throws Exception {
+    public void getVerifiedClaims_filtersSignedByWrongIssuer() {
 
         // Arrange
         var credential = generateVerifiableCredential();

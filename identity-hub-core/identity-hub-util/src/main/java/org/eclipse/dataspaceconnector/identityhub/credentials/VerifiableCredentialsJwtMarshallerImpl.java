@@ -24,7 +24,6 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCr
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.sql.Date;
-import java.text.ParseException;
 import java.time.Clock;
 
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller.VERIFIABLE_CREDENTIALS_KEY;

@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class VerifiableCredentialsJwtUnmarshallerImpl implements VerifiableCredentialsJwtUnmarshaller {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override
     public Result<Map.Entry<String, Object>> extractCredential(SignedJWT jwt) {
@@ -34,7 +34,7 @@ public class VerifiableCredentialsJwtUnmarshallerImpl implements VerifiableCrede
             if (vcObject == null) {
                 return Result.failure(String.format("No %s field found", VERIFIABLE_CREDENTIALS_KEY));
             }
-            var verifiableCredential = objectMapper.convertValue(vcObject, VerifiableCredential.class);
+            var verifiableCredential = OBJECT_MAPPER.convertValue(vcObject, VerifiableCredential.class);
 
             return Result.success(new AbstractMap.SimpleEntry<>(verifiableCredential.getId(), payload));
         } catch (RuntimeException e) {
