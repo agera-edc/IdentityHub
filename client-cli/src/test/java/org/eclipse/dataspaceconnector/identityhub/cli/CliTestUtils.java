@@ -60,13 +60,13 @@ class CliTestUtils {
     }
 
     public static SignedJWT signVerifiableCredential(VerifiableCredential vc) {
-            var result = VC_MARSHALLER.buildSignedJwt(
-                    vc,
-                    "identity-hub-test-issuer",
-                    "identity-hub-test-subject",
-                    PRIVATE_KEY);
-            assertThat(result.succeeded()).isTrue();
-            return result.getContent();
+        var result = VC_MARSHALLER.buildSignedJwt(
+                vc,
+                "identity-hub-test-issuer",
+                "identity-hub-test-subject",
+                PRIVATE_KEY);
+        assertThat(result.succeeded()).isTrue();
+        return result.getContent();
     }
 
     public static boolean verifyVerifiableCredentialSignature(SignedJWT jwt) {
