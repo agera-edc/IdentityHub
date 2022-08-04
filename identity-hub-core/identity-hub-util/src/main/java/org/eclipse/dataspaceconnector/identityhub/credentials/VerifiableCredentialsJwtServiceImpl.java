@@ -29,6 +29,8 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
+
 public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredentialsJwtService {
     private ObjectMapper objectMapper;
 
@@ -40,7 +42,7 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
     public SignedJWT buildSignedJwt(VerifiableCredential credential, String issuer, String subject, PrivateKeyWrapper privateKey) throws JOSEException, ParseException {
         var jwsHeader = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
         var claims = new JWTClaimsSet.Builder()
-                .claim(VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY, credential)
+                .claim(VERIFIABLE_CREDENTIALS_KEY, credential)
                 .issuer(issuer)
                 .subject(subject)
                 .build();
@@ -56,9 +58,9 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
     public Result<Map.Entry<String, Object>> extractCredential(SignedJWT jwt) {
         try {
             var payload = jwt.getPayload().toJSONObject();
-            var vcObject = payload.get(VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY);
+            var vcObject = payload.get(VERIFIABLE_CREDENTIALS_KEY);
             if (vcObject == null) {
-                return Result.failure(String.format("No %s field found", VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY));
+                return Result.failure(String.format("No %s field found", VERIFIABLE_CREDENTIALS_KEY));
             }
             var verifiableCredential = objectMapper.convertValue(vcObject, VerifiableCredential.class);
 
