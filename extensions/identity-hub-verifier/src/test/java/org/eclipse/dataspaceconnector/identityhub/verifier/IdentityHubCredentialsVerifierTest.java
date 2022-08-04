@@ -49,7 +49,6 @@ import static org.mockito.Mockito.when;
 public class IdentityHubCredentialsVerifierTest {
 
     private static final Faker FAKER = new Faker();
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String HUB_BASE_URL = "https://" + FAKER.internet().url();
     private static final DidDocument DID_DOCUMENT = DidDocument.Builder.newInstance()
             .service(List.of(new Service("IdentityHub", "IdentityHub", HUB_BASE_URL))).build();
@@ -58,7 +57,7 @@ public class IdentityHubCredentialsVerifierTest {
     private Monitor monitorMock = mock(Monitor.class);
     private IdentityHubClient identityHubClientMock = mock(IdentityHubClient.class);
     private JwtCredentialsVerifier jwtCredentialsVerifierMock = mock(JwtCredentialsVerifier.class);
-    private VerifiableCredentialsJwtUnmarshallerImpl verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl(OBJECT_MAPPER);
+    private VerifiableCredentialsJwtUnmarshallerImpl verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl();
     private CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtUnmarshaller);
 
     @Test

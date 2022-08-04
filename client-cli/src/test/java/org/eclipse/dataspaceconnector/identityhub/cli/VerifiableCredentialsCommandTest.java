@@ -65,7 +65,7 @@ class VerifiableCredentialsCommandTest {
     @BeforeEach
     void setUp() {
         app.identityHubClient = mock(IdentityHubClient.class);
-        app.verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl(new ObjectMapper());
+        app.verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl();
         app.hubUrl = HUB_URL;
         cmd.setOut(new PrintWriter(out));
         cmd.setErr(new PrintWriter(err));

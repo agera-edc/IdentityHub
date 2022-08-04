@@ -46,7 +46,7 @@ public class VerifiableCredentialsJwtUnmarshallerTest {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
         marshaller = new VerifiableCredentialsJwtMarshallerImpl(OBJECT_MAPPER);
-        service = new VerifiableCredentialsJwtUnmarshallerImpl(OBJECT_MAPPER);
+        service = new VerifiableCredentialsJwtUnmarshallerImpl();
     }
 
     @Test

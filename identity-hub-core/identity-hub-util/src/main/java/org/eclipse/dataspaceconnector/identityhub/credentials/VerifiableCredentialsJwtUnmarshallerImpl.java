@@ -24,11 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class VerifiableCredentialsJwtUnmarshallerImpl implements VerifiableCredentialsJwtUnmarshaller {
-    private final ObjectMapper objectMapper;
-
-    public VerifiableCredentialsJwtUnmarshallerImpl(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Result<Map.Entry<String, Object>> extractCredential(SignedJWT jwt) {

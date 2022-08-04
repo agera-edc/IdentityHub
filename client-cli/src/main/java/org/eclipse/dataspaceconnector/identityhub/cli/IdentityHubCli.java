@@ -62,7 +62,7 @@ public class IdentityHubCli {
         var objectMapper = new ObjectMapper();
         var monitor = new ConsoleMonitor();
         this.identityHubClient = new IdentityHubClientImpl(okHttpClient, objectMapper, monitor);
-        this.verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl(objectMapper);
+        this.verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl();
         this.verifiableCredentialsJwtMarshaller = new VerifiableCredentialsJwtMarshallerImpl(objectMapper);
     }
 }

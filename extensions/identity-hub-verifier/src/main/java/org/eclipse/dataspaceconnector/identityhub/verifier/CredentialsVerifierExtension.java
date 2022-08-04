@@ -65,7 +65,7 @@ public class CredentialsVerifierExtension implements ServiceExtension {
     @Provider
     public CredentialsVerifier createCredentialsVerifier(ServiceExtensionContext context) {
         var client = new IdentityHubClientImpl(httpClient, typeManager.getMapper(), monitor);
-        var verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl(typeManager.getMapper());
+        var verifiableCredentialsJwtUnmarshaller = new VerifiableCredentialsJwtUnmarshallerImpl();
         return new IdentityHubCredentialsVerifier(client, monitor, jwtCredentialsVerifier, verifiableCredentialsJwtUnmarshaller);
     }
 }
