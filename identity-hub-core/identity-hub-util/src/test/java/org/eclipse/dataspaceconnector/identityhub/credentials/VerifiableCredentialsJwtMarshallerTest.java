@@ -22,6 +22,7 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCr
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.time.Instant;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -44,7 +45,7 @@ public class VerifiableCredentialsJwtMarshallerTest {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
         publicKey = new EcPublicKeyWrapper(key);
-        service = new VerifiableCredentialsJwtMarshallerImpl(OBJECT_MAPPER);
+        service = new VerifiableCredentialsJwtMarshallerImpl(Clock.systemUTC());
     }
 
     @Test

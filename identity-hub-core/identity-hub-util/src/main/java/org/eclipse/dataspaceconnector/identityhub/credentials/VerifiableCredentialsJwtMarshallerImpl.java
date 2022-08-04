@@ -14,7 +14,6 @@
 
 package org.eclipse.dataspaceconnector.identityhub.credentials;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -30,12 +29,10 @@ import java.time.Clock;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller.VERIFIABLE_CREDENTIALS_KEY;
 
 public class VerifiableCredentialsJwtMarshallerImpl implements VerifiableCredentialsJwtMarshaller {
-    private final ObjectMapper objectMapper;
     private final Clock clock;
 
-    public VerifiableCredentialsJwtMarshallerImpl(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-        this.clock = Clock.systemUTC();
+    public VerifiableCredentialsJwtMarshallerImpl(Clock clock) {
+        this.clock = clock;
     }
 
     @Override

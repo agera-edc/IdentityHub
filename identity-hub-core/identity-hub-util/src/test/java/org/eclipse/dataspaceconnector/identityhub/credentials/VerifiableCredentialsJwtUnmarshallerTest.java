@@ -25,6 +25,8 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCr
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.map;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller.VERIFIABLE_CREDENTIALS_KEY;
@@ -45,7 +47,7 @@ public class VerifiableCredentialsJwtUnmarshallerTest {
     public void setUp() {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
-        marshaller = new VerifiableCredentialsJwtMarshallerImpl(OBJECT_MAPPER);
+        marshaller = new VerifiableCredentialsJwtMarshallerImpl(Clock.systemUTC());
         service = new VerifiableCredentialsJwtUnmarshallerImpl();
     }
 
