@@ -63,11 +63,13 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     public Result<Map<String, Object>> getVerifiedCredentials(DidDocument didDocument) {
         var hubBaseUrl = getIdentityHubBaseUrl(didDocument);
         if (hubBaseUrl.failed()) {
+            monitor.severe("Could not retrieve Identity Hub URL from DID document");
             return Result.failure(hubBaseUrl.getFailureMessages());
         }
 
         var jwts = identityHubClient.getVerifiableCredentials(hubBaseUrl.getContent());
         if (jwts.failed()) {
+            monitor.severe("Could not retrieve Verifiable Credentials from Identity Hub");
             return Result.failure(jwts.getFailureMessages());
         }
         var verifiedJwt = jwts.getContent()
@@ -80,6 +82,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
         var failedResults = partitionedResult.get(false);
 
         failedResults.forEach(result -> monitor.warning(String.join(",", result.getFailureMessages())));
+        monitor.info(String.format("Retrieved %s verifiable credentials", successfulResults.size()));
 
         var claims = successfulResults.stream()
                 .map(AbstractResult::getContent)
