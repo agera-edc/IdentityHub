@@ -14,75 +14,44 @@
 
 package org.eclipse.dataspaceconnector.identityhub.credentials;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.javafaker.Faker;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPrivateKeyWrapper;
-import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.Clock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.map;
-import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerTest.FAKER;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerTest.OBJECT_MAPPER;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtMarshallerTest.VERIFIABLE_CREDENTIAL;
+import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtUnmarshaller.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
-import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 
-public class VerifiableCredentialsJwtServiceTest {
+class VerifiableCredentialsJwtUnmarshallerTest {
 
-    private static final Faker FAKER = new Faker();
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final VerifiableCredential VERIFIABLE_CREDENTIAL = generateVerifiableCredential();
-    private static final JWSHeader JWS_HEADER = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
-    private EcPrivateKeyWrapper privateKey;
-    private EcPublicKeyWrapper publicKey;
-    private VerifiableCredentialsJwtService service;
+    static final JWSHeader JWS_HEADER = new JWSHeader.Builder(JWSAlgorithm.ES256).build();
 
-    @BeforeEach
-    public void setUp() {
-        var key = generateEcKey();
-        privateKey = new EcPrivateKeyWrapper(key);
-        publicKey = new EcPublicKeyWrapper(key);
-        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
-    }
+    ECKey key = generateEcKey();
+    EcPrivateKeyWrapper privateKey = new EcPrivateKeyWrapper(key);
+    VerifiableCredentialsJwtMarshaller marshaller = new VerifiableCredentialsJwtMarshallerImpl(Clock.systemUTC());
+    VerifiableCredentialsJwtUnmarshaller service = new VerifiableCredentialsJwtUnmarshallerImpl();
 
     @Test
-    public void buildSignedJwt_success() throws Exception {
+    void extractCredential_OnJwtWithValidCredential() {
         // Arrange
         var issuer = FAKER.lorem().word();
         var subject = FAKER.lorem().word();
+        var jwt = marshaller.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
+        assertThat(jwt.succeeded()).isTrue();
 
         // Act
-        var signedJwt = service.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
-
-        // Assert
-        boolean result = signedJwt.verify(publicKey.verifier());
-        assertThat(result).isTrue();
-
-        assertThat(signedJwt.getPayload().toJSONObject())
-                .containsEntry("iss", issuer)
-                .containsEntry("sub", subject)
-                .extractingByKey(VERIFIABLE_CREDENTIALS_KEY)
-                .satisfies(c -> {
-                    assertThat(OBJECT_MAPPER.convertValue(c, VerifiableCredential.class))
-                            .usingRecursiveComparison()
-                            .isEqualTo(VERIFIABLE_CREDENTIAL);
-                });
-    }
-
-    @Test
-    public void extractCredential_OnJwtWithValidCredential() throws Exception {
-        // Arrange
-        var issuer = FAKER.lorem().word();
-        var subject = FAKER.lorem().word();
-        var jwt = service.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
-
-        // Act
-        var result = service.extractCredential(jwt);
+        var result = service.extractCredential(jwt.getContent());
 
         // Assert
         assertThat(result.succeeded()).isTrue();
@@ -92,15 +61,13 @@ public class VerifiableCredentialsJwtServiceTest {
                 .containsEntry("iss", issuer)
                 .containsEntry("sub", subject)
                 .extractingByKey(VERIFIABLE_CREDENTIALS_KEY)
-                .satisfies(c -> {
-                    assertThat(OBJECT_MAPPER.convertValue(c, VerifiableCredential.class))
-                            .usingRecursiveComparison()
-                            .isEqualTo(VERIFIABLE_CREDENTIAL);
-                });
+                .satisfies(c -> assertThat(OBJECT_MAPPER.convertValue(c, VerifiableCredential.class))
+                        .usingRecursiveComparison()
+                        .isEqualTo(VERIFIABLE_CREDENTIAL));
     }
 
     @Test
-    public void extractCredential_OnJwtWithMissingVcField() {
+    void extractCredential_OnJwtWithMissingVcField() {
         // Arrange
         var claims = new JWTClaimsSet.Builder().claim(FAKER.lorem().word(), FAKER.lorem().word()).build();
         var jws = new SignedJWT(JWS_HEADER, claims);
@@ -114,7 +81,7 @@ public class VerifiableCredentialsJwtServiceTest {
     }
 
     @Test
-    public void extractCredential_OnJwtWithWrongFormat() {
+    void extractCredential_OnJwtWithWrongFormat() {
         // Arrange
         var claims = new JWTClaimsSet.Builder().claim(VERIFIABLE_CREDENTIALS_KEY, FAKER.lorem().word()).build();
         var jws = new SignedJWT(JWS_HEADER, claims);
