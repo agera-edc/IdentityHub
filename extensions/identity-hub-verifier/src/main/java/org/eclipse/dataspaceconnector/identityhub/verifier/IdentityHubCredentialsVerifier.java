@@ -95,6 +95,8 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
         monitor.info(String.format("Validated signature for %s verifiable credentials", filter2.size()));
 
+        monitor.info("verifiableCredentialsJwtService=" + verifiableCredentialsJwtService);
+
         var partitionedResult = filter2.stream().map(verifiableCredentialsJwtService::extractCredential).collect(partitioningBy(AbstractResult::succeeded));
         var successfulResults = partitionedResult.get(true);
         var failedResults = partitionedResult.get(false);
