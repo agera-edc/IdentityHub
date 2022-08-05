@@ -59,13 +59,16 @@ public class CredentialsVerifierExtension implements ServiceExtension {
         if (didPublicKeyResolver == null) {
             didPublicKeyResolver = context.getService(DidPublicKeyResolver.class);
         }
-        return new DidJwtCredentialsVerifier(didPublicKeyResolver, context.getService(Monitor.class));
+        Monitor monitor = context.getService(Monitor.class);
+        monitor.info("Creating DidJwtCredentialsVerifier");
+        return new DidJwtCredentialsVerifier(didPublicKeyResolver, monitor);
     }
 
     @Provider
     public CredentialsVerifier createCredentialsVerifier(ServiceExtensionContext context) {
         var client = new IdentityHubClientImpl(httpClient, typeManager.getMapper(), monitor);
         var verifiableCredentialsJwtService = new VerifiableCredentialsJwtServiceImpl(typeManager.getMapper(), monitor);
+        monitor.info("Creating IdentityHubCredentialsVerifier");
         return new IdentityHubCredentialsVerifier(client, monitor, jwtCredentialsVerifier, verifiableCredentialsJwtService);
     }
 }
