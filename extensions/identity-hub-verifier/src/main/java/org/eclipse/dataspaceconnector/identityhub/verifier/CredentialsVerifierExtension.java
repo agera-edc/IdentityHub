@@ -59,7 +59,7 @@ public class CredentialsVerifierExtension implements ServiceExtension {
         if (didPublicKeyResolver == null) {
             didPublicKeyResolver = context.getService(DidPublicKeyResolver.class);
         }
-        return new DidJwtCredentialsVerifier(didPublicKeyResolver, monitor);
+        return new DidJwtCredentialsVerifier(didPublicKeyResolver, context.getService(Monitor.class));
     }
 
     @Provider
