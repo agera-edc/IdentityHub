@@ -14,6 +14,7 @@
 
 package org.eclipse.dataspaceconnector.identityhub.verifier;
 
+import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
@@ -22,8 +23,10 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.AbstractResult;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.partitioningBy;
 
@@ -79,22 +82,25 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
         monitor.info(String.format("Retrieved %s verifiable credentials", jwts.getContent().size()));
 
-        var verifiedJwt = jwts.getContent()
+        List<SignedJWT> filter1 = jwts.getContent()
                 .stream()
                 .filter(jwt -> jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId()))
-                .filter(jwtCredentialsVerifier::isSignedByIssuer);
+                .collect(Collectors.toList());
 
-        monitor.info("Filtering valid verifiable credentials");
+        monitor.info(String.format("Validated claims for %s verifiable credentials", filter1.size()));
 
-        var partitionedResult = verifiedJwt.map(verifiableCredentialsJwtService::extractCredential).collect(partitioningBy(AbstractResult::succeeded));
+        var filter2 = filter1.stream()
+                .filter(jwtCredentialsVerifier::isSignedByIssuer)
+                .collect(Collectors.toList());
+
+        monitor.info(String.format("Validated signature for %s verifiable credentials", filter2.size()));
+
+        var partitionedResult = filter2.stream().map(verifiableCredentialsJwtService::extractCredential).collect(partitioningBy(AbstractResult::succeeded));
         var successfulResults = partitionedResult.get(true);
         var failedResults = partitionedResult.get(false);
 
-        monitor.info(String.format("Validated %s verifiable credentials", successfulResults.size()));
-        monitor.info(String.format("Filtered out %s verifiable credentials", failedResults.size()));
-
+        monitor.info(String.format("Extracted %s verifiable credentials", successfulResults.size()));
         failedResults.forEach(result -> monitor.warning("Invalid credentials: " + String.join(",", result.getFailureMessages())));
-
 
         var claims = successfulResults.stream()
                 .map(AbstractResult::getContent)
