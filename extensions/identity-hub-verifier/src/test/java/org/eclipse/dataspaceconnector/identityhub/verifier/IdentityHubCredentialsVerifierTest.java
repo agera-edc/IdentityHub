@@ -111,7 +111,7 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.failed()).isTrue();
-        assertThat(credentials.getFailureMessages()).containsExactly("Failed getting Identity Hub URL");
+        assertThat(credentials.getFailureMessages()).containsExactly("Could not retrieve identity hub URL from DID document");
     }
 
     @Test

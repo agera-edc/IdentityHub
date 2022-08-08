@@ -17,16 +17,20 @@ package org.eclipse.dataspaceconnector.identityhub.verifier;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
+import org.eclipse.dataspaceconnector.iam.did.spi.document.Service;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
 import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.response.StatusResult;
 import org.eclipse.dataspaceconnector.spi.result.AbstractResult;
 import org.eclipse.dataspaceconnector.spi.result.Result;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.partitioningBy;
 
@@ -64,61 +68,74 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
      */
     @Override
     public Result<Map<String, Object>> getVerifiedCredentials(DidDocument didDocument) {
-        monitor.info("Retrieving verified credentials for " + didDocument.getId());
+        monitor.debug("Retrieving verified credentials for " + didDocument.getId());
 
         var hubBaseUrl = getIdentityHubBaseUrl(didDocument);
-        if (hubBaseUrl.failed()) {
-            monitor.severe("Could not retrieve Identity Hub URL from DID document");
-            return Result.failure(hubBaseUrl.getFailureMessages());
+        if (hubBaseUrl.isEmpty()) {
+            var errorMessage = "Could not retrieve identity hub URL from DID document";
+            monitor.severe(errorMessage);
+            return Result.failure(errorMessage);
         }
 
-        monitor.info("Using Identity Hub URL: " + hubBaseUrl.getContent());
+        monitor.debug(String.format("Using identity hub URL: %s", hubBaseUrl.get()));
 
-        var jwts = identityHubClient.getVerifiableCredentials(hubBaseUrl.getContent());
+        var jwts = identityHubClient.getVerifiableCredentials(hubBaseUrl.get());
         if (jwts.failed()) {
-            monitor.severe("Could not retrieve Verifiable Credentials from Identity Hub");
+            monitor.severe("Could not retrieve verifiable credentials from identity hub");
             return Result.failure(jwts.getFailureMessages());
         }
 
-        monitor.info(String.format("Retrieved %s verifiable credentials", jwts.getContent().size()));
+        monitor.debug(String.format("Retrieved %s verifiable credentials from identity hub", jwts.getContent().size()));
 
-        List<SignedJWT> filter1 = jwts.getContent()
-                .stream()
-                .filter(jwt -> jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId()))
-                .collect(Collectors.toList());
+        var verifiedCredentials = verifyCredentials(jwts, didDocument);
 
-        monitor.info(String.format("Validated claims for %s verifiable credentials", filter1.size()));
+        monitor.debug(String.format("Verified %s credentials", verifiedCredentials.size()));
 
-        var filter2 = filter1.stream()
-                .filter(jwtCredentialsVerifier::isSignedByIssuer)
-                .collect(Collectors.toList());
-
-        monitor.info(String.format("Validated signature for %s verifiable credentials", filter2.size()));
-
-        monitor.info("verifiableCredentialsJwtService=" + verifiableCredentialsJwtService);
-
-        var partitionedResult = filter2.stream().map(verifiableCredentialsJwtService::extractCredential).collect(partitioningBy(AbstractResult::succeeded));
-        var successfulResults = partitionedResult.get(true);
-        var failedResults = partitionedResult.get(false);
-
-        monitor.info(String.format("Extracted %s verifiable credentials", successfulResults.size()));
-        failedResults.forEach(result -> monitor.warning("Invalid credentials: " + String.join(",", result.getFailureMessages())));
-
-        var claims = successfulResults.stream()
-                .map(AbstractResult::getContent)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        var claims = extractClaimsFromCredential(verifiedCredentials);
 
         return Result.success(claims);
     }
 
-    private Result<String> getIdentityHubBaseUrl(DidDocument didDocument) {
-        var hubBaseUrl = didDocument
+    @NotNull
+    private List<SignedJWT> verifyCredentials(StatusResult<Collection<SignedJWT>> jwts, DidDocument didDocument) {
+        var result = jwts.getContent()
+                .stream()
+                .collect(partitioningBy((jwt) -> jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId()) && jwtCredentialsVerifier.isSignedByIssuer(jwt)));
+
+        var successfulResults = result.get(true);
+        var failedResults = result.get(false);
+
+        if (!failedResults.isEmpty()) {
+            monitor.warning(String.format("Ignoring %s invalid verifiable credentials", failedResults.size()));
+        }
+
+        return successfulResults;
+    }
+
+    @NotNull
+    private Map<String, Object> extractClaimsFromCredential(List<SignedJWT> verifiedCredentials) {
+        var result = verifiedCredentials.stream()
+                .map(verifiableCredentialsJwtService::extractCredential)
+                .collect(partitioningBy(AbstractResult::succeeded));
+
+        var successfulResults = result.get(true);
+        var failedResults = result.get(false);
+
+        if (!failedResults.isEmpty()) {
+            failedResults.forEach(f -> monitor.warning("Invalid credentials: " + String.join(",", f.getFailureMessages())));
+        }
+
+        return successfulResults.stream()
+                .map(AbstractResult::getContent)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private Optional<String> getIdentityHubBaseUrl(DidDocument didDocument) {
+        return didDocument
                 .getService()
                 .stream()
                 .filter(s -> s.getType().equals(IDENTITY_HUB_SERVICE_TYPE))
-                .findFirst();
-
-        return hubBaseUrl.map(u -> Result.success(u.getServiceEndpoint()))
-                .orElse(Result.failure("Failed getting Identity Hub URL"));
+                .findFirst()
+                .map(Service::getServiceEndpoint);
     }
 }
