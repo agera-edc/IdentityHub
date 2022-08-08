@@ -68,7 +68,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
      */
     @Override
     public Result<Map<String, Object>> getVerifiedCredentials(DidDocument didDocument) {
-        monitor.debug("Retrieving verified credentials for " + didDocument.getId());
+        monitor.debug(() -> "Retrieving verified credentials for " + didDocument.getId());
 
         var hubBaseUrl = getIdentityHubBaseUrl(didDocument);
         if (hubBaseUrl.isEmpty()) {
@@ -77,7 +77,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             return Result.failure(errorMessage);
         }
 
-        monitor.debug(String.format("Using identity hub URL: %s", hubBaseUrl.get()));
+        monitor.debug(() -> String.format("Using identity hub URL: %s", hubBaseUrl.get()));
 
         var jwts = identityHubClient.getVerifiableCredentials(hubBaseUrl.get());
         if (jwts.failed()) {
@@ -85,11 +85,11 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             return Result.failure(jwts.getFailureMessages());
         }
 
-        monitor.debug(String.format("Retrieved %s verifiable credentials from identity hub", jwts.getContent().size()));
+        monitor.debug(() -> String.format("Retrieved %s verifiable credentials from identity hub", jwts.getContent().size()));
 
         var verifiedCredentials = verifyCredentials(jwts, didDocument);
 
-        monitor.debug(String.format("Verified %s credentials", verifiedCredentials.size()));
+        monitor.debug(() -> String.format("Verified %s credentials", verifiedCredentials.size()));
 
         var claims = extractClaimsFromCredential(verifiedCredentials);
 

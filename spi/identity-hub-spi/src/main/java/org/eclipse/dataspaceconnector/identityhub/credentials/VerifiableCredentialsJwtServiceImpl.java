@@ -67,7 +67,7 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
             }
             var verifiableCredential = objectMapper.convertValue(vcObject, VerifiableCredential.class);
 
-            monitor.debug("Extracted credentials from JWT");
+            monitor.debug(() -> "Extracted credentials from JWT");
 
             return Result.success(new AbstractMap.SimpleEntry<>(verifiableCredential.getId(), payload));
         } catch (ParseException | RuntimeException e) {

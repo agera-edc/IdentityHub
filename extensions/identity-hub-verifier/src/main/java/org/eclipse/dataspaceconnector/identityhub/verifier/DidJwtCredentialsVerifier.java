@@ -84,7 +84,7 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
             return false;
         }
 
-        monitor.debug("JWT claims verification successful");
+        monitor.debug(() -> "JWT claims verification successful");
         return true;
     }
 
@@ -94,7 +94,7 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
             if (!verified) {
                 return Result.failure("Invalid JWT signature");
             }
-            monitor.debug("JWT signature verification successful");
+            monitor.debug(() -> "JWT signature verification successful");
             return Result.success();
         } catch (JOSEException e) {
             monitor.warning("Unable to verify JWT token", e);
