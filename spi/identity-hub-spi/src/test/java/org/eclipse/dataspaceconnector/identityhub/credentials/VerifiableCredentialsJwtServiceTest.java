@@ -23,7 +23,7 @@ import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
-import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +35,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.map;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
+import static org.mockito.Mockito.mock;
 
 public class VerifiableCredentialsJwtServiceTest {
 
@@ -51,7 +52,7 @@ public class VerifiableCredentialsJwtServiceTest {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
         publicKey = new EcPublicKeyWrapper(key);
-        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER, new ConsoleMonitor());
+        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER, mock(Monitor.class));
     }
 
     @Test

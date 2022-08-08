@@ -27,7 +27,6 @@ import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
 import org.eclipse.dataspaceconnector.junit.extensions.EdcExtension;
 import org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils;
-import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +57,7 @@ public class CredentialsVerifierExtensionTest {
 
     @BeforeEach
     void setUp(EdcExtension extension) {
-        identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), new ConsoleMonitor());
+        identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), mock(Monitor.class));
         extension.registerServiceMock(Monitor.class, mock(Monitor.class));
         extension.setConfiguration(Map.of("web.http.port", String.valueOf(PORT)));
     }
