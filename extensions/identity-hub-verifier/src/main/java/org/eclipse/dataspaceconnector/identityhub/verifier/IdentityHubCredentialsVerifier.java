@@ -122,7 +122,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
         var failedResults = result.get(false);
 
         if (!failedResults.isEmpty()) {
-            failedResults.forEach(f -> monitor.warning("Invalid credentials: " + String.join(",", f.getFailureMessages())));
+            failedResults.forEach(f -> monitor.warning("Invalid credentials: " + f.getFailureDetail()));
         }
 
         return successfulResults.stream()
