@@ -59,9 +59,9 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
 
     @Override
     public Result<Map.Entry<String, Object>> extractCredential(SignedJWT jwt) {
-        monitor.info("Extracting credentials from JWT: " + jwt.getPayload().toJSONObject().toJSONString());
         try {
-            var payload = jwt.getPayload().toJSONObject();
+            var payload = jwt.getJWTClaimsSet().getClaims();
+            monitor.info("Extracting credentials from JWT: " + payload);
             var vcObject = payload.get(VERIFIABLE_CREDENTIALS_KEY);
             if (vcObject == null) {
                 return Result.failure(String.format("No %s field found", VERIFIABLE_CREDENTIALS_KEY));
@@ -70,7 +70,7 @@ public class VerifiableCredentialsJwtServiceImpl implements VerifiableCredential
 
             monitor.info("Extracting credentials from JWT done");
             return Result.success(new AbstractMap.SimpleEntry<>(verifiableCredential.getId(), payload));
-        } catch (RuntimeException e) {
+        } catch (ParseException | RuntimeException e) {
             monitor.info("Failure extracting credentials from JWT", e);
             return Result.failure(Objects.requireNonNullElseGet(e.getMessage(), () -> e.toString()));
         }
