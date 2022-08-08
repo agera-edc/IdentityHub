@@ -165,4 +165,5 @@ public class IdentityHubCredentialsVerifierTest {
         assertThat(credentials.getContent().isEmpty());
         verify(monitorMock, times(1)).warning(anyString());
     }
+
 }
