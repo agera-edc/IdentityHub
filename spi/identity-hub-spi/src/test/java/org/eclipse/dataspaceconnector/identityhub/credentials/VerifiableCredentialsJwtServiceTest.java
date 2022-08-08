@@ -23,6 +23,7 @@ import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
+import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +51,7 @@ public class VerifiableCredentialsJwtServiceTest {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
         publicKey = new EcPublicKeyWrapper(key);
-        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER, monitor);
+        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER, new ConsoleMonitor());
     }
 
     @Test
@@ -67,7 +68,7 @@ public class VerifiableCredentialsJwtServiceTest {
         boolean result = signedJwt.verify(publicKey.verifier());
         assertThat(result).isTrue();
 
-        assertThat(signedJwt.getJWTClaimsSet().toJSONObject())
+        assertThat(signedJwt.getJWTClaimsSet().getClaims())
                 .containsEntry("iss", issuer)
                 .containsEntry("sub", subject)
                 .extractingByKey(VERIFIABLE_CREDENTIALS_KEY)

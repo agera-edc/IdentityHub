@@ -50,8 +50,8 @@ public class CredentialsVerifierExtensionTest {
     private static final Faker FAKER = new Faker();
     private static final int PORT = getFreePort();
     private static final String API_URL = String.format("http://localhost:%d/api/identity-hub", PORT);
-    private static final String CREDENTIAL_ISSUER = FAKER.internet().url();
-    private static final String SUBJECT = FAKER.internet().url();
+    private static final String CREDENTIAL_ISSUER = "did:web:" + FAKER.internet().domainName();
+    private static final String SUBJECT = "did:web:" + FAKER.internet().domainName();
     private IdentityHubClient identityHubClient;
     private DidPublicKeyResolver publicKeyResolver;
 
