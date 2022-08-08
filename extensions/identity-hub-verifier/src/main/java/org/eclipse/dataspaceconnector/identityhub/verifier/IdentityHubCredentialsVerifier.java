@@ -79,15 +79,15 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
         monitor.debug(() -> String.format("Using identity hub URL: %s", hubBaseUrl.get()));
 
-        var jwts = identityHubClient.getVerifiableCredentials(hubBaseUrl.get());
-        if (jwts.failed()) {
+        var verifiableCredentials = identityHubClient.getVerifiableCredentials(hubBaseUrl.get());
+        if (verifiableCredentials.failed()) {
             monitor.severe("Could not retrieve verifiable credentials from identity hub");
-            return Result.failure(jwts.getFailureMessages());
+            return Result.failure(verifiableCredentials.getFailureMessages());
         }
 
-        monitor.debug(() -> String.format("Retrieved %s verifiable credentials from identity hub", jwts.getContent().size()));
+        monitor.debug(() -> String.format("Retrieved %s verifiable credentials from identity hub", verifiableCredentials.getContent().size()));
 
-        var verifiedCredentials = verifyCredentials(jwts, didDocument);
+        var verifiedCredentials = verifyCredentials(verifiableCredentials, didDocument);
 
         monitor.debug(() -> String.format("Verified %s credentials", verifiedCredentials.size()));
 
