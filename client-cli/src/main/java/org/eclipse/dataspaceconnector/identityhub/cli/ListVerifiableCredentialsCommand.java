@@ -45,7 +45,7 @@ class ListVerifiableCredentialsCommand implements Callable<Integer> {
         var out = spec.commandLine().getOut();
         var result = command.cli.identityHubClient.getVerifiableCredentials(command.cli.hubUrl);
         if (result.failed()) {
-            throw new CliException("Failed to get verifiable credentials: " + String.join(",", result.getFailureMessages()));
+            throw new CliException("Failed to get verifiable credentials: " + result.getFailureDetail());
         }
         var vcs = result.getContent().stream()
                 .map(this::getClaims)
