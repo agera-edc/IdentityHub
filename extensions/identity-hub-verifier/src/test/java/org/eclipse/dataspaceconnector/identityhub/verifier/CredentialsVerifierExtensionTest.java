@@ -16,16 +16,19 @@ package org.eclipse.dataspaceconnector.identityhub.verifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import org.eclipse.dataspaceconnector.iam.did.resolution.DidPublicKeyResolverImpl;
+import com.nimbusds.jose.jwk.ECKey;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
+import org.eclipse.dataspaceconnector.iam.did.spi.document.EllipticCurvePublicKey;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.Service;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolver;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolverRegistry;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
 import org.eclipse.dataspaceconnector.junit.extensions.EdcExtension;
 import org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils;
 import org.eclipse.dataspaceconnector.spi.monitor.ConsoleMonitor;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +42,6 @@ import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.Veri
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toMap;
-import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toPublicKeyWrapper;
 import static org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils.getFreePort;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -53,21 +55,25 @@ public class CredentialsVerifierExtensionTest {
     private static final String CREDENTIAL_ISSUER = "did:web:" + FAKER.internet().domainName();
     private static final String SUBJECT = "did:web:" + FAKER.internet().domainName();
     private IdentityHubClient identityHubClient;
-    private DidPublicKeyResolver publicKeyResolver;
 
     @BeforeEach
     void setUp(EdcExtension extension) {
         identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), new ConsoleMonitor());
-        publicKeyResolver = mock(DidPublicKeyResolverImpl.class);
-        extension.registerServiceMock(DidPublicKeyResolver.class, publicKeyResolver);
+        extension.registerServiceMock(Monitor.class, mock(Monitor.class));
         extension.setConfiguration(Map.of("web.http.port", String.valueOf(PORT)));
     }
 
     @Test
-    public void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier) {
-        // Arrange
+    public void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier, DidResolverRegistry registry) {
+
         var jwk = generateEcKey();
-        when(publicKeyResolver.resolvePublicKey(anyString())).thenReturn(Result.success(toPublicKeyWrapper(jwk)));
+        // Arrange - add did resolver that returns a dummy DID
+        var didResolver = mock(DidResolver.class);
+        var did = createDidDocument(jwk);
+        when(didResolver.resolve(anyString())).thenReturn(Result.success(did));
+        when(didResolver.getMethod()).thenReturn("web");
+        registry.register(didResolver);
+
         var didDocument = DidDocument.Builder.newInstance()
                 .id(SUBJECT)
                 .service(List.of(new Service("IdentityHub", "IdentityHub", API_URL)))
@@ -85,5 +91,11 @@ public class CredentialsVerifierExtensionTest {
         assertThat(credentials.getContent())
                 .usingRecursiveComparison()
                 .isEqualTo(expectedCredentials);
+    }
+
+    private DidDocument createDidDocument(ECKey jwk) {
+        var ecPk = new EllipticCurvePublicKey(jwk.getCurve().getName(), jwk.getKeyType().toString(), jwk.getX().toString(), jwk.getY().toString());
+        return DidDocument.Builder.newInstance()
+                .verificationMethod("test-id", "test-type", ecPk).build();
     }
 }
