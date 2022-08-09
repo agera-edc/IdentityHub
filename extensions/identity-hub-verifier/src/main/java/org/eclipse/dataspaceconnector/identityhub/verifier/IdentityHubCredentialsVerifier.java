@@ -94,7 +94,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
         var claims = extractClaimsFromCredential(verifiedCredentials);
 
         if (claims.failed()) {
-            monitor.warning("Credentials verification failed");
+            monitor.severe(String.format("Credentials verification failed: %s", claims.getFailureDetail()));
             return Result.failure(claims.getFailureDetail());
         } else {
             return Result.success(claims.getContent());

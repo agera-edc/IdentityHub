@@ -134,7 +134,7 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.failed()).isTrue();
-        verify(monitorMock, times(1)).warning(anyString());
+        verify(monitorMock, times(1)).severe(anyString());
 
     }
 
@@ -156,7 +156,7 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.failed()).isTrue();
-        verify(monitorMock, times(1)).warning(anyString());
+        verify(monitorMock, times(1)).severe(anyString());
     }
 
 }
