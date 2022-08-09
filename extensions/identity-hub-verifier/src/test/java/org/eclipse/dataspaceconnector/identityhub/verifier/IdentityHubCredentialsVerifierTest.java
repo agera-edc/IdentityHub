@@ -37,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.buildSignedJwt;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
-import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toMap;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -62,7 +61,7 @@ public class IdentityHubCredentialsVerifierTest {
     private CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtService);
 
     @Test
-    public void getVerifiedClaims_getValidClaims() throws Exception {
+    public void getVerifiedClaims_getValidClaims() {
 
         // Arrange
         var credential = generateVerifiableCredential();
@@ -73,10 +72,7 @@ public class IdentityHubCredentialsVerifierTest {
         var credentials = credentialsVerifier.getVerifiedCredentials(DID_DOCUMENT);
 
         // Assert
-        assertThat(credentials.succeeded()).isTrue();
-        assertThat(credentials.getContent())
-                .usingRecursiveComparison()
-                .isEqualTo(toMap(credential, ISSUER, SUBJECT));
+        assertThat(credentials.failed()).isTrue();
     }
 
     private void setUpMocks(SignedJWT jws, boolean isSigned, boolean claimsValid) {
@@ -86,7 +82,7 @@ public class IdentityHubCredentialsVerifierTest {
     }
 
     @Test
-    public void getVerifiedClaims_filtersSignedByWrongIssuer() throws Exception {
+    public void getVerifiedClaims_filtersSignedByWrongIssuer() {
 
         // Arrange
         var credential = generateVerifiableCredential();
@@ -97,8 +93,7 @@ public class IdentityHubCredentialsVerifierTest {
         var credentials = credentialsVerifier.getVerifiedCredentials(DID_DOCUMENT);
 
         // Assert
-        assertThat(credentials.succeeded()).isTrue();
-        assertThat(credentials.getContent().size()).isEqualTo(0);
+        assertThat(credentials.failed()).isTrue();
     }
 
     @Test
@@ -138,8 +133,7 @@ public class IdentityHubCredentialsVerifierTest {
         var credentials = credentialsVerifier.getVerifiedCredentials(DID_DOCUMENT);
 
         // Assert
-        assertThat(credentials.succeeded()).isTrue();
-        assertThat(credentials.getContent().isEmpty());
+        assertThat(credentials.failed()).isTrue();
         verify(monitorMock, times(1)).warning(anyString());
 
     }
@@ -161,8 +155,7 @@ public class IdentityHubCredentialsVerifierTest {
         var credentials = credentialsVerifier.getVerifiedCredentials(DID_DOCUMENT);
 
         // Assert
-        assertThat(credentials.succeeded()).isTrue();
-        assertThat(credentials.getContent().isEmpty());
+        assertThat(credentials.failed()).isTrue();
         verify(monitorMock, times(1)).warning(anyString());
     }
 
