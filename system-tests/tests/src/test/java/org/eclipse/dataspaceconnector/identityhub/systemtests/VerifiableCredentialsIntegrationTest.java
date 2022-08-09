@@ -75,7 +75,7 @@ class VerifiableCredentialsIntegrationTest {
 
     @Test
     void get_self_description() {
-        int result = cmd.execute("-s", HUB_URL, "sd");
+        int result = cmd.execute("-s", HUB_URL, "sd", "get");
         assertThat(result).isZero();
         assertThat(out.toString()).contains("did:web:test.delta-dao.com");
     }

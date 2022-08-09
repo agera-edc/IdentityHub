@@ -28,7 +28,7 @@ import picocli.CommandLine.Command;
         description = "Client utility for MVD identity hub.",
         subcommands = {
                 VerifiableCredentialsCommand.class,
-                GetSelfDescriptionCommand.class
+                SelfDescriptionCommand.class
         })
 public class IdentityHubCli {
     @CommandLine.Option(names = { "-s", "--identity-hub-url" }, required = true, description = "Identity Hub URL", defaultValue = "http://localhost:8181/api/identity-hub")

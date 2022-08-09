@@ -23,14 +23,14 @@ import picocli.CommandLine.ParentCommand;
 import java.util.concurrent.Callable;
 
 
-@Command(name = "sd", description = "Display Self-Description document.")
+@Command(name = "get", description = "Display Self-Description document.")
 class GetSelfDescriptionCommand implements Callable<Integer> {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT);
 
     @ParentCommand
-    IdentityHubCli cli;
+    SelfDescriptionCommand command;
 
     @CommandLine.Spec
     private CommandLine.Model.CommandSpec spec;
@@ -38,7 +38,7 @@ class GetSelfDescriptionCommand implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         var out = spec.commandLine().getOut();
-        var result = cli.identityHubClient.getSelfDescription(cli.hubUrl);
+        var result = command.cli.identityHubClient.getSelfDescription(command.cli.hubUrl);
         if (result.succeeded()) {
             MAPPER.writeValue(out, result.getContent());
             out.println();

@@ -177,7 +177,7 @@ class VerifiableCredentialsCommandTest {
     }
 
     private int executeGetSelfDescription() {
-        return cmd.execute("-s", HUB_URL, "sd");
+        return cmd.execute("-s", HUB_URL, "sd", "get");
     }
 
     private int executeList() {
