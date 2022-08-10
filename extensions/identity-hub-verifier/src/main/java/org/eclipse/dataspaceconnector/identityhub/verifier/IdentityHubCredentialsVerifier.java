@@ -123,7 +123,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
     @NotNull
     private VerificationResult<List<SignedJWT>> verifyCredentials(StatusResult<Collection<SignedJWT>> jwts, DidDocument didDocument) {
-        // Get credentials having the required JWT claims and are signed by the right issuer.
+        // Get valid credentials.
         var verifiedJwts = jwts.getContent()
                 .stream()
                 .map(jwt -> verifyJwtClaims(jwt, didDocument))
@@ -139,7 +139,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .map(AbstractResult::getContent)
                 .collect(Collectors.toList());
 
-        // Gather failure messages.
+        // Gather failure messages of invalid credentials.
         var verificationFailures = verifiedJwts
                 .get(false)
                 .stream()
