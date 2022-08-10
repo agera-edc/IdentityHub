@@ -100,7 +100,7 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
             monitor.debug(() -> "JWT signature verification successful");
             return Result.success();
         } catch (JOSEException e) {
-            var failureMessage = "Unable to verify JWT token.";
+            var failureMessage = "Unable to verify JWT token";
             monitor.warning(failureMessage, e);
             return Result.failure(String.format("%s: %s", failureMessage, e.getMessage()));
         }
