@@ -123,7 +123,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .map(verifiableCredentialsJwtService::extractCredential)
                 .collect(partitioningBy(AbstractResult::succeeded));
 
-        var successful = result.get(true).stream()
+        var successfulResults = result.get(true).stream()
                 .map(AbstractResult::getContent)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
@@ -131,7 +131,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .map(AbstractResult::getFailureDetail)
                 .collect(Collectors.toList());
 
-        return new VerificationResult(successful, failedResults);
+        return new VerificationResult(successfulResults, failedResults);
     }
 
     private String getIdentityHubBaseUrl(DidDocument didDocument) {
