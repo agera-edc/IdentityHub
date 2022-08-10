@@ -19,7 +19,15 @@ import org.eclipse.dataspaceconnector.spi.result.Failure;
 
 import java.util.List;
 
-//TODO: Add javadoc.
+/**
+ * A generic result type containing the result of processing plus the failures happening during the processing of the
+ * result.
+ * For example, when processing a List of objects, the processing can be successful for some objects, and unsuccessful
+ * for others.
+ * Using this class as a return type would let the client decide how to act about the failures.
+ *
+ * @param <T> Result type
+ */
 class VerificationResult<T> extends AbstractResult<T, Failure> {
     VerificationResult(T successfulResult, List<String> failureMessage) {
         super(successfulResult, failureMessage.isEmpty() ? null : new Failure(failureMessage));
