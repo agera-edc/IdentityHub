@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.partitioningBy;
 
@@ -102,12 +103,17 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
     @NotNull
     private List<SignedJWT> verifyCredentials(StatusResult<Collection<SignedJWT>> jwts, DidDocument didDocument) {
-        var result = jwts.getContent()
+        var jwtsWithValidClaims = jwts.getContent()
                 .stream()
-                .collect(partitioningBy((jwt) -> jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId()).succeeded() && jwtCredentialsVerifier.isSignedByIssuer(jwt).succeeded()));
+                .collect(partitioningBy((jwt) -> jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId()).succeeded()));
 
-        var successfulResults = result.get(true);
-        var failedResults = result.get(false);
+        var jwtsSignedByIssuer = jwtsWithValidClaims.get(true).stream()
+                        .collect(partitioningBy(jwt -> jwtCredentialsVerifier.isSignedByIssuer(jwt).succeeded()));
+
+
+        var successfulResults = jwtsSignedByIssuer.get(true);
+        var failedResults = Stream.concat(jwtsWithValidClaims.get(false).stream(), jwtsSignedByIssuer.get(false).stream())
+                .collect(Collectors.toList());
 
         if (!failedResults.isEmpty()) {
             monitor.warning(String.format("Ignoring %s invalid verifiable credentials", failedResults.size()));
