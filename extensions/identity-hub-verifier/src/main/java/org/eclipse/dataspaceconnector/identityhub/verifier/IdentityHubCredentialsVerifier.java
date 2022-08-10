@@ -123,17 +123,17 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
     @NotNull
     private VerificationResult<List<SignedJWT>> verifyCredentials(StatusResult<Collection<SignedJWT>> jwts, DidDocument didDocument) {
-        var jwtsWithValidClaims = jwts.getContent()
+        var verifiedJwts = jwts.getContent()
                 .stream()
                 .map(jwt -> verifyJwtClaims(jwt, didDocument))
                 .collect(partitioningBy(AbstractResult::succeeded));
 
-        var jwtClaimsVerificationsFailure = jwtsWithValidClaims
+        var verificationFailures = verifiedJwts
                 .get(false)
                 .stream()
                 .map(AbstractResult::getFailureDetail);
 
-        var jwtsSignedByIssuer = jwtsWithValidClaims.get(true)
+        var jwtsSignedByIssuer = verifiedJwts.get(true)
                 .stream()
                 .collect(partitioningBy(jwt -> jwtCredentialsVerifier.isSignedByIssuer(jwt.getContent()).succeeded()));
 
@@ -142,11 +142,11 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .stream()
                 .map(AbstractResult::getFailureDetail);
 
-        var failedResults = Stream.concat(jwtClaimsVerificationsFailure, signatureVerificationFailures)
+        var failedResults = Stream.concat(verificationFailures, signatureVerificationFailures)
                 .collect(Collectors.toList());
 
         if (!failedResults.isEmpty()) {
-            monitor.warning(String.format("Ignoring %s invalid verifiable credentials", failedResults.size()));
+            monitor.warning(String.format("Found %s invalid verifiable credentials", failedResults.size()));
         }
 
         var successfulResult = jwtsSignedByIssuer
