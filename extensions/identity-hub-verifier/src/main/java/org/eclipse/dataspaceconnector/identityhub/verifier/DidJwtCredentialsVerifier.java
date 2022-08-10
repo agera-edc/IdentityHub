@@ -48,13 +48,15 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
         try {
             issuer = jwt.getJWTClaimsSet().getIssuer();
         } catch (ParseException e) {
-            monitor.warning("Error parsing issuer from JWT", e);
-            return Result.failure(String.format("Error parsing issuer from JWT: %s", e.getMessage()));
+            var failureMessage = "Error parsing issuer from JWT";
+            monitor.warning(failureMessage, e);
+            return Result.failure(String.format("%s: %s", failureMessage, e.getMessage()));
         }
         var issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer);
         if (issuerPublicKey.failed()) {
-            monitor.warning(String.format("Failed finding publicKey of issuer: %s", issuer));
-            return Result.failure(String.format("Failed finding publicKey of issuer: %s", issuer));
+            var failureMessage = String.format("Failed finding publicKey of issuer: %s", issuer);
+            monitor.warning(failureMessage);
+            return Result.failure(failureMessage);
         }
         return verifySignature(jwt, issuerPublicKey.getContent());
     }
@@ -64,8 +66,9 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
         try {
             jwtClaimsSet = jwt.getJWTClaimsSet();
         } catch (ParseException e) {
-            monitor.warning("Error parsing issuer from JWT", e);
-            return Result.failure(String.format("Error parsing issuer from JWT: %s", e.getMessage()));
+            var failureMessage = "Error parsing issuer from JWT";
+            monitor.warning(failureMessage, e);
+            return Result.failure(String.format("%s: %s", failureMessage, e.getMessage()));
         }
 
         // verify claims
@@ -79,8 +82,9 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
         try {
             claimsVerifier.verify(jwtClaimsSet);
         } catch (BadJWTException e) {
-            monitor.warning("Failure verifying JWT token", e);
-            return Result.failure(String.format("Failure verifying JWT token: %s", e.getMessage()));
+            var failureMessage = "Failure verifying JWT token";
+            monitor.warning(failureMessage, e);
+            return Result.failure(String.format("%s: %s", failureMessage, e.getMessage()));
         }
 
         monitor.debug(() -> "JWT claims verification successful");
@@ -96,8 +100,9 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
             monitor.debug(() -> "JWT signature verification successful");
             return Result.success();
         } catch (JOSEException e) {
-            monitor.warning("Unable to verify JWT token", e);
-            return Result.failure("Unable to verify JWT token. " + e.getMessage());
+            var failureMessage = "Unable to verify JWT token.";
+            monitor.warning(failureMessage, e);
+            return Result.failure(String.format("%s: %s", failureMessage, e.getMessage()));
         }
     }
 }
