@@ -146,7 +146,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
     private static class VerificationResult extends AbstractResult<Map<String, Object>, Failure> {
         VerificationResult(Map<String, Object> succeededCredentials, List<String> failureMessage) {
-            super(succeededCredentials, new Failure(failureMessage));
+            super(succeededCredentials, failureMessage.isEmpty() ? null : new Failure(failureMessage));
         }
     }
 }

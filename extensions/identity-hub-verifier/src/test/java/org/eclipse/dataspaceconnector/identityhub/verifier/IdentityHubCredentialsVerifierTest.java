@@ -72,7 +72,7 @@ public class IdentityHubCredentialsVerifierTest {
         var credentials = credentialsVerifier.getVerifiedCredentials(DID_DOCUMENT);
 
         // Assert
-        assertThat(credentials.failed()).isTrue();
+        assertThat(credentials.succeeded()).isTrue();
     }
 
     private void setUpMocks(SignedJWT jws, boolean isSigned, boolean claimsValid) {
@@ -93,7 +93,8 @@ public class IdentityHubCredentialsVerifierTest {
         var credentials = credentialsVerifier.getVerifiedCredentials(DID_DOCUMENT);
 
         // Assert
-        assertThat(credentials.failed()).isTrue();
+        assertThat(credentials.succeeded()).isTrue();
+        assertThat(credentials.getContent().size()).isEqualTo(0);
     }
 
     @Test
