@@ -30,9 +30,11 @@ import org.eclipse.dataspaceconnector.spi.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.response.StatusResult;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.buildSignedJwt;
@@ -40,7 +42,6 @@ import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.Veri
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toMap;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -140,8 +141,7 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.failed()).isTrue();
-        verify(monitorMock, times(1)).severe(anyString());
-
+        verify(monitorMock, times(1)).severe(ArgumentMatchers.<Supplier<String>>any());
     }
 
     @Test
@@ -162,7 +162,7 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.failed()).isTrue();
-        verify(monitorMock, times(1)).severe(anyString());
+        verify(monitorMock, times(1)).severe(ArgumentMatchers.<Supplier<String>>any());
     }
 
 }
