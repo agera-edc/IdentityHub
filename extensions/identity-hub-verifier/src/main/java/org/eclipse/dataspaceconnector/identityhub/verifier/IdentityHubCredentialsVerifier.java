@@ -87,17 +87,22 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
         monitor.debug(() -> String.format("Retrieved %s verifiable credentials from identity hub", verifiableCredentials.getContent().size()));
 
-        var verifiedCredentials = verifyCredentials(verifiableCredentials, didDocument).getContent();
+        var verifiedCredentials = verifyCredentials(verifiableCredentials, didDocument);
 
-        monitor.debug(() -> String.format("Verified %s credentials", verifiedCredentials.size()));
+        monitor.debug(() -> String.format("Verified %s credentials", verifiedCredentials.getContent().size()));
 
-        var claims = extractClaimsFromCredential(verifiedCredentials);
+        var claims = extractClaimsFromCredential(verifiedCredentials.getContent());
 
-        if (claims.failed()) {
+        var failureMessages = Stream.concat(verifiedCredentials.getFailureMessages().stream(),
+                claims.getFailureMessages().stream()).collect(Collectors.toList());
+
+        var result = new VerificationResult<>(claims.getContent(), failureMessages);
+
+        if (result.failed()) {
             monitor.severe(() -> String.format("Credentials verification failed: %s", claims.getFailureDetail()));
-            return Result.failure(claims.getFailureDetail());
+            return Result.failure(result.getFailureDetail());
         } else {
-            return Result.success(claims.getContent());
+            return Result.success(result.getContent());
         }
     }
 

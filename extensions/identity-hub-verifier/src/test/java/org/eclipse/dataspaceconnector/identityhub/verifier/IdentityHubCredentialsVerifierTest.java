@@ -99,8 +99,7 @@ public class IdentityHubCredentialsVerifierTest {
         var credentials = credentialsVerifier.getVerifiedCredentials(DID_DOCUMENT);
 
         // Assert
-        assertThat(credentials.succeeded()).isTrue();
-        assertThat(credentials.getContent().size()).isEqualTo(0);
+        assertThat(credentials.failed()).isTrue();
     }
 
     @Test
