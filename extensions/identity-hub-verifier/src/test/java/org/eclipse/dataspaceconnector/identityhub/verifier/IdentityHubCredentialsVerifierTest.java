@@ -37,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.buildSignedJwt;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
+import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toMap;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -73,6 +74,9 @@ public class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.succeeded()).isTrue();
+        assertThat(credentials.getContent())
+                .usingRecursiveComparison()
+                .isEqualTo(toMap(credential, ISSUER, SUBJECT));
     }
 
     private void setUpMocks(SignedJWT jws, boolean isSigned, boolean claimsValid) {
