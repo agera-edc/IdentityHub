@@ -123,19 +123,27 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
     @NotNull
     private VerificationResult<List<SignedJWT>> verifyCredentials(StatusResult<Collection<SignedJWT>> jwts, DidDocument didDocument) {
+        // Get credentials having the required JWT claims and are signed by the right issuer.
         var verifiedJwts = jwts.getContent()
                 .stream()
                 .map(jwt -> verifyJwtClaims(jwt, didDocument))
                 .collect(partitioningBy(AbstractResult::succeeded));
 
+        var jwtsSignedByIssuer = verifiedJwts.get(true)
+                .stream()
+                .collect(partitioningBy(jwt -> jwtCredentialsVerifier.isSignedByIssuer(jwt.getContent()).succeeded()));
+
+        var validCredentials = jwtsSignedByIssuer
+                .get(true)
+                .stream()
+                .map(AbstractResult::getContent)
+                .collect(Collectors.toList());
+
+        // Gather failure messages.
         var verificationFailures = verifiedJwts
                 .get(false)
                 .stream()
                 .map(AbstractResult::getFailureDetail);
-
-        var jwtsSignedByIssuer = verifiedJwts.get(true)
-                .stream()
-                .collect(partitioningBy(jwt -> jwtCredentialsVerifier.isSignedByIssuer(jwt.getContent()).succeeded()));
 
         var signatureVerificationFailures = jwtsSignedByIssuer
                 .get(false)
@@ -149,13 +157,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             monitor.warning(String.format("Found %s invalid verifiable credentials", failedResults.size()));
         }
 
-        var successfulResult = jwtsSignedByIssuer
-                .get(true)
-                .stream()
-                .map(AbstractResult::getContent)
-                .collect(Collectors.toList());
-
-        return new VerificationResult<>(successfulResult, failedResults);
+        return new VerificationResult<>(validCredentials, failedResults);
     }
 
     @NotNull
