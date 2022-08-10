@@ -58,7 +58,7 @@ public class DidJwtCredentialsVerifierTest {
         when(didPublicKeyResolver.resolvePublicKey(ISSUER)).thenReturn(Result.success(toPublicKeyWrapper(JWK)));
 
         // Assert
-        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(JWT)).isTrue();
+        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(JWT).succeeded()).isTrue();
     }
 
     @Test
@@ -68,7 +68,7 @@ public class DidJwtCredentialsVerifierTest {
         when(didPublicKeyResolver.resolvePublicKey(ISSUER)).thenReturn(Result.success(toPublicKeyWrapper(ANOTHER_JWK)));
 
         // Assert
-        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(JWT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(JWT).failed()).isTrue();
     }
 
     @Test
@@ -78,7 +78,7 @@ public class DidJwtCredentialsVerifierTest {
         when(didPublicKeyResolver.resolvePublicKey(ISSUER)).thenReturn(Result.failure("Failed resolving public key"));
 
         // Assert
-        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(JWT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(JWT).failed()).isTrue();
     }
 
     @Test
@@ -88,7 +88,7 @@ public class DidJwtCredentialsVerifierTest {
         when(didPublicKeyResolver.resolvePublicKey(JWT.getJWTClaimsSet().getIssuer())).thenReturn(Result.failure(FAKER.lorem().sentence()));
 
         // Assert
-        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(JWT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(JWT).failed()).isTrue();
     }
 
     @Test
@@ -99,29 +99,29 @@ public class DidJwtCredentialsVerifierTest {
         when(jws.getJWTClaimsSet()).thenThrow(new ParseException("Failed parsing JWT payload", 0));
 
         // Assert
-        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(jws)).isFalse();
+        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(jws).failed()).isTrue();
     }
 
     @Test
     void verifyClaims_success() {
-        assertThat(didJwtCredentialsVerifier.verifyClaims(JWT, SUBJECT)).isTrue();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(JWT, SUBJECT).succeeded()).isTrue();
     }
 
     @Test
     void verifyClaims_OnInvalidSubject() {
-        assertThat(didJwtCredentialsVerifier.verifyClaims(JWT, OTHER_SUBJECT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(JWT, OTHER_SUBJECT).failed()).isTrue();
     }
 
     @Test
     void verifyClaims_OnEmptySubject() {
         var jwt = buildSignedJwt(generateVerifiableCredential(), ISSUER, null, JWK);
-        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, OTHER_SUBJECT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, OTHER_SUBJECT).failed()).isTrue();
     }
 
     @Test
     void verifyClaims_OnEmptyIssuer() {
         var jwt = buildSignedJwt(generateVerifiableCredential(), null, SUBJECT, JWK);
-        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT).failed()).isTrue();
     }
 
     @Test
@@ -132,7 +132,7 @@ public class DidJwtCredentialsVerifierTest {
         when(jwt.getJWTClaimsSet()).thenThrow(new ParseException(message, 0));
 
         // Act
-        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT).failed()).isTrue();
     }
 
     @Test
@@ -145,7 +145,7 @@ public class DidJwtCredentialsVerifierTest {
 
         SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
-        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isTrue();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT).succeeded()).isTrue();
     }
 
     @Test
@@ -158,7 +158,7 @@ public class DidJwtCredentialsVerifierTest {
 
         SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
-        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT).failed()).isTrue();
     }
 
     @Test
@@ -171,7 +171,7 @@ public class DidJwtCredentialsVerifierTest {
 
         SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
-        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isTrue();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT).succeeded()).isTrue();
     }
 
     @Test
@@ -184,6 +184,6 @@ public class DidJwtCredentialsVerifierTest {
 
         SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
-        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT)).isFalse();
+        assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT).failed()).isTrue();
     }
 }

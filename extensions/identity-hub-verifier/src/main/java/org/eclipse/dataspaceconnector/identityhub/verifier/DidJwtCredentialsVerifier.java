@@ -43,30 +43,29 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
         this.monitor = monitor;
     }
 
-    public boolean isSignedByIssuer(SignedJWT jwt) {
+    public Result<Void> isSignedByIssuer(SignedJWT jwt) {
         String issuer;
         try {
             issuer = jwt.getJWTClaimsSet().getIssuer();
         } catch (ParseException e) {
             monitor.warning("Error parsing issuer from JWT", e);
-            return false;
+            return Result.failure(String.format("Error parsing issuer from JWT: %s", e.getMessage()));
         }
         var issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer);
         if (issuerPublicKey.failed()) {
             monitor.warning(String.format("Failed finding publicKey of issuer: %s", issuer));
-            return false;
+            return Result.failure(String.format("Failed finding publicKey of issuer: %s", issuer));
         }
-        Result<Void> signatureResult = verifySignature(jwt, issuerPublicKey.getContent());
-        return signatureResult.succeeded();
+        return verifySignature(jwt, issuerPublicKey.getContent());
     }
 
-    public boolean verifyClaims(SignedJWT jwt, String expectedSubject) {
+    public Result<Void> verifyClaims(SignedJWT jwt, String expectedSubject) {
         JWTClaimsSet jwtClaimsSet;
         try {
             jwtClaimsSet = jwt.getJWTClaimsSet();
         } catch (ParseException e) {
             monitor.warning("Error parsing issuer from JWT", e);
-            return false;
+            return Result.failure(String.format("Error parsing issuer from JWT: %s", e.getMessage()));
         }
 
         // verify claims
@@ -81,11 +80,11 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
             claimsVerifier.verify(jwtClaimsSet);
         } catch (BadJWTException e) {
             monitor.warning("Failure verifying JWT token", e);
-            return false;
+            return Result.failure(String.format("Failure verifying JWT token: %s", e.getMessage()));
         }
 
         monitor.debug(() -> "JWT claims verification successful");
-        return true;
+        return Result.success();
     }
 
     private Result<Void> verifySignature(SignedJWT jwt, PublicKeyWrapper issuerPublicKey) {

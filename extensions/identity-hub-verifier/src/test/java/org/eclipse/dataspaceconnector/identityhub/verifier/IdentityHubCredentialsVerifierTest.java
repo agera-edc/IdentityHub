@@ -28,6 +28,7 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredenti
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.response.StatusResult;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -77,8 +78,8 @@ public class IdentityHubCredentialsVerifierTest {
 
     private void setUpMocks(SignedJWT jws, boolean isSigned, boolean claimsValid) {
         when(identityHubClientMock.getVerifiableCredentials(HUB_BASE_URL)).thenReturn(StatusResult.success(List.of(jws)));
-        when(jwtCredentialsVerifierMock.isSignedByIssuer(jws)).thenReturn(isSigned);
-        when(jwtCredentialsVerifierMock.verifyClaims(eq(jws), any())).thenReturn(claimsValid);
+        when(jwtCredentialsVerifierMock.isSignedByIssuer(jws)).thenReturn(isSigned ? Result.success() : Result.failure("JWT not signed"));
+        when(jwtCredentialsVerifierMock.verifyClaims(eq(jws), any())).thenReturn(claimsValid ? Result.success() : Result.failure("VC not valid"));
     }
 
     @Test

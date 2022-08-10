@@ -23,7 +23,6 @@ import org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredenti
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.response.StatusResult;
 import org.eclipse.dataspaceconnector.spi.result.AbstractResult;
-import org.eclipse.dataspaceconnector.spi.result.Failure;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.jetbrains.annotations.NotNull;
 
@@ -105,7 +104,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     private List<SignedJWT> verifyCredentials(StatusResult<Collection<SignedJWT>> jwts, DidDocument didDocument) {
         var result = jwts.getContent()
                 .stream()
-                .collect(partitioningBy((jwt) -> jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId()) && jwtCredentialsVerifier.isSignedByIssuer(jwt)));
+                .collect(partitioningBy((jwt) -> jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId()).succeeded() && jwtCredentialsVerifier.isSignedByIssuer(jwt).succeeded()));
 
         var successfulResults = result.get(true);
         var failedResults = result.get(false);
@@ -118,7 +117,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     }
 
     @NotNull
-    private VerificationResult extractClaimsFromCredential(List<SignedJWT> verifiedCredentials) {
+    private VerificationResult<Map<String, Object>> extractClaimsFromCredential(List<SignedJWT> verifiedCredentials) {
         var result = verifiedCredentials.stream()
                 .map(verifiableCredentialsJwtService::extractCredential)
                 .collect(partitioningBy(AbstractResult::succeeded));
@@ -131,7 +130,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .map(AbstractResult::getFailureDetail)
                 .collect(Collectors.toList());
 
-        return new VerificationResult(successfulResults, failedResults);
+        return new VerificationResult<>(successfulResults, failedResults);
     }
 
     private String getIdentityHubBaseUrl(DidDocument didDocument) {
@@ -142,11 +141,5 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .findFirst()
                 .map(Service::getServiceEndpoint)
                 .orElse(null);
-    }
-
-    private static class VerificationResult extends AbstractResult<Map<String, Object>, Failure> {
-        VerificationResult(Map<String, Object> succeededCredentials, List<String> failureMessage) {
-            super(succeededCredentials, failureMessage.isEmpty() ? null : new Failure(failureMessage));
-        }
     }
 }
