@@ -48,15 +48,11 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
         try {
             issuer = jwt.getJWTClaimsSet().getIssuer();
         } catch (ParseException e) {
-            var failureMessage = "Error parsing issuer from JWT";
-            monitor.warning(failureMessage, e);
-            return Result.failure(String.format("%s: %s", failureMessage, e.getMessage()));
+            return Result.failure(String.format("Error parsing issuer from JWT: %s", e.getMessage()));
         }
         var issuerPublicKey = didPublicKeyResolver.resolvePublicKey(issuer);
         if (issuerPublicKey.failed()) {
-            var failureMessage = String.format("Failed finding publicKey of issuer: %s", issuer);
-            monitor.warning(failureMessage);
-            return Result.failure(failureMessage);
+            return Result.failure(String.format("Failed finding publicKey of issuer: %s", issuer));
         }
         return verifySignature(jwt, issuerPublicKey.getContent());
     }
@@ -66,9 +62,7 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
         try {
             jwtClaimsSet = jwt.getJWTClaimsSet();
         } catch (ParseException e) {
-            var failureMessage = "Error parsing issuer from JWT";
-            monitor.warning(failureMessage, e);
-            return Result.failure(String.format("%s: %s", failureMessage, e.getMessage()));
+            return Result.failure(String.format("Error parsing issuer from JWT: %s", e.getMessage()));
         }
 
         // verify claims
@@ -82,9 +76,7 @@ class DidJwtCredentialsVerifier implements JwtCredentialsVerifier {
         try {
             claimsVerifier.verify(jwtClaimsSet);
         } catch (BadJWTException e) {
-            var failureMessage = "Failure verifying JWT token";
-            monitor.warning(failureMessage, e);
-            return Result.failure(String.format("%s: %s", failureMessage, e.getMessage()));
+            return Result.failure(String.format("Failure verifying JWT token: %s", e.getMessage()));
         }
 
         monitor.debug(() -> "JWT claims verification successful");
