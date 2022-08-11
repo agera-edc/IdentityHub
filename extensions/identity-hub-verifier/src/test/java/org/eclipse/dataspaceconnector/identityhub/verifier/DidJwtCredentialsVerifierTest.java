@@ -194,7 +194,9 @@ public class DidJwtCredentialsVerifierTest {
         // Arrange
         var jwt = spy(JWT);
         when(didPublicKeyResolver.resolvePublicKey(ISSUER)).thenReturn(Result.success(toPublicKeyWrapper(JWK)));
-        doThrow(new JOSEException("")).when(jwt).verify(any());
+        // JOSEException can occur if JWS algorithm is not supported, or if signature verification failed for some
+        // other internal reason
+        doThrow(new JOSEException("JWS algorithm is not supported")).when(jwt).verify(any());
 
         // Act & Assert
         assertThat(didJwtCredentialsVerifier.isSignedByIssuer(jwt).failed()).isTrue();
