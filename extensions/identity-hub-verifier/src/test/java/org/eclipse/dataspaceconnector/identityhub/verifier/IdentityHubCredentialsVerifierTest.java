@@ -57,7 +57,7 @@ class IdentityHubCredentialsVerifierTest {
     private final Monitor monitorMock = mock(Monitor.class);
     private final IdentityHubClient identityHubClientMock = mock(IdentityHubClient.class);
     private final JwtCredentialsVerifier jwtCredentialsVerifierMock = mock(JwtCredentialsVerifier.class);
-    private final VerifiableCredentialsJwtServiceImpl verifiableCredentialsJwtService = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
+    private final VerifiableCredentialsJwtServiceImpl verifiableCredentialsJwtService = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER, monitorMock);
     private final CredentialsVerifier credentialsVerifier = new IdentityHubCredentialsVerifier(identityHubClientMock, monitorMock, jwtCredentialsVerifierMock, verifiableCredentialsJwtService);
 
     @Test
@@ -110,7 +110,7 @@ class IdentityHubCredentialsVerifierTest {
 
         // Assert
         assertThat(credentials.failed()).isTrue();
-        assertThat(credentials.getFailureMessages()).containsExactly("Failed getting Identity Hub URL");
+        assertThat(credentials.getFailureMessages()).containsExactly("Could not retrieve identity hub URL from DID document");
     }
 
     @Test
@@ -164,4 +164,5 @@ class IdentityHubCredentialsVerifierTest {
         assertThat(credentials.getContent()).isEmpty();
         verify(monitorMock).warning(anyString());
     }
+
 }

@@ -23,14 +23,19 @@ import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPrivateKeyWrapper;
 import org.eclipse.dataspaceconnector.iam.did.crypto.key.EcPublicKeyWrapper;
 import org.eclipse.dataspaceconnector.identityhub.credentials.model.VerifiableCredential;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.map;
 import static org.eclipse.dataspaceconnector.identityhub.credentials.VerifiableCredentialsJwtService.VERIFIABLE_CREDENTIALS_KEY;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
+import static org.mockito.Mockito.mock;
 
 public class VerifiableCredentialsJwtServiceTest {
 
@@ -47,7 +52,7 @@ public class VerifiableCredentialsJwtServiceTest {
         var key = generateEcKey();
         privateKey = new EcPrivateKeyWrapper(key);
         publicKey = new EcPublicKeyWrapper(key);
-        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER);
+        service = new VerifiableCredentialsJwtServiceImpl(OBJECT_MAPPER, mock(Monitor.class));
     }
 
     @Test
@@ -55,6 +60,7 @@ public class VerifiableCredentialsJwtServiceTest {
         // Arrange
         var issuer = FAKER.lorem().word();
         var subject = FAKER.lorem().word();
+        var startTime = Instant.now().truncatedTo(SECONDS);
 
         // Act
         var signedJwt = service.buildSignedJwt(VERIFIABLE_CREDENTIAL, issuer, subject, privateKey);
@@ -63,7 +69,7 @@ public class VerifiableCredentialsJwtServiceTest {
         boolean result = signedJwt.verify(publicKey.verifier());
         assertThat(result).isTrue();
 
-        assertThat(signedJwt.getPayload().toJSONObject())
+        assertThat(signedJwt.getJWTClaimsSet().getClaims())
                 .containsEntry("iss", issuer)
                 .containsEntry("sub", subject)
                 .extractingByKey(VERIFIABLE_CREDENTIALS_KEY)
@@ -72,6 +78,7 @@ public class VerifiableCredentialsJwtServiceTest {
                             .usingRecursiveComparison()
                             .isEqualTo(VERIFIABLE_CREDENTIAL);
                 });
+        assertThat(signedJwt.getJWTClaimsSet().getIssueTime()).isBetween(startTime, Instant.now());
     }
 
     @Test
