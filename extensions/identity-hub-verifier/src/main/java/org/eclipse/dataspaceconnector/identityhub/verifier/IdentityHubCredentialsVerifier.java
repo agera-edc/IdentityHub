@@ -133,7 +133,8 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
 
         var jwtsSignedByIssuer = verifiedJwts.get(true)
                 .stream()
-                .collect(partitioningBy(jwt -> jwtCredentialsVerifier.isSignedByIssuer(jwt.getContent()).succeeded()));
+                .map(jwt -> verifySignature(jwt.getContent()))
+                .collect(partitioningBy(AbstractResult::succeeded));
 
         var validCredentials = jwtsSignedByIssuer
                 .get(true)
@@ -165,6 +166,12 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     @NotNull
     private Result<SignedJWT> verifyJwtClaims(SignedJWT jwt, DidDocument didDocument) {
         var result = jwtCredentialsVerifier.verifyClaims(jwt, didDocument.getId());
+        return result.succeeded() ? Result.success(jwt) : Result.failure(result.getFailureMessages());
+    }
+
+    @NotNull
+    private Result<SignedJWT> verifySignature(SignedJWT jwt) {
+        var result = jwtCredentialsVerifier.isSignedByIssuer(jwt);
         return result.succeeded() ? Result.success(jwt) : Result.failure(result.getFailureMessages());
     }
 
