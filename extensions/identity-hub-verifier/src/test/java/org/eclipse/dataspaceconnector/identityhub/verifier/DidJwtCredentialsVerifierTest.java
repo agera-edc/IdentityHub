@@ -15,6 +15,7 @@
 package org.eclipse.dataspaceconnector.identityhub.verifier;
 
 import com.github.javafaker.Faker;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -34,7 +35,10 @@ import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.Veri
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toPublicKeyWrapper;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class DidJwtCredentialsVerifierTest {
@@ -183,5 +187,16 @@ public class DidJwtCredentialsVerifierTest {
         SignedJWT jwt = VerifiableCredentialTestUtil.buildSignedJwt(claims, JWK);
 
         assertThat(didJwtCredentialsVerifier.verifyClaims(jwt, SUBJECT).failed()).isTrue();
+    }
+
+    @Test
+    void verifyClaims_JwsCantBeVerified() throws Exception {
+        // Arrange
+        var jwt = spy(JWT);
+        when(didPublicKeyResolver.resolvePublicKey(ISSUER)).thenReturn(Result.success(toPublicKeyWrapper(JWK)));
+        doThrow(new JOSEException("")).when(jwt).verify(any());
+
+        // Act & Assert
+        assertThat(didJwtCredentialsVerifier.isSignedByIssuer(jwt).failed()).isTrue();
     }
 }
