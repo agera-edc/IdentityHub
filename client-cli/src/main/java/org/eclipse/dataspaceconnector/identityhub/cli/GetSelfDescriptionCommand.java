@@ -39,12 +39,12 @@ class GetSelfDescriptionCommand implements Callable<Integer> {
     public Integer call() throws Exception {
         var out = spec.commandLine().getOut();
         var result = command.cli.identityHubClient.getSelfDescription(command.cli.hubUrl);
-        if (result.succeeded()) {
-            MAPPER.writeValue(out, result.getContent());
-            out.println();
-        } else {
+        if (result.failed()) {
             throw new CliException("Error while getting Self-Description: " + result.getFailureDetail());
         }
+
+        MAPPER.writeValue(out, result.getContent());
+        out.println();
         return 0;
     }
 }

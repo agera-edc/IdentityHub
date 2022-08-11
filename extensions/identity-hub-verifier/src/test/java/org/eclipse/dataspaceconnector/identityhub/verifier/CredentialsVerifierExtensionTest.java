@@ -32,7 +32,6 @@ import org.eclipse.dataspaceconnector.junit.extensions.EdcExtension;
 import org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +46,9 @@ import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.Veri
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toMap;
 import static org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils.getFreePort;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(EdcExtension.class)
 class CredentialsVerifierExtensionTest {
@@ -74,9 +75,12 @@ class CredentialsVerifierExtensionTest {
         var jwk = generateEcKey();
         var didDocument = createDidDocument(jwk);
         var credential = generateVerifiableCredential();
-        var method = FAKER.lorem().word();
         var jwt = buildSignedJwt(credential, CREDENTIAL_ISSUER, SUBJECT, jwk);
-        registry.register(new MockDidResolver(DID_METHOD, didDocument));
+        var didResolverMock = mock(DidResolver.class);
+        when(didResolverMock.getMethod()).thenReturn(DID_METHOD);
+        when(didResolverMock.resolve(anyString())).thenReturn(Result.success(didDocument));
+
+        registry.register(didResolverMock);
 
         // Act
         identityHubClient.addVerifiableCredential(API_URL, jwt);
@@ -98,26 +102,4 @@ class CredentialsVerifierExtensionTest {
                 .verificationMethod(FAKER.internet().uuid(), DidConstants.ECDSA_SECP_256_K_1_VERIFICATION_KEY_2019, ecKey)
                 .build();
     }
-
-    private static final class MockDidResolver implements DidResolver {
-
-        private final String method;
-        private final DidDocument didDocument;
-
-        private MockDidResolver(String method, DidDocument didDocument) {
-            this.method = method;
-            this.didDocument = didDocument;
-        }
-
-        @Override
-        public @NotNull String getMethod() {
-            return method;
-        }
-
-        @Override
-        public @NotNull Result<DidDocument> resolve(String s) {
-            return Result.success(didDocument);
-        }
-    }
-
 }

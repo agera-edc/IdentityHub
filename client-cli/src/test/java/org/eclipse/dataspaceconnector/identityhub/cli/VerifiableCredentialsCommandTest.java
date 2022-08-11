@@ -73,7 +73,7 @@ class VerifiableCredentialsCommandTest {
     }
 
     @Test
-    void getSelfDescription() {
+    void getSelfDescription() throws JsonProcessingException {
         var selfDescription = MAPPER.createObjectNode();
         selfDescription.put(FAKER.lorem().word(), FAKER.lorem().word());
         // arrange
@@ -88,7 +88,7 @@ class VerifiableCredentialsCommandTest {
         assertThat(exitCode).isZero();
         assertThat(errContent).isEmpty();
 
-        assertThat(outContent).isEqualToIgnoringWhitespace(selfDescription.toString());
+        assertThat(MAPPER.readTree(outContent)).usingRecursiveComparison().isEqualTo(selfDescription);
     }
 
     @Test
