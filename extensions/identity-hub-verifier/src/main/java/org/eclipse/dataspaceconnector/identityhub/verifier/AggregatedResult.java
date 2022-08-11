@@ -28,8 +28,8 @@ import java.util.List;
  *
  * @param <T> Result type
  */
-class VerificationResult<T> extends AbstractResult<T, Failure> {
-    VerificationResult(T successfulResult, List<String> failureMessage) {
+class AggregatedResult<T> extends AbstractResult<T, Failure> {
+    AggregatedResult(T successfulResult, List<String> failureMessage) {
         super(successfulResult, failureMessage.isEmpty() ? null : new Failure(failureMessage));
     }
 }

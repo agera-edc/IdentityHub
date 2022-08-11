@@ -111,7 +111,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
         var failureMessages = Stream.concat(verifiedCredentials.getFailureMessages().stream(),
                 claims.getFailureMessages().stream()).collect(Collectors.toList());
 
-        var result = new VerificationResult<>(claims.getContent(), failureMessages);
+        var result = new AggregatedResult<>(claims.getContent(), failureMessages);
 
         // Fail if one verifiable credential is not valid. This is a temporary solution util the CredentialsVerifier
         // contract is changed to support a result containing both successes results and failures.
@@ -124,7 +124,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     }
 
     @NotNull
-    private VerificationResult<List<SignedJWT>> verifyCredentials(StatusResult<Collection<SignedJWT>> jwts, DidDocument didDocument) {
+    private AggregatedResult<List<SignedJWT>> verifyCredentials(StatusResult<Collection<SignedJWT>> jwts, DidDocument didDocument) {
         // Get valid credentials.
         var verifiedJwts = jwts.getContent()
                 .stream()
@@ -160,7 +160,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
             monitor.warning(String.format("Found %s invalid verifiable credentials", failedResults.size()));
         }
 
-        return new VerificationResult<>(validCredentials, failedResults);
+        return new AggregatedResult<>(validCredentials, failedResults);
     }
 
     @NotNull
@@ -176,7 +176,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
     }
 
     @NotNull
-    private VerificationResult<Map<String, Object>> extractClaimsFromCredential(List<SignedJWT> verifiedCredentials) {
+    private AggregatedResult<Map<String, Object>> extractClaimsFromCredential(List<SignedJWT> verifiedCredentials) {
         var result = verifiedCredentials.stream()
                 .map(verifiableCredentialsJwtService::extractCredential)
                 .collect(partitioningBy(AbstractResult::succeeded));
@@ -189,7 +189,7 @@ public class IdentityHubCredentialsVerifier implements CredentialsVerifier {
                 .map(AbstractResult::getFailureDetail)
                 .collect(Collectors.toList());
 
-        return new VerificationResult<>(successfulResults, failedResults);
+        return new AggregatedResult<>(successfulResults, failedResults);
     }
 
     private String getIdentityHubBaseUrl(DidDocument didDocument) {
