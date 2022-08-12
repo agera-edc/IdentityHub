@@ -19,6 +19,7 @@ plugins {
     `maven-publish`
     id("org.gradle.crypto.checksum") version "1.4.0"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    jacoco
 }
 
 repositories {
@@ -84,6 +85,10 @@ subprojects{
 allprojects {
     apply(plugin = "maven-publish")
 
+    if (System.getenv("JACOCO") == "true") {
+        apply(plugin = "jacoco")
+    }
+
     version = projectVersion
     group = projectGroup
 
@@ -147,11 +152,25 @@ allprojects {
         }
     }
 
-    tasks.withType<Test> {
+    tasks.test {
         useJUnitPlatform()
         testLogging {
             showStandardStreams = true
         }
+
+        if (System.getenv("JACOCO") == "true") {
+            apply(plugin = "jacoco")
+            tasks.test {
+                finalizedBy(tasks.jacocoTestReport)
+            }
+            tasks.jacocoTestReport {
+                reports {
+                    // Generate XML report for codecov.io
+                    xml.required.set(true)
+                }
+            }
+        }
+
     }
 
     // EdcRuntimeExtension uses this to determine the runtime classpath of the module to run.
