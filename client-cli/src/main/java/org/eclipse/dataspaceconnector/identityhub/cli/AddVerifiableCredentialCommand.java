@@ -30,6 +30,7 @@ import static org.eclipse.dataspaceconnector.identityhub.credentials.CryptoUtils
 @Command(name = "add", description = "Adds a verifiable credential to identity hub")
 class AddVerifiableCredentialCommand implements Callable<Integer> {
 
+    public static final String DEFAULT_PASSWORD = "dhjjhgo^iwyegf%64hjbasdf$73df";
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @ParentCommand
@@ -63,6 +64,7 @@ class AddVerifiableCredentialCommand implements Callable<Integer> {
 
         SignedJWT signedJwt;
         try {
+            var s = privateKeyPemFile != null ? privateKeyPemFile : DEFAULT_PASSWORD;
             var privateKey = readPrivateEcKey(privateKeyPemFile);
             signedJwt = command.cli.verifiableCredentialsJwtService.buildSignedJwt(vc, issuer, subject, privateKey);
         } catch (Exception e) {
