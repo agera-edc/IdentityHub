@@ -85,9 +85,7 @@ subprojects{
 allprojects {
     apply(plugin = "maven-publish")
 
-    if (System.getenv("JACOCO") == "true") {
-        apply(plugin = "jacoco")
-    }
+    apply(plugin = "java")
 
     version = projectVersion
     group = projectGroup
@@ -157,20 +155,19 @@ allprojects {
         testLogging {
             showStandardStreams = true
         }
+    }
 
-        if (System.getenv("JACOCO") == "true") {
-            apply(plugin = "jacoco")
-            tasks.test {
-                finalizedBy(tasks.jacocoTestReport)
-            }
-            tasks.jacocoTestReport {
-                reports {
-                    // Generate XML report for codecov.io
-                    xml.required.set(true)
-                }
+    if (System.getenv("JACOCO") == "true") {
+        apply(plugin = "jacoco")
+        tasks.test {
+            finalizedBy(tasks.jacocoTestReport)
+        }
+        tasks.jacocoTestReport {
+            reports {
+                // Generate XML report for codecov.io
+                xml.required.set(true)
             }
         }
-
     }
 
     // EdcRuntimeExtension uses this to determine the runtime classpath of the module to run.
