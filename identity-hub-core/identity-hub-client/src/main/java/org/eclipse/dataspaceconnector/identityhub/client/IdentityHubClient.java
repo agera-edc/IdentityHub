@@ -17,7 +17,6 @@ package org.eclipse.dataspaceconnector.identityhub.client;
 import com.nimbusds.jwt.SignedJWT;
 import org.eclipse.dataspaceconnector.spi.response.StatusResult;
 
-import java.io.IOException;
 import java.util.Collection;
 
 /**
