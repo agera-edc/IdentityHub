@@ -16,12 +16,10 @@ package org.eclipse.dataspaceconnector.identityhub.verifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import com.nimbusds.jose.jwk.ECKey;
 import org.eclipse.dataspaceconnector.iam.did.spi.credentials.CredentialsVerifier;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.DidDocument;
-import org.eclipse.dataspaceconnector.iam.did.spi.document.EllipticCurvePublicKey;
 import org.eclipse.dataspaceconnector.iam.did.spi.document.Service;
-import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolver;
+import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidPublicKeyResolver;
 import org.eclipse.dataspaceconnector.iam.did.spi.resolution.DidResolverRegistry;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClient;
 import org.eclipse.dataspaceconnector.identityhub.client.IdentityHubClientImpl;
@@ -41,6 +39,7 @@ import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.Veri
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateEcKey;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.generateVerifiableCredential;
 import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toMap;
+import static org.eclipse.dataspaceconnector.identityhub.junit.testfixtures.VerifiableCredentialTestUtil.toPublicKeyWrapper;
 import static org.eclipse.dataspaceconnector.junit.testfixtures.TestUtils.getFreePort;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -53,25 +52,22 @@ public class CredentialsVerifierExtensionTest {
     private static final String API_URL = String.format("http://localhost:%d/api/identity-hub", PORT);
     private static final String CREDENTIAL_ISSUER = "did:web:" + FAKER.internet().domainName();
     private static final String SUBJECT = "did:web:" + FAKER.internet().domainName();
+    private DidPublicKeyResolver publicKeyResolverMock;
     private IdentityHubClient identityHubClient;
 
     @BeforeEach
     void setUp(EdcExtension extension) {
         identityHubClient = new IdentityHubClientImpl(TestUtils.testOkHttpClient(), new ObjectMapper(), mock(Monitor.class));
+        publicKeyResolverMock = mock(DidPublicKeyResolver.class);
+        extension.registerServiceMock(DidPublicKeyResolver.class, publicKeyResolverMock);
         extension.registerServiceMock(Monitor.class, mock(Monitor.class));
         extension.setConfiguration(Map.of("web.http.port", String.valueOf(PORT)));
     }
 
     @Test
     public void getVerifiedClaims_getValidClaims(CredentialsVerifier verifier, DidResolverRegistry registry) {
-
         var jwk = generateEcKey();
-        // Arrange - add did resolver that returns a dummy DID
-        var didResolver = mock(DidResolver.class);
-        var did = createDidDocument(jwk);
-        when(didResolver.resolve(anyString())).thenReturn(Result.success(did));
-        when(didResolver.getMethod()).thenReturn("web");
-        registry.register(didResolver);
+        when(publicKeyResolverMock.resolvePublicKey(anyString())).thenReturn(Result.success(toPublicKeyWrapper(jwk)));
 
         var didDocument = DidDocument.Builder.newInstance()
                 .id(SUBJECT)
@@ -90,11 +86,5 @@ public class CredentialsVerifierExtensionTest {
         assertThat(credentials.getContent())
                 .usingRecursiveComparison()
                 .isEqualTo(expectedCredentials);
-    }
-
-    private DidDocument createDidDocument(ECKey jwk) {
-        var ecPk = new EllipticCurvePublicKey(jwk.getCurve().getName(), jwk.getKeyType().toString(), jwk.getX().toString(), jwk.getY().toString());
-        return DidDocument.Builder.newInstance()
-                .verificationMethod("test-id", "test-type", ecPk).build();
     }
 }
